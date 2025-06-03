@@ -1,105 +1,353 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Penta Hosting</title>
   <style>
-    .submenu {
-      margin-bottom: 20px;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    .submenu button {
-      margin: 5px;
-      padding: 10px 15px;
-      font-size: 14px;
+    body {
+      background-color: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* Pantalla de inicio */
+    .lobby-screen {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #000000, #2c3e50);
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .lobby-screen h1 {
+      font-size: 3.5rem;
+      margin-bottom: 10px;
+      background: linear-gradient(to right, #00d2ff, #3a7bd5);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .lobby-screen .subtitle {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      opacity: 0.8;
+    }
+
+    .enter-button {
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      background: linear-gradient(to right, #00d2ff, #3a7bd5);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3);
+    }
+
+    .enter-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 210, 255, 0.4);
+    }
+
+    /* Contenido principal */
+    .main-content {
+      display: none;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      color: #7f8c8d;
+    }
+
+    /* Menú de opciones */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .option-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .option-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .option-card.black-white {
+      background: #000;
+      color: white;
+    }
+
+    .option-card-header {
+      padding: 20px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .option-card.black-white .option-card-header {
+      border-bottom: 1px solid #333;
+    }
+
+    .option-card-header h2 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    .option-card-body {
+      padding: 20px;
+    }
+
+    /* Secciones de contenido */
+    .section {
+      display: none;
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      margin-top: 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .section h2 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f1f1f1;
+    }
+
+    .section p {
+      margin-bottom: 15px;
+    }
+
+    .section ul {
+      margin-bottom: 20px;
+      padding-left: 20px;
+    }
+
+    .section li {
+      margin-bottom: 10px;
+    }
+
+    /* Botones */
+    .button-link {
+      display: inline-block;
+      padding: 12px 25px;
+      background: linear-gradient(to right, #00d2ff, #3a7bd5);
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border: none;
       cursor: pointer;
     }
 
-    .section {
-      display: none;
-      margin-top: 20px;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-    }
-
-    .button-link {
-      display: inline-block;
-      margin-top: 15px;
-      padding: 10px 15px;
-      background: #0066cc;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-    }
-
     .button-link:hover {
-      background: #004999;
+      background: linear-gradient(to right, #3a7bd5, #00d2ff);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
-    .main-content {
-      display: none; /* Ocultar al inicio para que se muestre con el botón */
+    /* Responsive */
+    @media (max-width: 768px) {
+      .options-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .lobby-screen h1 {
+        font-size: 2.5rem;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="center-screen" id="startScreen">
-    <h1>Penta Hosting</h1>
-    <p class="subtitle">Tu sitio, nuestra responsabilidad</p>
-    <button class="button" onclick="enterSite()">Entrar</button>
+  <!-- Pantalla de lobby -->
+  <div class="lobby-screen" id="lobbyScreen">
+    <h1>Hosting 0m</h1>
+    <p class="subtitle">Tu solución de hosting profesional</p>
+    <button class="enter-button" onclick="enterSite()">Entrar</button>
   </div>
 
+  <!-- Contenido principal -->
   <div class="main-content" id="mainContent">
-    <h1>Bienvenido a Penta Hosting</h1>
-    <p>El mejor servicio de hosting para tus proyectos en línea</p>
-
-    <div class="submenu">
-      <button onclick="showSection('info')">Información de Penta Hosting</button>
-      <button onclick="showSection('planes')">Ver Planes</button>
-      <button onclick="showSection('estado')">Ver Mi Hosting</button>
+    <div class="header">
+      <h1>Penta Hosting</h1>
+      <p>El mejor servicio de hosting para tus proyectos en línea</p>
     </div>
 
+    <!-- Opciones principales -->
+    <div class="options-grid">
+      <div class="option-card black-white" onclick="showSection('info')">
+        <div class="option-card-header">
+          <h2>Información del Usuario</h2>
+        </div>
+        <div class="option-card-body">
+          <p>Ver detalles de tu cuenta y información personal</p>
+        </div>
+      </div>
+
+      <div class="option-card black-white" onclick="showSection('planes')">
+        <div class="option-card-header">
+          <h2>Planes de Hosting</h2>
+        </div>
+        <div class="option-card-body">
+          <p>Descubre nuestros planes y precios competitivos</p>
+        </div>
+      </div>
+
+      <div class="option-card black-white" onclick="showSection('estado')">
+        <div class="option-card-header">
+          <h2>Estado de Contrato</h2>
+        </div>
+        <div class="option-card-body">
+          <p>Revisa el estado de tu hosting actual</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección de Información -->
     <div class="section" id="info">
-      <h2>Información de Penta Hosting</h2>
-      <p><strong>Propietario:</strong> Primitivo González</p>
-      <p><strong>Ubicación:</strong> México</p>
-      <p>Ofrecemos hosting confiable, accesible y de calidad para todo tipo de usuarios.</p>
+      <h2>Información del Usuario</h2>
+      <div style="display: grid; grid-template-columns: 150px 1fr; gap: 20px; margin-bottom: 20px;">
+        <div style="background: #f1f1f1; width: 150px; height: 150px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: #666;">
+          PL
+        </div>
+        <div>
+          <p><strong>Nombre:</strong> Primitivo López Arturo</p>
+          <p><strong>Email:</strong> contacto@pentahosting.com</p>
+          <p><strong>Teléfono:</strong> +52 55 1234 5678</p>
+          <p><strong>Ubicación:</strong> Ciudad de México, México</p>
+        </div>
+      </div>
+      <p><strong>Sobre Penta Hosting:</strong></p>
+      <p>Ofrecemos hosting confiable, accesible y de calidad para todo tipo de usuarios. Nuestro objetivo es proporcionar soluciones de alojamiento web que sean fáciles de usar pero potentes para profesionales.</p>
     </div>
 
+    <!-- Sección de Planes -->
     <div class="section" id="planes">
-      <h2>Planes Disponibles</h2>
-      <p><strong>Plan Normal – $20 USD/mes</strong></p>
-      <ul>
-        <li>10 GB de almacenamiento SSD</li>
-        <li>100 GB de transferencia mensual</li>
-        <li>1 dominio incluido</li>
-        <li>Soporte 24/7</li>
-      </ul>
-      <p>¡Ideal para sitios personales o pequeños negocios!</p>
+      <h2>Planes de Hosting</h2>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+        <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #eee;">
+          <h3 style="color: #3a7bd5; margin-bottom: 15px;">Plan Básico</h3>
+          <p style="font-size: 1.8rem; font-weight: bold; margin-bottom: 15px;">$10 <span style="font-size: 1rem; color: #777;">/mes</span></p>
+          <ul style="list-style-type: none; margin-bottom: 20px;">
+            <li>✓ 5 GB Almacenamiento SSD</li>
+            <li>✓ 50 GB Transferencia</li>
+            <li>✓ 1 Dominio</li>
+            <li>✓ Soporte Básico</li>
+          </ul>
+          <button class="button-link" style="width: 100%; text-align: center;">Seleccionar</button>
+        </div>
 
-      <a href="https://www.hostinger.com/" target="_blank" class="button-link">
-        Ver más planes en Hostinger
-      </a>
+        <div style="background: #f1f8ff; padding: 20px; border-radius: 8px; border: 1px solid #d1e7ff;">
+          <h3 style="color: #3a7bd5; margin-bottom: 15px;">Plan Estándar</h3>
+          <p style="font-size: 1.8rem; font-weight: bold; margin-bottom: 15px;">$20 <span style="font-size: 1rem; color: #777;">/mes</span></p>
+          <ul style="list-style-type: none; margin-bottom: 20px;">
+            <li>✓ 10 GB Almacenamiento SSD</li>
+            <li>✓ 100 GB Transferencia</li>
+            <li>✓ 2 Dominios</li>
+            <li>✓ Soporte Prioritario</li>
+            <li>✓ Email Profesional</li>
+          </ul>
+          <button class="button-link" style="width: 100%; text-align: center;">Seleccionar</button>
+        </div>
+
+        <div style="background: #f0f0f0; padding: 20px; border-radius: 8px; border: 2px solid #3a7bd5;">
+          <div style="background: #3a7bd5; color: white; padding: 5px 10px; border-radius: 20px; display: inline-block; margin-bottom: 10px; font-size: 0.8rem;">MÁS POPULAR</div>
+          <h3 style="color: #3a7bd5; margin-bottom: 15px;">Plan Premium</h3>
+          <p style="font-size: 1.8rem; font-weight: bold; margin-bottom: 15px;">$35 <span style="font-size: 1rem; color: #777;">/mes</span></p>
+          <ul style="list-style-type: none; margin-bottom: 20px;">
+            <li>✓ 20 GB Almacenamiento SSD</li>
+            <li>✓ Transferencia Ilimitada</li>
+            <li>✓ Dominios Ilimitados</li>
+            <li>✓ Soporte 24/7</li>
+            <li>✓ SSL Gratis</li>
+            <li>✓ Copias de Seguridad</li>
+          </ul>
+          <button class="button-link" style="width: 100%; text-align: center;">Seleccionar</button>
+        </div>
+      </div>
+
+      <p style="text-align: center; margin-top: 20px;">¿Necesitas algo más potente? <a href="#" style="color: #3a7bd5; text-decoration: none; font-weight: 500;">Consulta nuestros planes empresariales</a></p>
     </div>
 
+    <!-- Sección de Estado -->
     <div class="section" id="estado">
-      <h2>Mi Hosting</h2>
-      <p>No tienes ningún plan activo en este momento.</p>
-      <p>Contrata uno desde la sección de planes para ver más información aquí.</p>
+      <h2>Estado de tu Contrato</h2>
+      <div style="background: #fff8e1; padding: 20px; border-radius: 8px; border-left: 4px solid #ffc107; margin-bottom: 20px;">
+        <h3 style="color: #ff9800; margin-bottom: 10px;">No tienes contratos activos</h3>
+        <p>Actualmente no tienes ningún plan de hosting activo con Penta Hosting.</p>
+      </div>
+      
+      <p>Para activar tu hosting:</p>
+      <ol style="margin-bottom: 20px; padding-left: 20px;">
+        <li>Selecciona uno de nuestros planes en la sección "Planes de Hosting"</li>
+        <li>Completa el proceso de pago</li>
+        <li>Configura tu cuenta (te guiaremos paso a paso)</li>
+      </ol>
+      
+      <p>¿Tienes alguna duda? <a href="#" style="color: #3a7bd5; text-decoration: none; font-weight: 500;">Contáctanos</a> y con gusto te ayudaremos.</p>
+      
+      <button class="button-link" onclick="showSection('planes')" style="margin-top: 20px;">
+        Ver Planes Disponibles
+      </button>
     </div>
   </div>
 
   <script>
     function enterSite() {
-      document.getElementById("startScreen").style.display = "none";
+      document.getElementById("lobbyScreen").style.display = "none";
       document.getElementById("mainContent").style.display = "block";
+      // Mostrar la sección de información por defecto
+      showSection('info');
     }
 
     function showSection(sectionId) {
       const sections = document.querySelectorAll('.section');
       sections.forEach(sec => sec.style.display = 'none');
       document.getElementById(sectionId).style.display = 'block';
+      
+      // Desplazarse suavemente a la sección
+      document.getElementById(sectionId).scrollIntoView({
+        behavior: 'smooth'
+      });
     }
   </script>
 </body>
