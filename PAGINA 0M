@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Penta Hosting</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f4;
+      color: #333;
+    }
+
+    .center-screen {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+      background: #0066cc;
+      color: white;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      margin-bottom: 20px;
+    }
+
+    .button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: white;
+      color: #0066cc;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .main-content {
+      display: none;
+      padding: 30px;
+    }
+
+    .submenu {
+      margin-bottom: 20px;
+    }
+
+    .submenu button {
+      margin: 5px;
+      padding: 10px 15px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .section {
+      display: none;
+      margin-top: 20px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    .button-link {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 15px;
+      background: #0066cc;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+
+    .button-link:hover {
+      background: #004999;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="center-screen" id="startScreen">
+    <h1>Penta Hosting</h1>
+    <p class="subtitle">Tu sitio, nuestra responsabilidad</p>
+    <button class="button" onclick="enterSite()">Entrar</button>
+  </div>
+
+  <div class="main-content" id="mainContent">
+    <h1>Bienvenido a Penta Hosting</h1>
+    <p>El mejor servicio de hosting para tus proyectos en línea</p>
+
+    <div class="submenu">
+      <button onclick="showSection('info')">Información de Penta Hosting</button>
+      <button onclick="showSection('planes')">Ver Planes</button>
+      <button onclick="showSection('estado')">Ver Mi Hosting</button>
+    </div>
+
+    <div class="section" id="info">
+      <h2>Información de Penta Hosting</h2>
+      <p><strong>Propietario:</strong> Primitivo González</p>
+      <p><strong>Ubicación:</strong> México</p>
+      <p>Ofrecemos hosting confiable, accesible y de calidad para todo tipo de usuarios.</p>
+    </div>
+
+    <div class="section" id="planes">
+      <h2>Planes Disponibles</h2>
+      <p><strong>Plan Normal – $20 USD/mes</strong></p>
+      <ul>
+        <li>10 GB de almacenamiento SSD</li>
+        <li>100 GB de transferencia mensual</li>
+        <li>1 dominio incluido</li>
+        <li>Soporte 24/7</li>
+      </ul>
+      <p>¡Ideal para sitios personales o pequeños negocios!</p>
+
+      <!-- Enlace a Hostinger -->
+      <a href="https://www.hostinger.com/" target="_blank" class="button-link">
+        Ver más planes en Hostinger
+      </a>
+    </div>
+
+    <div class="section" id="estado">
+      <h2>Mi Hosting</h2>
+      <p>No tienes ningún plan activo en este momento.</p>
+      <p>Contrata uno desde la sección de planes para ver más información aquí.</p>
+    </div>
+  </div>
+
+  <script>
+    function enterSite() {
+      document.getElementById("startScreen").style.display = "none";
+      document.getElementById("mainContent").style.display = "block";
+    }
+
+    function showSection(sectionId) {
+      const sections = document.querySelectorAll('.section');
+      sections.forEach(sec => sec.style.display = 'none');
+      document.getElementById(sectionId).style.display = 'block';
+    }
+  </script>
+</body>
+</html>
