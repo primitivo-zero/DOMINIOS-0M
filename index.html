@@ -119,11 +119,11 @@
         .carousel-item:nth-child(3) { transform: rotateY(72deg) translateZ(300px); background: linear-gradient(45deg, #ffaa00, #ff0050); }
         .carousel-item:nth-child(4) { transform: rotateY(108deg) translateZ(300px); background: linear-gradient(45deg, #8400ff, #00ffaa); }
         .carousel-item:nth-child(5) { transform: rotateY(144deg) translateZ(300px); background: linear-gradient(45deg, #0084ff, #ffaa00); }
-        .carousel-item:nth-child(6) { transform: rotateY(180deg) translateZ(300px); background: linear-gradient(45deg, #ff0050, #00ffaa); }
-        .carousel-item:nth-child(7) { transform: rotateY(216deg) translateZ(300px); background: linear-gradient(45deg, #8400ff, #ffaa00); }
-        .carousel-item:nth-child(8) { transform: rotateY(252deg) translateZ(300px); background: linear-gradient(45deg, #00ffaa, #ff0050); }
-        .carousel-item:nth-child(9) { transform: rotateY(288deg) translateZ(300px); background: linear-gradient(45deg, #ffaa00, #0084ff); }
-        .carousel-item:nth-child(10) { transform: rotateY(324deg) translateZ(300px); background: linear-gradient(45deg, #0084ff, #8400ff); }
+        .carousel-item:nth-child(6) { transform: rotateY(180deg) translateZ(300px); background: linear-gradient(45deg, #FFC107, #FF9800); }
+        .carousel-item:nth-child(7) { transform: rotateY(216deg) translateZ(300px); background: linear-gradient(45deg, #4CAF50, #8BC34A); }
+        .carousel-item:nth-child(8) { transform: rotateY(252deg) translateZ(300px); background: linear-gradient(45deg, #00BCD4, #00BCD4); }
+        .carousel-item:nth-child(9) { transform: rotateY(288deg) translateZ(300px); background: linear-gradient(45deg, #9C27B0, #673AB7); }
+        .carousel-item:nth-child(10) { transform: rotateY(324deg) translateZ(300px); background: linear-gradient(45deg, #F44336, #E91E63); }
 
 
         #start-button {
@@ -672,4 +672,496 @@
         .pipe {
             position: absolute;
             width: 60px;
-            background-color:
+            background-color: #74BF2E;
+        }
+
+        .pipe.top { top: 0; }
+        .pipe.bottom { bottom: 0; }
+    </style>
+</head>
+<body>
+
+    <div id="main-menu">
+        <h1 id="gametok-title">GameTok</h1>
+        <div id="game-carousel-container">
+            <div id="game-carousel">
+                </div>
+        </div>
+        <button id="start-button">Comenzar</button>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="logo">GameTok</div>
+            <div>
+                <i class="fas fa-search search-icon"></i>
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+            </div>
+        </div>
+
+        <div id="game-slides-container">
+            </div>
+
+        <div class="side-buttons">
+            <div class="side-button">
+                <div class="avatar">U</div> <span class="side-text">Usuario</span>
+            </div>
+            <div class="side-button" id="like-button">
+                <div class="side-icon"><i class="fas fa-heart"></i></div>
+                <span class="side-text" id="likes-count">0</span>
+            </div>
+            <div class="side-button">
+                <div class="side-icon"><i class="fas fa-comment-dots"></i></div>
+                <span class="side-text">Comentarios</span>
+            </div>
+            <div class="side-button">
+                <div class="side-icon"><i class="fas fa-share"></i></div>
+                <span class="side-text">Compartir</span>
+            </div>
+        </div>
+
+        <div class="game-indicator">
+            </div>
+
+        <div class="mobile-controls">
+            <div class="d-pad">
+                <div class="mobile-btn" data-control="up"><i class="fas fa-arrow-up"></i></div>
+                <div class="mobile-btn" data-control="left"><i class="fas fa-arrow-left"></i></div>
+                <div class="mobile-btn" data-control="right"><i class="fas fa-arrow-right"></i></div>
+                <div class="mobile-btn" data-control="down"><i class="fas fa-arrow-down"></i></div>
+                <div class="mobile-btn" style="visibility: hidden;"></div>
+            </div>
+            <div class="mobile-btn action-btn" data-control="action"><i class="fas fa-hand-pointer"></i></div>
+        </div>
+
+    </div>
+
+    <div id="auth-modal" class="auth-modal">
+        <div class="auth-modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="auth-title">Iniciar Sesión</h2>
+            <input type="text" id="username" placeholder="Nombre de usuario" required>
+            <input type="password" id="password" placeholder="Contraseña" required>
+            <button id="auth-submit-button">Iniciar Sesión</button>
+            <p>¿No tienes una cuenta? <a href="#" id="toggle-auth">Regístrate aquí</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Datos de los juegos
+        const games = [
+            { id: 'game1', name: 'Memoria', description: '¡Pon a prueba tu memoria con este divertido juego de cartas!', controls: 'Clic/Toque para voltear', gameContent: '<div class="memory-game"></div>' },
+            { id: 'game2', name: 'Serpiente', description: 'Alimenta a la serpiente y hazla crecer sin chocar.', controls: 'Flechas / D-Pad para mover', gameContent: '<canvas id="snake-canvas" width="300" height="300"></canvas>' },
+            { id: 'game3', name: 'Pong', description: 'El clásico juego de ping-pong. ¡No dejes que la pelota pase!', controls: 'Flechas Arriba/Abajo para mover la paleta', gameContent: '<div id="pong-game"><div class="paddle" id="left-paddle"></div><div class="paddle" id="right-paddle"></div><div class="ball"></div><div class="score" id="left-score">0</div><div class="score" id="right-score">0</div></div>' },
+            { id: 'game4', name: 'Flappy Bird', description: 'Ayuda al pájaro a volar a través de los obstáculos.', controls: 'Espacio / Toque para aletear', gameContent: '<div id="flappy-game"><div id="bird"></div></div>' },
+            { id: 'game5', name: 'Breakout', description: 'Rompe todos los bloques con tu pelota y paleta.', controls: 'Flechas Izquierda/Derecha para mover la paleta', gameContent: '<canvas id="breakout-canvas" width="400" height="300" style="background-color: rgba(0,0,0,0.2); border-radius: 5px;"></canvas>' },
+            { id: 'game6', name: 'Tic-Tac-Toe', description: 'El clásico juego de tres en raya. ¡Juega contra un amigo o la IA!', controls: 'Clic/Toque en el cuadrado deseado', gameContent: '<div class="tic-tac-toe-game" style="display: grid; grid-template-columns: repeat(3, 80px); grid-template-rows: repeat(3, 80px); gap: 5px; background-color: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px;"><div class="tic-tac-toe-cell" style="width: 80px; height: 80px; background-color: rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 2em; cursor: pointer;"></div><div class="tic-tac-toe-cell" style="width: 80px; height: 80px; background-color: rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 2em; cursor: pointer;"></div><div class="tic-tac-toe-cell" style="width: 80px; height: 80px; background-color: rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 2em; cursor: pointer;"></div><div class="tic-tac-toe-cell" style="width: 80px; height: 80px; background-color: rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 2em; cursor: pointer;"></div><div class="tic-tac-toe-cell" style="width: 80px; height: 80px; background-color: rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 2em; cursor: pointer;"></div><div class="tic-tac-toe-cell" style="width: 80px; height: 80px; background-color: rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 2em; cursor: pointer;"></div><div class="tic-tac-toe-cell" style="width: 80px; height: 80px; background-color: rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 2em; cursor: pointer;"></div><div class="tic-tac-toe-cell" style="width: 80px; height: 80px; background-color: rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 2em; cursor: pointer;"></div><div class="tic-tac-toe-cell" style="width: 80px; height: 80px; background-color: rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 2em; cursor: pointer;"></div></div>' },
+            { id: 'game7', name: 'Whac-A-Mole', description: 'Golpea a los topos que aparecen lo más rápido posible.', controls: 'Clic/Toque en el topo', gameContent: '<div class="whac-a-mole-game" style="display: grid; grid-template-columns: repeat(3, 100px); grid-template-rows: repeat(3, 100px); gap: 15px; background-color: rgba(0,0,0,0.2); padding: 20px; border-radius: 10px;"><div class="mole-hole" style="width: 100px; height: 100px; background-color: #555; border-radius: 50%; display: flex; justify-content: center; align-items: center;"><span style="font-size: 0.8em; color: #fff;">Topo</span></div><div class="mole-hole" style="width: 100px; height: 100px; background-color: #555; border-radius: 50%; display: flex; justify-content: center; align-items: center;"><span style="font-size: 0.8em; color: #fff;">Topo</span></div><div class="mole-hole" style="width: 100px; height: 100px; background-color: #555; border-radius: 50%; display: flex; justify-content: center; align-items: center;"><span style="font-size: 0.8em; color: #fff;">Topo</span></div><div class="mole-hole" style="width: 100px; height: 100px; background-color: #555; border-radius: 50%; display: flex; justify-content: center; align-items: center;"><span style="font-size: 0.8em; color: #fff;">Topo</span></div><div class="mole-hole" style="width: 100px; height: 100px; background-color: #555; border-radius: 50%; display: flex; justify-content: center; align-items: center;"><span style="font-size: 0.8em; color: #fff;">Topo</span></div><div class="mole-hole" style="width: 100px; height: 100px; background-color: #555; border-radius: 50%; display: flex; justify-content: center; align-items: center;"><span style="font-size: 0.8em; color: #fff;">Topo</span></div><div class="mole-hole" style="width: 100px; height: 100px; background-color: #555; border-radius: 50%; display: flex; justify-content: center; align-items: center;"><span style="font-size: 0.8em; color: #fff;">Topo</span></div><div class="mole-hole" style="width: 100px; height: 100px; background-color: #555; border-radius: 50%; display: flex; justify-content: center; align-items: center;"><span style="font-size: 0.8em; color: #fff;">Topo</span></div><div class="mole-hole" style="width: 100px; height: 100px; background-color: #555; border-radius: 50%; display: flex; justify-content: center; align-items: center;"><span style="font-size: 0.8em; color: #fff;">Topo</span></div></div>' },
+            { id: 'game8', name: 'Simon Says', description: 'Repite la secuencia de colores en el orden correcto.', controls: 'Clic/Toque en los colores', gameContent: '<div class="simon-says-game" style="display: grid; grid-template-columns: repeat(2, 100px); grid-template-rows: repeat(2, 100px); gap: 10px; background-color: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px;"><div class="simon-btn" style="background-color: red; width: 100px; height: 100px; border-top-left-radius: 10px; cursor: pointer;"></div><div class="simon-btn" style="background-color: blue; width: 100px; height: 100px; border-top-right-radius: 10px; cursor: pointer;"></div><div class="simon-btn" style="background-color: green; width: 100px; height: 100px; border-bottom-left-radius: 10px; cursor: pointer;"></div><div class="simon-btn" style="background-color: yellow; width: 100px; height: 100px; border-bottom-right-radius: 10px; cursor: pointer;"></div></div>' },
+            { id: 'game9', name: 'Clicks Counter', description: 'Haz clic tan rápido como puedas en un tiempo limitado.', controls: 'Clic/Toque en el botón', gameContent: '<div class="click-counter-game" style="text-align: center;"><p style="font-size: 1.5em; margin-bottom: 20px;">Clics: <span id="click-count">0</span></p><button id="click-button" style="padding: 15px 30px; font-size: 1.2em; background-color: #ff0050; color: #fff; border: none; border-radius: 25px; cursor: pointer;">¡Haz clic!</button></div>' },
+            { id: 'game10', name: 'Typing Game', description: 'Escribe las palabras que aparecen en pantalla lo más rápido posible.', controls: 'Teclado', gameContent: '<div class="typing-game" style="text-align: center;"><p style="font-size: 1.5em; margin-bottom: 20px;">Escribe: <span id="word-to-type" style="font-weight: bold; color: #00ffaa;"></span></p><input type="text" id="typing-input" style="width: 80%; padding: 10px; font-size: 1.1em; border-radius: 5px; border: 1px solid #555; background-color: #222; color: #fff;"></div>' }
+        ];
+
+        let currentActiveGame = 0; // Índice del juego actual
+        let isAuthModalOpen = false;
+        let isMobile = window.innerWidth <= 768; // Para detectar si es móvil
+
+        // Referencias a elementos del DOM
+        const mainMenu = document.getElementById('main-menu');
+        const startButton = document.getElementById('start-button');
+        const authModal = document.getElementById('auth-modal');
+        const closeAuthButton = document.querySelector('.auth-modal-content .close-button');
+        const toggleAuthLink = document.getElementById('toggle-auth');
+        const authTitle = document.getElementById('auth-title');
+        const authSubmitButton = document.getElementById('auth-submit-button');
+        const gameCarousel = document.getElementById('game-carousel');
+        const gameSlidesContainer = document.getElementById('game-slides-container');
+        const gameIndicator = document.querySelector('.game-indicator');
+        const appContainer = document.querySelector('.container');
+        const header = document.querySelector('.header');
+        const likeButton = document.getElementById('like-button');
+        const likesCount = document.getElementById('likes-count');
+        const mobileControls = document.querySelector('.mobile-controls');
+
+        // --- Funciones del Menú de Inicio y Carrusel ---
+
+        // Genera los ítems del carrusel dinámicamente
+        function generateCarouselItems() {
+            const numGames = games.length;
+            const angleStep = 360 / numGames;
+            gameCarousel.innerHTML = ''; // Limpiar carrusel existente
+
+            games.forEach((game, index) => {
+                const carouselItem = document.createElement('div');
+                carouselItem.classList.add('carousel-item');
+                carouselItem.textContent = game.name;
+                carouselItem.setAttribute('data-game-id', game.id);
+
+                // Calcular la transformación para distribuir uniformemente
+                const transformValue = `rotateY(${index * angleStep}deg) translateZ(300px)`;
+                carouselItem.style.transform = transformValue;
+                carouselItem.style.background = `linear-gradient(45deg, ${getRandomColor()}, ${getRandomColor()})`; // Colores aleatorios
+
+                carouselItem.addEventListener('click', () => {
+                    // Pausar la animación del carrusel al seleccionar un juego
+                    gameCarousel.style.animationPlayState = 'paused';
+                    const targetAngle = -(index * angleStep); // Ángulo para centrar el juego seleccionado
+                    gameCarousel.style.transform = `rotateY(${targetAngle}deg)`;
+
+                    // Opcional: Deseleccionar después de un tiempo o reanudar la animación
+                    setTimeout(() => {
+                        gameCarousel.style.animationPlayState = 'running';
+                    }, 2000); // Reanudar después de 2 segundos
+                });
+
+                gameCarousel.appendChild(carouselItem);
+            });
+        }
+
+        // Genera los slides de los juegos y los indicadores
+        function generateGameSlides() {
+            gameSlidesContainer.innerHTML = ''; // Limpiar slides existentes
+            gameIndicator.innerHTML = ''; // Limpiar indicadores existentes
+
+            games.forEach((game, index) => {
+                // Crear el slide del juego
+                const gameSlide = document.createElement('div');
+                gameSlide.classList.add('game-slide');
+                gameSlide.id = `slide-${game.id}`;
+                gameSlide.style.transform = `translateY(${index * 100}vh)`; // Posicionar slides verticalmente
+
+                // Contenido del slide
+                gameSlide.innerHTML = `
+                    <div class="game-content-wrapper">
+                        <div class="game-info">
+                            <h2 class="game-title">${game.name}</h2>
+                            <p class="game-desc">${game.description}</p>
+                            <p class="controls-info">Controles: ${game.controls}</p>
+                            <div class="control-buttons">
+                                <button class="control-btn play-btn" data-game-id="${game.id}">Jugar</button>
+                                <button class="control-btn">Más Info</button>
+                            </div>
+                        </div>
+                        <div class="game-play-area">
+                            ${game.gameContent}
+                        </div>
+                    </div>
+                `;
+                gameSlidesContainer.appendChild(gameSlide);
+
+                // Crear el punto indicador
+                const dot = document.createElement('div');
+                dot.classList.add('indicator-dot');
+                dot.setAttribute('data-slide-index', index);
+                dot.addEventListener('click', () => {
+                    showGame(index);
+                });
+                gameIndicator.appendChild(dot);
+            });
+
+            // Activar el primer juego y su indicador
+            showGame(currentActiveGame);
+        }
+
+        // Muestra el juego especificado por su índice
+        function showGame(index) {
+            currentActiveGame = index;
+            const translateYValue = -index * 100;
+            gameSlidesContainer.style.transform = `translateY(${translateYValue}vh)`;
+
+            // Actualizar puntos indicadores
+            document.querySelectorAll('.indicator-dot').forEach((dot, idx) => {
+                if (idx === index) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+            updateGameControlsVisibility();
+        }
+
+        // Navegación con la rueda del ratón o swipe
+        function handleScroll(event) {
+            event.preventDefault();
+            const delta = event.deltaY || event.detail || event.wheelDelta; // Rueda del ratón
+            if (delta > 0) {
+                // Desplazarse hacia abajo (siguiente juego)
+                if (currentActiveGame < games.length - 1) {
+                    showGame(currentActiveGame + 1);
+                }
+            } else {
+                // Desplazarse hacia arriba (juego anterior)
+                if (currentActiveGame > 0) {
+                    showGame(currentActiveGame - 1);
+                }
+            }
+        }
+
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        function handleTouchStart(event) {
+            touchStartY = event.touches[0].clientY;
+        }
+
+        function handleTouchMove(event) {
+            touchEndY = event.touches[0].clientY;
+        }
+
+        function handleTouchEnd() {
+            if (touchStartY - touchEndY > 50) { // Swipe Up (siguiente juego)
+                if (currentActiveGame < games.length - 1) {
+                    showGame(currentActiveGame + 1);
+                }
+            } else if (touchEndY - touchStartY > 50) { // Swipe Down (juego anterior)
+                if (currentActiveGame > 0) {
+                    showGame(currentActiveGame - 1);
+                }
+            }
+            touchStartY = 0;
+            touchEndY = 0;
+        }
+
+        // --- Funcionalidad de Autenticación ---
+
+        // Mostrar/Ocultar modal de autenticación
+        startButton.addEventListener('click', () => {
+            mainMenu.classList.add('hidden');
+            // Retrasar la aparición del modal para que la animación del menú termine
+            setTimeout(() => {
+                authModal.style.display = 'flex';
+                isAuthModalOpen = true;
+            }, 500);
+        });
+
+        closeAuthButton.addEventListener('click', () => {
+            authModal.style.display = 'none';
+            mainMenu.classList.remove('hidden'); // Volver al menú principal
+            isAuthModalOpen = false;
+        });
+
+        // Alternar entre login y registro
+        toggleAuthLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (authTitle.textContent === 'Iniciar Sesión') {
+                authTitle.textContent = 'Registrarse';
+                authSubmitButton.textContent = 'Registrarse';
+                toggleAuthLink.textContent = 'Inicia Sesión aquí';
+            } else {
+                authTitle.textContent = 'Iniciar Sesión';
+                authSubmitButton.textContent = 'Iniciar Sesión';
+                toggleAuthLink.textContent = 'Regístrate aquí';
+            }
+        });
+
+        authSubmitButton.addEventListener('click', () => {
+            // Aquí iría la lógica real de autenticación (AJAX a un servidor, etc.)
+            alert(`Simulando ${authTitle.textContent} para usuario: ${document.getElementById('username').value}`);
+            authModal.style.display = 'none';
+            isAuthModalOpen = false;
+            // Mostrar la interfaz principal de la app
+            appContainer.style.display = 'flex';
+            header.style.display = 'flex';
+            updateGameControlsVisibility(); // Asegurarse de que los controles móviles se muestren si es necesario
+            initializeGames(); // Inicializar juegos al entrar a la app
+        });
+
+        // --- Funcionalidad de Botones Laterales ---
+
+        // Funcionalidad de "Me gusta"
+        let likes = 0;
+        let liked = false;
+        likeButton.addEventListener('click', () => {
+            if (!liked) {
+                likes++;
+                likeButton.querySelector('.side-icon').classList.add('liked');
+                liked = true;
+            } else {
+                likes--;
+                likeButton.querySelector('.side-icon').classList.remove('liked');
+                liked = false;
+            }
+            likesCount.textContent = likes;
+        });
+
+        // --- Manejo de Controles de Juego ---
+
+        // Función para ocultar/mostrar controles móviles según el dispositivo
+        function updateGameControlsVisibility() {
+            if (isMobile) {
+                mobileControls.style.display = 'flex';
+            } else {
+                mobileControls.style.display = 'none';
+            }
+        }
+
+        // Event listeners para controles móviles
+        document.querySelectorAll('.mobile-btn').forEach(button => {
+            button.addEventListener('pointerdown', (e) => {
+                e.preventDefault(); // Evitar el desplazamiento de la página al tocar
+                const control = button.getAttribute('data-control');
+                console.log(`Control móvil presionado: ${control}`);
+                // Aquí se integraría la lógica para cada juego individual
+                // Por ejemplo, para el juego de la serpiente, podrías llamar a una función `moveSnake(direction)`
+            });
+            button.addEventListener('pointerup', (e) => {
+                e.preventDefault();
+                const control = button.getAttribute('data-control');
+                console.log(`Control móvil liberado: ${control}`);
+            });
+        });
+
+        // Event listener para teclado (controles de juego)
+        document.addEventListener('keydown', (e) => {
+            // Solo si el modal de autenticación NO está abierto y estamos en la app principal
+            if (!isAuthModalOpen && appContainer.style.display === 'flex') {
+                switch (e.key) {
+                    case 'ArrowUp':
+                    case 'w':
+                        console.log('Tecla: Arriba');
+                        // Lógica de juego: Mover personaje hacia arriba
+                        break;
+                    case 'ArrowDown':
+                    case 's':
+                        console.log('Tecla: Abajo');
+                        // Lógica de juego: Mover personaje hacia abajo
+                        break;
+                    case 'ArrowLeft':
+                    case 'a':
+                        console.log('Tecla: Izquierda');
+                        // Lógica de juego: Mover personaje hacia la izquierda
+                        break;
+                    case 'ArrowRight':
+                    case 'd':
+                        console.log('Tecla: Derecha');
+                        // Lógica de juego: Mover personaje hacia la derecha
+                        break;
+                    case ' ': // Espacio para acción o salto
+                        console.log('Tecla: Espacio (Acción)');
+                        // Lógica de juego: Acción principal (saltar, disparar, etc.)
+                        break;
+                    case 'Enter': // Enter para iniciar/pausar
+                        console.log('Tecla: Enter');
+                        // Lógica de juego: Iniciar/Pausar juego
+                        break;
+                }
+            }
+        });
+
+        // --- Inicialización de Juegos (Ejemplos básicos) ---
+        function initializeGames() {
+            // Ejemplo de inicialización para el juego de Memoria
+            const memoryGameDiv = document.querySelector('.memory-game');
+            if (memoryGameDiv) {
+                // Aquí podrías generar las cartas, mezclar, etc.
+                memoryGameDiv.innerHTML = '<p>Juego de Memoria cargado (contenido dinámico)</p>';
+                // Añadir lógica de Memory Game (voltear cartas, chequear parejas)
+            }
+
+            // Ejemplo para Snake
+            const snakeCanvas = document.getElementById('snake-canvas');
+            if (snakeCanvas) {
+                const ctx = snakeCanvas.getContext('2d');
+                ctx.fillStyle = 'lime';
+                ctx.fillRect(10, 10, 20, 20); // Dibuja un cuadrado simple como la cabeza de la serpiente
+                console.log('Canvas de Serpiente inicializado.');
+                // Aquí iría toda la lógica de Snake (movimiento, comida, colisiones)
+            }
+
+            // Ejemplo para Pong
+            const pongGameDiv = document.getElementById('pong-game');
+            if (pongGameDiv) {
+                // Lógica para mover las paletas y la pelota
+                console.log('Juego de Pong inicializado.');
+            }
+
+            // Aquí puedes añadir más inicializaciones para game6, game7, game8, game9, game10
+            // Por ejemplo, para el Click Counter:
+            const clickButton = document.getElementById('click-button');
+            const clickCountSpan = document.getElementById('click-count');
+            if (clickButton && clickCountSpan) {
+                let clicks = 0;
+                clickButton.addEventListener('click', () => {
+                    clicks++;
+                    clickCountSpan.textContent = clicks;
+                });
+            }
+
+            // Para el Typing Game:
+            const wordToTypeSpan = document.getElementById('word-to-type');
+            const typingInput = document.getElementById('typing-input');
+            const words = ["hola", "mundo", "javascript", "programacion", "gametok", "teclado"];
+            let currentWordIndex = 0;
+
+            if (wordToTypeSpan && typingInput) {
+                function setNextWord() {
+                    if (currentWordIndex < words.length) {
+                        wordToTypeSpan.textContent = words[currentWordIndex];
+                        typingInput.value = '';
+                        typingInput.focus();
+                    } else {
+                        wordToTypeSpan.textContent = "¡Juego terminado!";
+                        typingInput.disabled = true;
+                    }
+                }
+
+                typingInput.addEventListener('input', () => {
+                    if (typingInput.value === wordToTypeSpan.textContent) {
+                        alert('¡Correcto!');
+                        currentWordIndex++;
+                        setNextWord();
+                    }
+                });
+                setNextWord(); // Iniciar el juego
+            }
+
+            // Asignar eventos a los botones "Jugar"
+            document.querySelectorAll('.play-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const gameId = e.target.getAttribute('data-game-id');
+                    alert(`Iniciando juego: ${gameId}`);
+                    // Aquí es donde integrarías la lógica real para cargar y ejecutar el juego.
+                    // Por ahora, solo es una alerta.
+                });
+            });
+        }
+
+
+        // --- Utilidades ---
+
+        // Función para obtener un color aleatorio (para el carrusel)
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        // Actualizar el estado móvil al cambiar el tamaño de la ventana
+        window.addEventListener('resize', () => {
+            isMobile = window.innerWidth <= 768;
+            updateGameControlsVisibility();
+        });
+
+        // Inicializar al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            generateCarouselItems();
+            generateGameSlides(); // Generar los slides y sus indicadores
+            updateGameControlsVisibility(); // Establecer la visibilidad inicial de los controles móviles
+        });
+
+        // Añadir eventos de scroll para la navegación entre juegos
+        // Deshabilitado por ahora para permitir el scroll normal en el body si se agregara contenido
+        // document.body.addEventListener('wheel', handleScroll, { passive: false });
+
+        // Añadir eventos de touch para navegación en móviles
+        document.body.addEventListener('touchstart', handleTouchStart, { passive: true });
+        document.body.addEventListener('touchmove', handleTouchMove, { passive: true });
+        document.body.addEventListener('touchend', handleTouchEnd);
+
+
+    </script>
+</body>
+</html>
