@@ -28,7 +28,7 @@
         }
 
         /* --- Centrado Global para todos los paneles --- */
-        #main-menu, .container, #auth-modal, #tutorial-modal {
+        #main-menu, .container, #auth-modal {
             position: absolute; /* Para que ocupen todo el espacio y puedan superponerse */
             top: 0;
             left: 0;
@@ -150,13 +150,13 @@
         }
 
         /* --- Login / Register Pop-up --- */
-        .auth-modal, .tutorial-modal {
+        .auth-modal {
             display: none; /* Oculto por defecto */
             background-color: rgba(0, 0, 0, 0.8);
             z-index: 201; /* Por encima del menú principal */
         }
 
-        .auth-modal-content, .tutorial-modal-content {
+        .auth-modal-content {
             background-color: #1a1a1a;
             padding: 40px;
             border-radius: 15px;
@@ -170,8 +170,7 @@
             transition: transform 0.3s ease, opacity 0.3s ease;
         }
 
-        .auth-modal.show .auth-modal-content,
-        .tutorial-modal.show .tutorial-modal-content {
+        .auth-modal.show .auth-modal-content {
             transform: scale(1);
             opacity: 1;
         }
@@ -193,7 +192,7 @@
             text-decoration: none;
         }
 
-        .auth-modal-content h2, .tutorial-modal-content h2 {
+        .auth-modal-content h2 {
             margin-bottom: 25px;
             color: #ff0050;
             font-size: 2em;
@@ -214,7 +213,7 @@
             color: #777;
         }
 
-        .auth-modal-content button, .tutorial-modal-content button {
+        .auth-modal-content button {
             width: calc(100% - 20px);
             padding: 12px;
             background-color: #ff0050;
@@ -227,7 +226,7 @@
             transition: background-color 0.3s ease;
         }
 
-        .auth-modal-content button:hover, .tutorial-modal-content button:hover {
+        .auth-modal-content button:hover {
             background-color: #ff3373;
         }
 
@@ -277,18 +276,19 @@
             display: none; /* Oculto inicialmente */
             /* Se superpone y toma el control cuando se inicia sesión */
             position: relative; /* Para posicionar los slides dentro */
+            overflow: hidden; /* MUY IMPORTANTE para el efecto TikTok */
         }
 
         #game-slides-container {
             width: 100%;
             height: 100%;
             position: relative; /* Para los slides absolutos */
-            transition: transform 0.5s ease;
+            transition: transform 0.5s ease-in-out; /* Animación de desplazamiento vertical */
         }
 
         .game-slide {
             position: absolute;
-            top: 0;
+            top: 0; /* Cada slide se posiciona en 0,0 y el contenedor se desplaza */
             left: 0;
             width: 100%;
             height: 100%;
@@ -299,6 +299,7 @@
             background-size: cover;
             background-position: center;
             overflow: hidden; /* Por si el contenido del juego es grande */
+            /* Cada slide se moverá con el transform del padre, no necesita su propio transform */
         }
 
         .game-content-wrapper {
@@ -696,35 +697,6 @@
             border-radius: 5px;
         }
 
-        /* Estilos para el contenido del tutorial */
-        .tutorial-modal-content {
-            background-color: #1a1a1a;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
-            text-align: left; /* Alineado a la izquierda para mejor lectura */
-            width: 90%;
-            max-width: 600px;
-            max-height: 80vh; /* Para que no ocupe toda la pantalla en móviles */
-            overflow-y: auto; /* Scroll si el contenido es largo */
-        }
-        .tutorial-modal-content p {
-            margin-bottom: 10px;
-            line-height: 1.6;
-            color: #ccc;
-        }
-        .tutorial-modal-content ul {
-            margin-left: 20px;
-            margin-bottom: 15px;
-            color: #ccc;
-        }
-        .tutorial-modal-content ul li {
-            margin-bottom: 5px;
-        }
-        .tutorial-modal-content strong {
-            color: #ff0050;
-        }
-
     </style>
 </head>
 <body>
@@ -797,16 +769,6 @@
         </div>
     </div>
 
-    <div id="tutorial-modal" class="tutorial-modal">
-        <div class="tutorial-modal-content">
-            <span class="close-button" id="close-tutorial-button">&times;</span>
-            <h2 id="tutorial-title">Tutorial de Juego</h2>
-            <div id="tutorial-content">
-                </div>
-            <button id="close-tutorial-btn">Entendido</button>
-        </div>
-    </div>
-
     <script>
         // Datos de los juegos
         const games = [
@@ -814,109 +776,43 @@
                 id: 'game1',
                 name: 'Memoria',
                 description: '¡Pon a prueba tu memoria con este divertido juego de cartas! Encuentra las parejas en el menor tiempo posible.',
-                controls: 'Clic/Toque para voltear las cartas.',
-                gameContent: '<div class="memory-game"></div>',
-                tutorial: `
-                    <h3>Cómo Jugar a la Memoria:</h3>
-                    <ul>
-                        <li>El objetivo es encontrar todas las parejas de cartas iguales.</li>
-                        <li>Haz clic o toca en dos cartas para voltearlas.</li>
-                        <li>Si las cartas son iguales, se quedarán boca arriba.</li>
-                        <li>Si son diferentes, se volverán a ocultar después de un breve momento.</li>
-                        <li>Intenta recordar la posición de las cartas para hacer parejas más rápido.</li>
-                    </ul>
-                    <p><strong>Controles:</strong> Clic izquierdo del ratón o toque en pantalla.</p>
-                `
+                controls: 'Clic/Toque para voltear las cartas. (ASWD no aplica)',
+                gameContent: '<div class="memory-game"></div>'
             },
             {
                 id: 'game2',
                 name: 'Serpiente',
                 description: 'Alimenta a la serpiente y hazla crecer sin chocar contra las paredes o su propio cuerpo. ¡Cada manzana te hace más largo!',
-                controls: 'Flechas del teclado (↑↓←→) o ASWD para mover la serpiente. D-Pad en móviles.',
-                gameContent: '<div id="snake-game"><canvas id="snake-canvas" width="300" height="300"></canvas></div>',
-                tutorial: `
-                    <h3>Cómo Jugar a la Serpiente:</h3>
-                    <ul>
-                        <li>Controla a la serpiente para que coma las manzanas que aparecen en el tablero.</li>
-                        <li>Cada vez que come una manzana, la serpiente se hace más larga y ganas puntos.</li>
-                        <li>Evita chocar contra los bordes del tablero o contra tu propio cuerpo.</li>
-                        <li>Si chocas, el juego termina.</li>
-                    </ul>
-                    <p><strong>Controles:</strong></p>
-                    <ul>
-                        <li><strong>PC:</strong> Teclas de flecha (↑↓←→) o ASWD para cambiar la dirección.</li>
-                        <li><strong>Móvil:</strong> D-Pad virtual en pantalla.</li>
-                    </ul>
-                `
+                controls: 'Teclas ASWD para mover la serpiente. D-Pad en móviles.',
+                gameContent: '<div id="snake-game"><canvas id="snake-canvas" width="300" height="300"></canvas></div>'
             },
             {
                 id: 'game3',
                 name: 'Pong',
-                description: 'El clásico juego de ping-pong. Mueve tu paleta para golpear la pelota y evitar que tu oponente anote.',
-                controls: 'Flechas Arriba/Abajo o WS para mover la paleta izquierda. D-Pad en móviles (controla la paleta de la izquierda).',
-                gameContent: '<div id="pong-game"><div class="paddle" id="left-paddle"></div><div class="paddle" id="right-paddle"></div><div class="ball"></div><div class="score" id="left-score">0</div><div class="score" id="right-score">0</div></div>',
-                tutorial: `
-                    <h3>Cómo Jugar a Pong:</h3>
-                    <ul>
-                        <li>Eres la paleta de la izquierda. Tu objetivo es no dejar que la pelota pase por tu lado.</li>
-                        <li>Mueve tu paleta hacia arriba y hacia abajo para interceptar la pelota.</li>
-                        <li>Si la pelota pasa por tu lado, tu oponente (la paleta de la derecha, controlada por IA) anotará un punto.</li>
-                        <li>Gana el primero en alcanzar una puntuación determinada (por ejemplo, 7 puntos).</li>
-                    </ul>
-                    <p><strong>Controles:</strong></p>
-                    <ul>
-                        <li><strong>PC:</strong> Teclas <strong>W</strong> (arriba) y <strong>S</strong> (abajo) o <strong>Flechas Arriba/Abajo</strong> para mover tu paleta.</li>
-                        <li><strong>Móvil:</strong> D-Pad virtual en pantalla (Arriba/Abajo).</li>
-                    </ul>
-                `
+                description: 'El clásico juego de ping-pong. Mueve tu paleta izquierda para golpear la pelota y evitar que tu oponente anote.',
+                controls: 'Teclas WS para mover la paleta izquierda. D-Pad arriba/abajo en móviles.',
+                gameContent: '<div id="pong-game"><div class="paddle" id="left-paddle"></div><div class="paddle" id="right-paddle"></div><div class="ball"></div><div class="score" id="left-score">0</div><div class="score" id="right-score">0</div></div>'
             },
             {
                 id: 'game4',
                 name: 'Flappy Bird',
                 description: 'Ayuda al pájaro a volar a través de los obstáculos. ¡Cada tubería es un punto, pero cuidado con chocarte!',
                 controls: 'Espacio o clic/toque para aletear. Botón de Acción en móviles.',
-                gameContent: '<div id="flappy-game"><div id="bird"></div></div>',
-                tutorial: `
-                    <h3>Cómo Jugar a Flappy Bird:</h3>
-                    <ul>
-                        <li>Haz que el pájaro aletee para que no caiga al suelo y lo guíe a través de los huecos entre las tuberías.</li>
-                        <li>Cada vez que pases por un par de tuberías, ganas un punto.</li>
-                        <li>Si el pájaro golpea una tubería o cae al suelo, el juego termina.</li>
-                    </ul>
-                    <p><strong>Controles:</strong></p>
-                    <ul>
-                        <li><strong>PC:</strong> Pulsa la tecla <strong>Espacio</strong> o haz <strong>clic</strong> en la pantalla para que el pájaro aletee.</li>
-                        <li><strong>Móvil:</strong> Toca en la pantalla o usa el Botón de Acción virtual.</li>
-                    </ul>
-                `
+                gameContent: '<div id="flappy-game"><div id="bird"></div></div>'
             },
             {
                 id: 'game5',
                 name: 'Breakout',
                 description: 'Destruye todos los bloques con tu pelota y paleta. ¡Sé preciso para limpiar el tablero!',
-                controls: 'Flechas Izquierda/Derecha o AD para mover la paleta. D-Pad en móviles.',
-                gameContent: '<div id="breakout-game"><canvas id="breakout-canvas" width="400" height="300"></canvas></div>',
-                tutorial: `
-                    <h3>Cómo Jugar a Breakout:</h3>
-                    <ul>
-                        <li>Controla la paleta en la parte inferior de la pantalla.</li>
-                        <li>El objetivo es rebotar la pelota para destruir todos los bloques de colores en la parte superior.</li>
-                        <li>Si la pelota cae por debajo de la paleta, pierdes una vida.</li>
-                        <li>Tienes un número limitado de vidas. Cuando se agotan, el juego termina.</li>
-                    </ul>
-                    <p><strong>Controles:</strong></p>
-                    <ul>
-                        <li><strong>PC:</strong> Teclas <strong>A</strong> (izquierda) y <strong>D</strong> (derecha) o <strong>Flechas Izquierda/Derecha</strong> para mover tu paleta.</li>
-                        <li><strong>Móvil:</strong> D-Pad virtual en pantalla (Izquierda/Derecha).</li>
-                    </ul>
-                `
+                controls: 'Teclas AD para mover la paleta. D-Pad izquierda/derecha en móviles.',
+                gameContent: '<div id="breakout-game"><canvas id="breakout-canvas" width="400" height="300"></canvas></div>'
             }
         ];
 
         let currentActiveGame = 0; // Índice del juego actual
         let isAuthModalOpen = false;
-        let isTutorialModalOpen = false;
         let isMobile = window.innerWidth <= 768; // Para detectar si es móvil
+        let isGameTransitioning = false; // Flag para evitar spam de navegación durante la transición
 
         // Referencias a elementos del DOM
         const mainMenu = document.getElementById('main-menu');
@@ -934,11 +830,6 @@
         const likeButton = document.getElementById('like-button');
         const likesCount = document.getElementById('likes-count');
         const mobileControls = document.querySelector('.mobile-controls');
-        const tutorialModal = document.getElementById('tutorial-modal');
-        const tutorialTitle = document.getElementById('tutorial-title');
-        const tutorialContent = document.getElementById('tutorial-content');
-        const closeTutorialButton = document.getElementById('close-tutorial-button');
-        const closeTutorialBtn = document.getElementById('close-tutorial-btn'); // Botón "Entendido"
 
 
         // --- Funciones del Menú de Inicio y Carrusel ---
@@ -954,8 +845,6 @@
             games.forEach((game, index) => {
                 const carouselItem = document.createElement('div');
                 carouselItem.classList.add('carousel-item');
-                // Podrías añadir una imagen si la tienes en tus datos de juego
-                // carouselItem.innerHTML = `<img src="images/${game.id}.png" alt="${game.name}"><span>${game.name}</span>`;
                 carouselItem.innerHTML = `<span>${game.name}</span>`; // Por ahora solo el nombre
 
                 carouselItem.setAttribute('data-game-id', game.id);
@@ -996,6 +885,7 @@
                 const gameSlide = document.createElement('div');
                 gameSlide.classList.add('game-slide');
                 gameSlide.id = `slide-${game.id}`;
+                gameSlide.style.top = `${index * 100}vh`; // Posiciona cada slide verticalmente
 
                 // Contenido del slide
                 gameSlide.innerHTML = `
@@ -1006,7 +896,6 @@
                             <p class="controls-info">Controles: ${game.controls}</p>
                             <div class="control-buttons">
                                 <button class="control-btn play-btn" data-game-id="${game.id}">Jugar</button>
-                                <button class="control-btn tutorial-btn" data-game-id="${game.id}">Tutorial</button>
                             </div>
                         </div>
                         <div class="game-play-area" id="game-area-${game.id}">
@@ -1032,9 +921,23 @@
 
         // Muestra el juego especificado por su índice
         function showGame(index) {
+            // Si ya hay una transición en curso, o el índice es el mismo, o está fuera de límites, no hacer nada.
+            if (isGameTransitioning || index === currentActiveGame || index < 0 || index >= games.length) {
+                return;
+            }
+
+            isGameTransitioning = true; // Bloquear nuevas transiciones
+
             currentActiveGame = index;
-            const translateYValue = -index * 100; // Desplaza el contenedor verticalmente
+            // Desplaza el contenedor de slides verticalmente para mostrar el juego correcto
+            const translateYValue = -index * 100;
             gameSlidesContainer.style.transform = `translateY(${translateYValue}vh)`;
+
+            // Desactivar el juego anterior para liberar recursos
+            // No hacemos esto inmediatamente sino que esperamos un pequeño tiempo para evitar glitches visuales
+            // al cambiar el DOM mientras la animación CSS está activa.
+            // Una forma más robusta sería detener el juego anterior antes de iniciar el nuevo.
+            stopCurrentGame(); // Detener el juego actual ANTES de iniciar el nuevo
 
             // Actualizar puntos indicadores
             document.querySelectorAll('.indicator-dot').forEach((dot, idx) => {
@@ -1045,59 +948,70 @@
                 }
             });
 
-            // Reiniciar o preparar el juego actual
-            initializeGameSpecificContent(games[currentActiveGame].id);
+            // Iniciar o preparar el juego actual después de la transición
+            gameSlidesContainer.addEventListener('transitionend', function handler() {
+                gameSlidesContainer.removeEventListener('transitionend', handler);
+                initializeGameSpecificContent(games[currentActiveGame].id);
+                isGameTransitioning = false; // Desbloquear transiciones
+            }, { once: true }); // El evento solo se dispara una vez
         }
 
         // Navegación con la rueda del ratón
         function handleScroll(event) {
-            // No navegar si un modal está abierto
-            if (isAuthModalOpen || isTutorialModalOpen) return;
+            // No navegar si un modal está abierto o si la app principal no es visible
+            if (isAuthModalOpen || appContainer.style.display !== 'flex' || isGameTransitioning) return;
 
             event.preventDefault(); // Evitar el scroll predeterminado de la página
             const delta = event.deltaY || event.detail || event.wheelDelta; // Detecta la dirección de la rueda
 
             if (delta > 0) { // Desplazarse hacia abajo (siguiente juego)
-                if (currentActiveGame < games.length - 1) {
-                    showGame(currentActiveGame + 1);
-                }
+                showGame(currentActiveGame + 1);
             } else { // Desplazarse hacia arriba (juego anterior)
-                if (currentActiveGame > 0) {
-                    showGame(currentActiveGame - 1);
-                }
+                showGame(currentActiveGame - 1);
             }
         }
 
-        // Manejo de Swipe para navegación en móviles
+        // Manejo de Swipe vertical para navegación en móviles (mismo que scroll)
         let touchStartY = 0;
         let touchEndY = 0;
+        let touchStartX = 0;
+        let touchEndX = 0;
 
         function handleTouchStart(event) {
-            if (isAuthModalOpen || isTutorialModalOpen) return;
+            if (isAuthModalOpen || appContainer.style.display !== 'flex' || isGameTransitioning) return;
             touchStartY = event.touches[0].clientY;
+            touchStartX = event.touches[0].clientX;
         }
 
         function handleTouchMove(event) {
-            if (isAuthModalOpen || isTutorialModalOpen) return;
+            // Permitir el movimiento táctil, pero no navegar hasta el 'touchend'
+            if (isAuthModalOpen || appContainer.style.display !== 'flex' || isGameTransitioning) return;
             touchEndY = event.touches[0].clientY;
+            touchEndX = event.touches[0].clientX;
         }
 
         function handleTouchEnd() {
-            if (isAuthModalOpen || isTutorialModalOpen) return;
+            if (isAuthModalOpen || appContainer.style.display !== 'flex' || isGameTransitioning) return;
             const swipeThreshold = 50; // Mínimo de píxeles para considerar un swipe
 
-            if (touchStartY - touchEndY > swipeThreshold) { // Swipe Up (siguiente juego)
-                if (currentActiveGame < games.length - 1) {
+            const deltaY = touchStartY - touchEndY;
+            const deltaX = touchStartX - touchEndX;
+
+            // Determinar si es un swipe vertical dominante
+            if (Math.abs(deltaY) > Math.abs(deltaX)) {
+                if (deltaY > swipeThreshold) { // Swipe Up (siguiente juego)
                     showGame(currentActiveGame + 1);
-                }
-            } else if (touchEndY - touchStartY > swipeThreshold) { // Swipe Down (juego anterior)
-                if (currentActiveGame > 0) {
+                } else if (deltaY < -swipeThreshold) { // Swipe Down (juego anterior)
                     showGame(currentActiveGame - 1);
                 }
             }
+            // No hacemos nada para swipe horizontal, ya que la navegación es vertical.
+
             // Resetear valores para el siguiente swipe
             touchStartY = 0;
             touchEndY = 0;
+            touchStartX = 0;
+            touchEndX = 0;
         }
 
         // --- Funcionalidad de Autenticación (Login/Registro) ---
@@ -1148,40 +1062,6 @@
             }, 300);
         });
 
-        // --- Funcionalidad de Tutorial ---
-
-        // Delegación de eventos para los botones de tutorial
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('tutorial-btn')) {
-                const gameId = e.target.getAttribute('data-game-id');
-                const game = games.find(g => g.id === gameId);
-                if (game && game.tutorial) {
-                    tutorialTitle.textContent = `Tutorial: ${game.name}`;
-                    tutorialContent.innerHTML = game.tutorial;
-                    tutorialModal.style.display = 'flex'; // Muestra el modal
-                    tutorialModal.classList.add('show'); // Activa la animación
-                    isTutorialModalOpen = true;
-                }
-            }
-        });
-
-        // Cerrar tutorial
-        closeTutorialButton.addEventListener('click', () => {
-            tutorialModal.classList.remove('show');
-            setTimeout(() => {
-                tutorialModal.style.display = 'none';
-                isTutorialModalOpen = false;
-            }, 300);
-        });
-        closeTutorialBtn.addEventListener('click', () => { // Botón "Entendido" dentro del tutorial
-            tutorialModal.classList.remove('show');
-            setTimeout(() => {
-                tutorialModal.style.display = 'none';
-                isTutorialModalOpen = false;
-            }, 300);
-        });
-
-
         // --- Funcionalidad de Botones Laterales (Likes, etc.) ---
 
         let likes = 0;
@@ -1209,6 +1089,12 @@
             }
         }
 
+        // Objeto global para almacenar funciones de control de juego
+        // Cada juego al inicializarse, sobrescribirá estas funciones con las suyas.
+        window.activeGameControls = {};
+        // Objeto para rastrear qué teclas están actualmente presionadas, útil para movimiento continuo
+        const pressedKeys = {};
+
         // Event listeners para controles móviles (D-pad y botones de acción)
         document.querySelectorAll('.mobile-btn').forEach(button => {
             button.addEventListener('pointerdown', (e) => {
@@ -1221,45 +1107,53 @@
                 }
             });
             // Puedes agregar 'pointerup' si necesitas detectar cuándo se suelta el botón móvil
-            // button.addEventListener('pointerup', (e) => {
-            //     const control = button.getAttribute('data-control');
-            //     if (window.activeGameControls && typeof window.activeGameControls.stop === 'function') {
-            //         window.activeGameControls.stop(control); // Llama a una función 'stop' si existe
-            //     }
-            // });
+            button.addEventListener('pointerup', (e) => {
+                const control = button.getAttribute('data-control');
+                // Si el control es de movimiento y el juego tiene una función stopMove
+                if ((control === 'left' || control === 'right' || control === 'up' || control === 'down') && window.activeGameControls && typeof window.activeGameControls.stopMove === 'function') {
+                    window.activeGameControls.stopMove(control); // Pasa qué dirección se soltó
+                }
+            });
         });
 
-        // Objeto global para almacenar funciones de control de juego
-        // Cada juego al inicializarse, sobrescribirá estas funciones con las suyas.
-        window.activeGameControls = {};
-        // Objeto para rastrear qué teclas están actualmente presionadas, útil para movimiento continuo
-        const pressedKeys = {};
 
-        // Event listener para teclado (controles de juego ASWD y Flechas)
+        // Event listener para teclado (ASWD para juego, FLECHAS para navegación)
         document.addEventListener('keydown', (e) => {
             // No procesar si un modal está abierto o la app principal no es visible
-            if (isAuthModalOpen || isTutorialModalOpen || appContainer.style.display !== 'flex') return;
+            if (isAuthModalOpen || appContainer.style.display !== 'flex' || isGameTransitioning) return;
 
-            // Mapeo de teclas a acciones de control
             let controlAction = null;
-            switch (e.key.toLowerCase()) { // Convertir a minúsculas para ASWD
-                case 'arrowup':
+
+            switch (e.key.toLowerCase()) {
+                case 'arrowup': // Navegación de juego
+                    e.preventDefault();
+                    showGame(currentActiveGame - 1);
+                    return; // No pasar a los controles del juego
+                case 'arrowdown': // Navegación de juego
+                    e.preventDefault();
+                    showGame(currentActiveGame + 1);
+                    return; // No pasar a los controles del juego
+                case 'arrowleft': // Navegación de juego
+                    e.preventDefault();
+                    showGame(currentActiveGame - 1);
+                    return; // No pasar a los controles del juego
+                case 'arrowright': // Navegación de juego
+                    e.preventDefault();
+                    showGame(currentActiveGame + 1);
+                    return; // No pasar a los controles del juego
                 case 'w':
                     controlAction = 'up';
                     break;
-                case 'arrowdown':
                 case 's':
                     controlAction = 'down';
                     break;
-                case 'arrowleft':
                 case 'a':
                     controlAction = 'left';
                     break;
-                case 'arrowright':
                 case 'd':
                     controlAction = 'right';
                     break;
-                case ' ': // Espacio para acción o salto (Flappy Bird)
+                case ' ': // Espacio para acción o salto
                     controlAction = 'action1';
                     break;
                 case 'enter': // Enter para iniciar/pausar o una segunda acción
@@ -1267,7 +1161,7 @@
                     break;
             }
 
-            // Si se detecta una acción y la tecla no está ya registrada como presionada
+            // Si se detecta una acción de control de juego y la tecla no está ya registrada como presionada
             if (controlAction && window.activeGameControls && typeof window.activeGameControls[controlAction] === 'function' && !pressedKeys[controlAction]) {
                 e.preventDefault(); // Evita el scroll u otras acciones predeterminadas del navegador
                 window.activeGameControls[controlAction](); // Ejecuta la función de control del juego
@@ -1277,18 +1171,21 @@
 
         // Event listener para soltar teclas (importante para detener movimiento continuo)
         document.addEventListener('keyup', (e) => {
-            // No procesar si un modal está abierto o la app principal no es visible
-            if (isAuthModalOpen || isTutorialModalOpen || appContainer.style.display !== 'flex') return;
+            if (isAuthModalOpen || appContainer.style.display !== 'flex' || isGameTransitioning) return;
 
             let controlAction = null;
             switch (e.key.toLowerCase()) {
-                case 'arrowleft':
                 case 'a':
                     controlAction = 'left';
                     break;
-                case 'arrowright':
                 case 'd':
                     controlAction = 'right';
+                    break;
+                case 'w':
+                    controlAction = 'up';
+                    break;
+                case 's':
+                    controlAction = 'down';
                     break;
             }
 
@@ -1301,14 +1198,31 @@
             }
         });
 
+        // --- Detener y Reiniciar Juegos ---
+        function stopCurrentGame() {
+            // Llama a una función de "detener" o "limpiar" si el juego activo la tiene
+            if (window.activeGameControls && typeof window.activeGameControls.stopGame === 'function') {
+                window.activeGameControls.stopGame();
+            }
+
+            // Limpiar todos los intervalos globales de juegos
+            if (snakeGameInterval) { clearInterval(snakeGameInterval); snakeGameInterval = null; }
+            if (pongGameInterval) { clearInterval(pongGameInterval); pongGameInterval = null; }
+            if (flappyGameInterval) { clearInterval(flappyGameInterval); flappyGameInterval = null; }
+            if (breakoutGameInterval) { clearInterval(breakoutGameInterval); breakoutGameInterval = null; }
+
+            // Restablecer el objeto de controles activos
+            window.activeGameControls = {};
+        }
+
         // --- Inicialización de Contenido Específico de Juegos ---
         function initializeGameSpecificContent(gameId) {
-            // Limpiar controles previos para el juego anterior
-            window.activeGameControls = {};
+            // Asegúrate de que el juego anterior se ha detenido.
+            // Esto es crucial si los juegos comparten recursos o usan intervalos.
+            // Ya se llamó a stopCurrentGame antes de la transición en showGame().
 
             // Aquí se ejecutarán funciones específicas para cada juego,
             // que se encargarán de inicializar su lógica y elementos del DOM.
-            // Esto asegura que cada juego se reinicie o prepare correctamente.
             switch (gameId) {
                 case 'game1': // Memoria
                     console.log('Inicializando juego de Memoria...');
@@ -1399,6 +1313,10 @@
                 action2: () => { // Botón de Reiniciar
                     console.log('Reiniciando juego de Memoria...');
                     initializeMemoryGame();
+                },
+                stopGame: () => {
+                    // No hay intervalos que limpiar en el juego de memoria
+                    console.log('Juego de Memoria detenido/limpiado.');
                 }
             };
         }
@@ -1406,6 +1324,8 @@
 
         // Game 2: Serpiente
         let snakeGameInterval = null; // Para almacenar la instancia del juego
+        let snakeGameStarted = false; // Para saber si el juego está en marcha
+
         function initializeSnakeGame() {
             const canvas = document.getElementById('snake-canvas');
             if (!canvas) return;
@@ -1419,8 +1339,13 @@
             let dx = 0; // Dirección horizontal (1: derecha, -1: izquierda)
             let dy = 0; // Dirección vertical (1: abajo, -1: arriba)
             let score = 0;
-            let gamePaused = false;
+            let gamePaused = true; // Empieza pausado
             let changingDirection = false; // Para evitar giros dobles rápidos
+
+            // Asegurarse de que el intervalo anterior se limpia si existía
+            if (snakeGameInterval) clearInterval(snakeGameInterval);
+            snakeGameInterval = null;
+            snakeGameStarted = false; // Reiniciar el estado de inicio
 
             function generateFood() {
                 food = {
@@ -1431,6 +1356,7 @@
                 for (let i = 0; i < snake.length; i++) {
                     if (food.x === snake[i].x && food.y === snake[i].y) {
                         generateFood(); // Regenerar si la comida está en la serpiente
+                        return; // Salir para evitar bucle infinito si el tablero está lleno
                     }
                 }
             }
@@ -1454,15 +1380,18 @@
             }
 
             function moveSnake() {
-                if (gamePaused) return; // No mover si está pausado
+                if (gamePaused) return;
 
-                if (gameOver()) {
+                const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+
+                if (gameOver(head)) {
                     clearInterval(snakeGameInterval);
+                    snakeGameInterval = null;
+                    snakeGameStarted = false;
                     alert(`¡Juego Terminado! Puntuación: ${score}`);
                     return;
                 }
 
-                const head = { x: snake[0].x + dx, y: snake[0].y + dy };
                 snake.unshift(head); // Añadir nueva cabeza
 
                 // Si come la comida
@@ -1476,18 +1405,18 @@
                 draw();
             }
 
-            function gameOver() {
+            function gameOver(head) {
                 // Chocar con la pared
-                const hitLeftWall = snake[0].x < 0;
-                const hitRightWall = snake[0].x >= tileCount;
-                const hitTopWall = snake[0].y < 0;
-                const hitBottomWall = snake[0].y >= tileCount;
+                const hitLeftWall = head.x < 0;
+                const hitRightWall = head.x >= tileCount;
+                const hitTopWall = head.y < 0;
+                const hitBottomWall = head.y >= tileCount;
 
                 if (hitLeftWall || hitRightWall || hitTopWall || hitBottomWall) return true;
 
                 // Chocar con el propio cuerpo (empezar a comprobar desde el 4º segmento)
                 for (let i = 4; i < snake.length; i++) {
-                    if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true;
+                    if (head.x === snake[i].x && head.y === snake[i].y) return true;
                 }
                 return false;
             }
@@ -1500,28 +1429,42 @@
                 changingDirection = true;
                 dx = newDx;
                 dy = newDy;
+                if (!snakeGameStarted) { // Iniciar el juego al primer movimiento
+                    snakeGameStarted = true;
+                    gamePaused = false;
+                    snakeGameInterval = setInterval(moveSnake, 100);
+                }
             }
 
             function togglePause() {
-                gamePaused = !gamePaused;
-                if (!gamePaused) {
+                if (!snakeGameStarted) { // Si el juego no ha empezado, el primer toggle lo inicia
+                    snakeGameStarted = true;
+                    gamePaused = false;
                     snakeGameInterval = setInterval(moveSnake, 100);
-                    console.log('Juego de Serpiente reanudado');
+                    console.log('Juego de Serpiente iniciado.');
                 } else {
-                    clearInterval(snakeGameInterval);
-                    console.log('Juego de Serpiente pausado');
+                    gamePaused = !gamePaused;
+                    if (!gamePaused) {
+                        snakeGameInterval = setInterval(moveSnake, 100);
+                        console.log('Juego de Serpiente reanudado');
+                    } else {
+                        clearInterval(snakeGameInterval);
+                        snakeGameInterval = null;
+                        console.log('Juego de Serpiente pausado');
+                    }
                 }
             }
 
             function resetSnakeGame() {
                 clearInterval(snakeGameInterval);
+                snakeGameInterval = null;
+                snakeGameStarted = false;
                 snake = [{ x: 10, y: 10 }];
                 dx = 0; dy = 0; score = 0;
-                gamePaused = false;
+                gamePaused = true; // Reiniciar en estado pausado
                 generateFood();
                 draw();
-                snakeGameInterval = setInterval(moveSnake, 100);
-                console.log('Juego de Serpiente reiniciado');
+                console.log('Juego de Serpiente reiniciado (en pausa). Presiona A/S/W/D para iniciar.');
             }
 
             // Exponer controles al objeto global
@@ -1531,15 +1474,23 @@
                 left: () => changeDirection(-1, 0),
                 right: () => changeDirection(1, 0),
                 action1: togglePause, // Botón de acción para pausar/reanudar
-                action2: resetSnakeGame // Botón de acción para reiniciar
+                action2: resetSnakeGame, // Botón de acción para reiniciar
+                stopGame: () => {
+                    clearInterval(snakeGameInterval);
+                    snakeGameInterval = null;
+                    snakeGameStarted = false;
+                    console.log('Juego de Serpiente detenido/limpiado.');
+                }
             };
 
-            // Iniciar el juego
-            resetSnakeGame(); // Llamar para asegurar un estado inicial limpio
+            // Inicializar solo el dibujo y la comida, sin iniciar el movimiento
+            generateFood();
+            draw();
+            console.log('Juego de Serpiente listo. Presiona A/S/W/D o acción 1 para empezar.');
         }
 
         // Game 3: Pong
-        let pongGameInterval;
+        let pongGameInterval = null;
         let leftPaddleY;
         let rightPaddleY;
         let ballX;
@@ -1549,10 +1500,12 @@
         let leftScore;
         let rightScore;
         const paddleSpeed = 8; // Velocidad de las paletas
-        let pongGamePaused = false;
+        let pongGamePaused = true; // Empieza pausado
+        let pongGameDiv; // Declarar aquí para que sea accesible en resetPongGame
+        let leftPaddleMovement = 0; // -1 for up, 1 for down, 0 for stop
 
         function initializePongGame() {
-            const pongGameDiv = document.getElementById('pong-game');
+            pongGameDiv = document.getElementById('pong-game');
             if (!pongGameDiv) return;
 
             const leftPaddle = document.getElementById('left-paddle');
@@ -1561,19 +1514,29 @@
             const leftScoreElem = document.getElementById('left-score');
             const rightScoreElem = document.getElementById('right-score');
 
+            // Asegurarse de que el intervalo anterior se limpia si existía
+            if (pongGameInterval) clearInterval(pongGameInterval);
+            pongGameInterval = null; // Reiniciar
+
             // Resetear estado
             leftPaddleY = pongGameDiv.offsetHeight / 2 - leftPaddle.offsetHeight / 2;
             rightPaddleY = pongGameDiv.offsetHeight / 2 - rightPaddle.offsetHeight / 2;
+            leftPaddle.style.top = `${leftPaddleY}px`;
+            rightPaddle.style.top = `${rightPaddleY}px`;
             resetBall(); // Inicializa la posición y dirección de la pelota
             leftScore = 0; rightScore = 0;
             leftScoreElem.textContent = leftScore;
             rightScoreElem.textContent = rightScore;
-            pongGamePaused = false;
+            pongGamePaused = true; // Siempre inicia pausado
+            leftPaddleMovement = 0; // Detener movimiento inicial
 
             function updatePongGame() {
                 if (pongGamePaused) return;
 
-                // Mover paletas (simulación de IA básica para la derecha)
+                // Mover paleta izquierda por el jugador
+                leftPaddleY += leftPaddleMovement * paddleSpeed;
+
+                // Mover paleta derecha (IA básica)
                 if (ballY > rightPaddleY + rightPaddle.offsetHeight / 2) {
                     rightPaddleY += Math.min(paddleSpeed, ballY - (rightPaddleY + rightPaddle.offsetHeight / 2));
                 } else if (ballY < rightPaddleY + rightPaddle.offsetHeight / 2) {
@@ -1598,14 +1561,16 @@
 
                 // Rebote en paletas
                 // Paleta izquierda
-                if (ballX <= leftPaddle.offsetLeft + leftPaddle.offsetWidth &&
+                if (ballDx < 0 && // Solo si la pelota se mueve hacia la izquierda
+                    ballX <= leftPaddle.offsetLeft + leftPaddle.offsetWidth &&
                     ballY + ball.offsetHeight >= leftPaddleY &&
                     ballY <= leftPaddleY + leftPaddle.offsetHeight) {
                     ballDx *= -1;
                     ballX = leftPaddle.offsetLeft + leftPaddle.offsetWidth; // Ajustar posición para evitar que se pegue
                 }
                 // Paleta derecha
-                if (ballX + ball.offsetWidth >= rightPaddle.offsetLeft &&
+                if (ballDx > 0 && // Solo si la pelota se mueve hacia la derecha
+                    ballX + ball.offsetWidth >= rightPaddle.offsetLeft &&
                     ballY + ball.offsetHeight >= rightPaddleY &&
                     ballY <= rightPaddleY + rightPaddle.offsetHeight) {
                     ballDx *= -1;
@@ -1632,12 +1597,14 @@
             function resetBall() {
                 ballX = pongGameDiv.offsetWidth / 2 - ball.offsetWidth / 2;
                 ballY = pongGameDiv.offsetHeight / 2 - ball.offsetHeight / 2;
-                ballDx = (Math.random() > 0.5 ? 1 : -1) * 5; // Dirección aleatoria al reiniciar
-                ballDy = (Math.random() > 0.5 ? 1 : -1) * 5;
+                // Direcciones iniciales de la pelota, aleatorias pero con velocidad mínima
+                ballDx = (Math.random() > 0.5 ? 1 : -1) * (5 + Math.random() * 2);
+                ballDy = (Math.random() > 0.5 ? 1 : -1) * (5 + Math.random() * 2);
             }
 
             function gameOverPong(message) {
                 clearInterval(pongGameInterval);
+                pongGameInterval = null;
                 pongGamePaused = true;
                 alert(`¡Fin del juego! ${message}`);
             }
@@ -1649,51 +1616,64 @@
                     console.log('Juego de Pong reanudado');
                 } else {
                     clearInterval(pongGameInterval);
+                    pongGameInterval = null;
                     console.log('Juego de Pong pausado');
                 }
             }
 
             function resetPongGame() {
                 clearInterval(pongGameInterval);
+                pongGameInterval = null;
                 initializePongGame(); // Re-inicializar todo el juego
-                pongGameInterval = setInterval(updatePongGame, 1000 / 60);
+                // No iniciar el intervalo aquí, se iniciará con togglePongPause()
+                console.log('Juego de Pong reiniciado (en pausa).');
             }
 
             // Exponer controles
             window.activeGameControls = {
-                up: () => { leftPaddleY -= paddleSpeed; },
-                down: () => { leftPaddleY += paddleSpeed; },
-                // ASWD también controla la paleta izquierda
-                w: () => { leftPaddleY -= paddleSpeed; },
-                s: () => { leftPaddleY += paddleSpeed; },
+                up: () => { if (!pongGamePaused) leftPaddleMovement = -1; },
+                down: () => { if (!pongGamePaused) leftPaddleMovement = 1; },
+                w: () => { if (!pongGamePaused) leftPaddleMovement = -1; },
+                s: () => { if (!pongGamePaused) leftPaddleMovement = 1; },
+                stopMove: (direction) => {
+                    if ((direction === 'up' || direction === 'w') && leftPaddleMovement === -1) {
+                        leftPaddleMovement = 0;
+                    }
+                    if ((direction === 'down' || direction === 's') && leftPaddleMovement === 1) {
+                        leftPaddleMovement = 0;
+                    }
+                },
                 action1: togglePongPause, // Iniciar/Pausar
-                action2: resetPongGame // Reiniciar
+                action2: resetPongGame, // Reiniciar
+                stopGame: () => {
+                    clearInterval(pongGameInterval);
+                    pongGameInterval = null;
+                    pongGamePaused = true;
+                    console.log('Juego de Pong detenido/limpiado.');
+                }
             };
-
-            // Iniciar el juego automáticamente
-            clearInterval(pongGameInterval); // Asegurarse de que no hay otro intervalo corriendo
-            pongGameInterval = setInterval(updatePongGame, 1000 / 60); // 60 FPS
+            // No iniciar el intervalo aquí, se iniciará con togglePongPause()
         }
 
         // Game 4: Flappy Bird
-        let flappyGameInterval;
+        let flappyGameInterval = null;
         let flappyBirdGameStarted = false;
         let birdY;
         let birdVelocity;
         let pipes;
         let flappyScore;
+        let gameAreaFlappy; // Para referencia global
 
         function initializeFlappyBirdGame() {
-            const gameArea = document.getElementById('flappy-game');
+            gameAreaFlappy = document.getElementById('flappy-game');
             const bird = document.getElementById('bird');
-            if (!gameArea || !bird) return;
+            if (!gameAreaFlappy || !bird) return;
+
+            // Asegurarse de que el intervalo anterior se limpia si existía
+            if (flappyGameInterval) clearInterval(flappyGameInterval);
+            flappyGameInterval = null;
 
             // Restablecer posiciones y estados iniciales
-            bird.style.top = '200px';
-            bird.style.left = '50px';
-            // Limpiar tuberías previas
-            gameArea.querySelectorAll('.pipe').forEach(p => p.remove());
-
             birdY = 200;
             birdVelocity = 0;
             const gravity = 0.5;
@@ -1702,22 +1682,30 @@
             flappyScore = 0;
             flappyBirdGameStarted = false; // El juego empieza al primer aleteo
 
+            bird.style.top = `${birdY}px`; // Aplicar la posición inicial
+            bird.style.left = '50px';
+
+            // Limpiar tuberías previas
+            gameAreaFlappy.querySelectorAll('.pipe').forEach(p => p.remove());
+
             function createPipe() {
-                const pipeHeight = Math.floor(Math.random() * (gameArea.offsetHeight / 2 - 50)) + 50; // Altura aleatoria del hueco
+                const minPipeHeight = 50; // Altura mínima de la tubería
+                const maxPipeHeight = gameAreaFlappy.offsetHeight / 2 - 50; // Altura máxima
+                const pipeHeight = Math.floor(Math.random() * (maxPipeHeight - minPipeHeight + 1)) + minPipeHeight;
                 const gap = 120; // Tamaño del hueco entre tuberías
 
                 const topPipe = document.createElement('div');
                 topPipe.classList.add('pipe', 'top');
                 topPipe.style.height = `${pipeHeight}px`;
-                topPipe.style.left = `${gameArea.offsetWidth}px`;
+                topPipe.style.left = `${gameAreaFlappy.offsetWidth}px`;
 
                 const bottomPipe = document.createElement('div');
                 bottomPipe.classList.add('pipe', 'bottom');
-                bottomPipe.style.height = `${gameArea.offsetHeight - pipeHeight - gap}px`;
-                bottomPipe.style.left = `${gameArea.offsetWidth}px`;
+                bottomPipe.style.height = `${gameAreaFlappy.offsetHeight - pipeHeight - gap}px`;
+                bottomPipe.style.left = `${gameAreaFlappy.offsetWidth}px`;
 
-                gameArea.appendChild(topPipe);
-                gameArea.appendChild(bottomPipe);
+                gameAreaFlappy.appendChild(topPipe);
+                gameAreaFlappy.appendChild(bottomPipe);
 
                 pipes.push({ top: topPipe, bottom: bottomPipe, passed: false });
             }
@@ -1730,7 +1718,7 @@
                 bird.style.top = `${birdY}px`;
 
                 // Game Over si golpea el suelo o el techo
-                if (birdY <= 0 || birdY >= gameArea.offsetHeight - bird.offsetHeight) {
+                if (birdY <= 0 || birdY >= gameAreaFlappy.offsetHeight - bird.offsetHeight) {
                     gameOverFlappy();
                     return;
                 }
@@ -1748,33 +1736,33 @@
                     }
 
                     // Detección de colisión con tuberías
-                    // (birdX < pipeRight && birdRight > pipeX) && (birdY < pipeBottom || birdBottom > pipeY)
-                    const birdRight = bird.offsetLeft + bird.offsetWidth;
-                    const birdBottom = birdY + bird.offsetHeight;
-                    const pipeTopX = pipePair.top.offsetLeft;
-                    const pipeTopRight = pipeTopX + pipePair.top.offsetWidth;
-                    const pipeTopBottom = pipePair.top.offsetHeight;
-                    const pipeBottomX = pipePair.bottom.offsetLeft;
-                    const pipeBottomRight = pipeBottomX + pipePair.bottom.offsetWidth;
-                    const pipeBottomTop = gameArea.offsetHeight - pipePair.bottom.offsetHeight;
+                    const birdRect = bird.getBoundingClientRect();
+                    const topPipeRect = pipePair.top.getBoundingClientRect();
+                    const bottomPipeRect = pipePair.bottom.getBoundingClientRect();
 
-                    if (birdRight > pipeTopX && bird.offsetLeft < pipeTopRight) {
-                        if (birdY < pipeTopBottom || birdBottom > pipeBottomTop) {
-                            gameOverFlappy();
-                            return;
-                        }
+                    // Comprobar colisión con tubería superior
+                    if (birdRect.left < topPipeRect.right && birdRect.right > topPipeRect.left &&
+                        birdRect.top < topPipeRect.bottom && birdRect.bottom > topPipeRect.top) {
+                        gameOverFlappy();
+                        return;
+                    }
+                    // Comprobar colisión con tubería inferior
+                    if (birdRect.left < bottomPipeRect.right && birdRect.right > bottomPipeRect.left &&
+                        birdRect.top < bottomPipeRect.bottom && birdRect.bottom > bottomPipeRect.top) {
+                        gameOverFlappy();
+                        return;
                     }
 
                     // Aumentar puntuación
-                    if (bird.offsetLeft > pipeTopRight && !pipePair.passed) {
+                    if (!pipePair.passed && bird.offsetLeft > pipePair.top.offsetLeft + pipePair.top.offsetWidth) {
                         flappyScore++;
                         console.log('Flappy Score:', flappyScore);
                         pipePair.passed = true;
                     }
                 });
 
-                // Crear nuevas tuberías (cuando la última tubería visible está a la mitad)
-                if (pipes.length === 0 || pipes[pipes.length - 1].top.offsetLeft < gameArea.offsetWidth / 2) {
+                // Crear nuevas tuberías (cuando la última tubería visible está a una distancia adecuada)
+                if (pipes.length === 0 || (pipes.length > 0 && pipes[pipes.length - 1].top.offsetLeft < gameAreaFlappy.offsetWidth - 200)) {
                     createPipe();
                 }
             }
@@ -1782,7 +1770,6 @@
             function flap() {
                 if (!flappyBirdGameStarted) {
                     flappyBirdGameStarted = true;
-                    clearInterval(flappyGameInterval); // Asegurarse de que solo haya un intervalo
                     flappyGameInterval = setInterval(updateFlappyBirdGame, 1000 / 60); // 60 FPS
                     createPipe(); // La primera tubería se crea al iniciar el juego
                 }
@@ -1791,24 +1778,29 @@
 
             function gameOverFlappy() {
                 clearInterval(flappyGameInterval);
+                flappyGameInterval = null;
                 flappyBirdGameStarted = false;
-                alert(`¡Flappy Bird! Puntuación: ${flappyScore}. Haz clic para reiniciar.`);
-                initializeFlappyBirdGame(); // Reinicia la UI y espera el nuevo "flap"
+                alert(`¡Flappy Bird! Puntuación: ${flappyScore}. Presiona "Jugar" o "Acción 2" para reiniciar.`);
             }
 
             // Exponer controles
             window.activeGameControls = {
                 action1: flap, // Espacio o botón de acción para aletear
                 action2: () => { // Reiniciar
-                    gameOverFlappy(); // Detiene el juego si está corriendo y lo reinicia
+                    initializeFlappyBirdGame();
+                },
+                stopGame: () => {
+                    clearInterval(flappyGameInterval);
+                    flappyGameInterval = null;
+                    flappyBirdGameStarted = false;
+                    console.log('Juego de Flappy Bird detenido/limpiado.');
                 }
             };
 
             // Evento de clic en el área de juego para aletear
-            gameArea.onclick = flap;
-
-            // Al inicializar el juego, esperamos el primer aleteo para empezar
-            // (esto es lo que significa flappyBirdGameStarted = false;)
+            gameAreaFlappy.onclick = () => {
+                flap(); // Siempre aletear al click
+            };
         }
 
         // Game 5: Breakout
@@ -1832,6 +1824,10 @@
             if (!breakoutCanvas) return;
             breakoutCtx = breakoutCanvas.getContext('2d');
 
+            // Asegurarse de que el intervalo anterior se limpia si existía
+            if (breakoutGameInterval) clearInterval(breakoutGameInterval);
+            breakoutGameInterval = null;
+
             breakoutPaddle = {
                 x: breakoutCanvas.width / 2 - 40,
                 y: breakoutCanvas.height - 20,
@@ -1845,8 +1841,8 @@
                 x: breakoutCanvas.width / 2,
                 y: breakoutPaddle.y - 10,
                 radius: 7,
-                dx: 4 * (Math.random() > 0.5 ? 1 : -1), // Dirección horizontal aleatoria
-                dy: -4 // Siempre hacia arriba al inicio
+                dx: 0, // Inicia quieta hasta que se pulsa Jugar/Accion1
+                dy: 0
             };
 
             breakoutBricks = [];
@@ -1865,7 +1861,13 @@
                 d: () => { if (breakoutGameActive) breakoutPaddle.dx = breakoutPaddle.speed; },
                 stopMove: () => { breakoutPaddle.dx = 0; }, // Detiene el movimiento
                 action1: toggleBreakoutGame, // Iniciar/Pausar
-                action2: resetBreakoutGame // Reiniciar
+                action2: resetBreakoutGame, // Reiniciar
+                stopGame: () => {
+                    clearInterval(breakoutGameInterval);
+                    breakoutGameInterval = null;
+                    breakoutGameActive = false;
+                    console.log('Juego de Breakout detenido/limpiado.');
+                }
             };
         }
 
@@ -1942,6 +1944,8 @@
 
         function drawBreakoutGame() {
             breakoutCtx.clearRect(0, 0, breakoutCanvas.width, breakoutCanvas.height); // Limpiar el canvas
+            breakoutCtx.fillStyle = '#333'; // Fondo del canvas de Breakout
+            breakoutCtx.fillRect(0, 0, breakoutCanvas.width, breakoutCanvas.height);
 
             drawBricks();
             drawPaddle();
@@ -1953,7 +1957,6 @@
         function updateBreakoutGame() {
             if (!breakoutGameActive) return; // No actualizar si no está activo
 
-            drawBreakoutGame(); // Dibuja el estado actual antes de mover
             collisionDetection();
 
             breakoutBall.x += breakoutBall.dx;
@@ -1969,10 +1972,15 @@
             }
 
             // Rebote en paleta
-            if (breakoutBall.y + breakoutBall.radius > breakoutPaddle.y &&
+            // Asegurarse de que la pelota esté en la altura de la paleta y dentro del ancho
+            if (breakoutBall.y + breakoutBall.radius >= breakoutPaddle.y &&
+                breakoutBall.y + breakoutBall.radius <= breakoutPaddle.y + breakoutPaddle.height && // Para evitar doble rebote si la pelota atraviesa
                 breakoutBall.x > breakoutPaddle.x &&
                 breakoutBall.x < breakoutPaddle.x + breakoutPaddle.width) {
-                breakoutBall.dy *= -1;
+
+                if (breakoutBall.dy > 0) { // Solo si la pelota se mueve hacia abajo
+                    breakoutBall.dy *= -1;
+                }
             }
 
             // Pelota cae al fondo
@@ -1985,7 +1993,7 @@
                     breakoutBall.x = breakoutCanvas.width / 2;
                     breakoutBall.y = breakoutPaddle.y - 10;
                     breakoutBall.dx = 4 * (Math.random() > 0.5 ? 1 : -1);
-                    breakoutBall.dy = -4;
+                    breakoutBall.dy = -4; // Siempre hacia arriba
                     breakoutPaddle.x = breakoutCanvas.width / 2 - 40;
                 }
             }
@@ -1996,27 +2004,33 @@
             if (breakoutPaddle.x + breakoutPaddle.width > breakoutCanvas.width) {
                 breakoutPaddle.x = breakoutCanvas.width - breakoutPaddle.width;
             }
+            drawBreakoutGame();
         }
 
         function toggleBreakoutGame() {
-            breakoutGameActive = !breakoutGameActive;
-            if (breakoutGameActive) {
-                if (!breakoutGameInterval) { // Solo iniciar si no está ya activo
-                    breakoutGameInterval = setInterval(updateBreakoutGame, 1000 / 60); // 60 FPS
-                    console.log('Juego de Breakout reanudado/iniciado');
+            if (!breakoutGameActive) { // Si el juego no está activo, iniciarlo
+                breakoutGameActive = true;
+                // Si la pelota está quieta, dale un empujón inicial
+                if (breakoutBall.dx === 0 && breakoutBall.dy === 0) {
+                    breakoutBall.dx = 4 * (Math.random() > 0.5 ? 1 : -1);
+                    breakoutBall.dy = -4;
                 }
-            } else {
+                breakoutGameInterval = setInterval(updateBreakoutGame, 1000 / 60); // 60 FPS
+                console.log('Juego de Breakout iniciado/reanudado.');
+            } else { // Si está activo, pausarlo
+                breakoutGameActive = false;
                 clearInterval(breakoutGameInterval);
                 breakoutGameInterval = null;
-                console.log('Juego de Breakout pausado');
+                console.log('Juego de Breakout pausado.');
             }
         }
 
         function resetBreakoutGame() {
             clearInterval(breakoutGameInterval);
-            breakoutGameInterval = null; // Asegurarse de que el intervalo se limpie
+            breakoutGameInterval = null;
             initializeBreakoutGame(); // Reinicializa todos los valores
-            console.log('Juego de Breakout reiniciado');
+            // No iniciar el intervalo aquí, se iniciará con toggleBreakoutGame()
+            console.log('Juego de Breakout reiniciado (en pausa).');
         }
 
         function gameOverBreakout(message) {
@@ -2024,7 +2038,6 @@
             breakoutGameInterval = null;
             breakoutGameActive = false;
             alert(message);
-            // Opcional: mostrar un botón de "Reiniciar" o volver al menú
         }
 
 
@@ -2058,13 +2071,12 @@
             appContainer.style.display = 'none';
             header.style.display = 'none';
             authModal.style.display = 'none';
-            tutorialModal.style.display = 'none';
         });
 
         // Añadir eventos de scroll para la navegación entre juegos
         document.body.addEventListener('wheel', handleScroll, { passive: false });
 
-        // Añadir eventos de touch para navegación en móviles
+        // Añadir eventos de touch para navegación en móviles (SWIPE VERTICAL entre juegos)
         document.body.addEventListener('touchstart', handleTouchStart, { passive: true });
         document.body.addEventListener('touchmove', handleTouchMove, { passive: true });
         document.body.addEventListener('touchend', handleTouchEnd);
@@ -2074,15 +2086,12 @@
             if (e.target.classList.contains('play-btn')) {
                 const gameId = e.target.getAttribute('data-game-id');
                 console.log(`Presionaste Jugar para: ${gameId}`);
-                // Forzar reinicio/inicio del juego al presionar "Jugar"
-                initializeGameSpecificContent(gameId);
-                // Si el juego necesita ser "activado" después del inicio (como Flappy Bird o Breakout)
-                // puedes llamar a su función de inicio aquí, si no se hace en initializeGameSpecificContent.
-                if (gameId === 'game4' && !flappyBirdGameStarted) { // Flappy Bird inicia al primer 'flap'
-                    // Esto está manejado por el primer clic/tecla de acción
-                }
-                if (gameId === 'game5' && !breakoutGameActive) {
-                    toggleBreakoutGame(); // Iniciar Breakout si no está activo
+                // Llamar a la acción principal del juego para iniciarlo, si existe.
+                // Esto simula presionar el botón de acción 1 o la tecla de espacio.
+                if (window.activeGameControls && typeof window.activeGameControls.action1 === 'function') {
+                    window.activeGameControls.action1();
+                } else {
+                    console.log(`El juego ${gameId} no tiene una acción predeterminada para el botón 'Jugar'.`);
                 }
             }
         });
