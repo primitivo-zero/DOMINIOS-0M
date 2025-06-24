@@ -6,7 +6,7 @@
     <title>GameTok - ¡Tu plataforma de juegos!</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Estilos generales */
+        /* Estilos generales y reseteo */
         * {
             margin: 0;
             padding: 0;
@@ -18,7 +18,7 @@
         body {
             background-color: #000;
             color: #fff;
-            overflow: hidden;
+            overflow: hidden; /* Evita el scroll del body */
             height: 100vh;
             width: 100vw;
             display: flex;
@@ -27,16 +27,23 @@
             transition: background-color 0.5s ease;
         }
 
-        /* --- Menú de Inicio --- */
-        #main-menu {
+        /* --- Centrado Global para todos los paneles --- */
+        #main-menu, .container, #auth-modal, #tutorial-modal {
+            position: absolute; /* Para que ocupen todo el espacio y puedan superponerse */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
             display: flex;
-            flex-direction: column;
+            flex-direction: column; /* Por defecto para apilar contenido */
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            width: 100vw;
+            overflow: hidden; /* Evita barras de scroll internas a menos que se necesiten */
+        }
+
+        /* --- Menú de Inicio --- */
+        #main-menu {
             background: linear-gradient(135deg, #1a0033, #000);
-            position: relative;
             z-index: 200;
             transition: opacity 0.5s ease, transform 0.5s ease;
         }
@@ -44,7 +51,7 @@
         #main-menu.hidden {
             opacity: 0;
             transform: translateY(-100vh);
-            pointer-events: none;
+            pointer-events: none; /* Deshabilita interacciones cuando está oculto */
         }
 
         #gametok-title {
@@ -67,21 +74,22 @@
 
         #game-carousel-container {
             width: 80%;
-            height: 300px;
-            perspective: 1000px;
+            height: 300px; /* Altura fija para el carrusel */
+            perspective: 1000px; /* Para el efecto 3D */
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
             margin-bottom: 50px;
+            position: relative; /* Para posicionar el carrusel */
         }
 
         #game-carousel {
-            position: relative;
+            position: absolute;
             width: 100%;
             height: 100%;
-            transform-style: preserve-3d;
-            animation: rotateCarousel 30s infinite linear;
+            transform-style: preserve-3d; /* Permite transformar elementos hijos en 3D */
+            animation: rotateCarousel 30s infinite linear; /* Animación de rotación */
         }
 
         @keyframes rotateCarousel {
@@ -95,11 +103,12 @@
 
         .carousel-item {
             position: absolute;
-            width: 200px;
+            width: 200px; /* Tamaño de los ítems del carrusel */
             height: 150px;
             background-color: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             font-size: 1.5em;
@@ -107,24 +116,20 @@
             text-align: center;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
             opacity: 0.9;
-            backface-visibility: hidden;
+            backface-visibility: hidden; /* Para que no se vea el reverso */
             cursor: pointer;
             transition: transform 0.5s ease, opacity 0.5s ease;
+            user-select: none; /* Evita que el texto se seleccione al hacer clic */
         }
 
-        /* Posiciones iniciales para los ítems del carrusel (ajusta según la cantidad de juegos) */
-        /* Tendrás que ajustar esto con JS para distribuir los juegos equitativamente */
-        .carousel-item:nth-child(1) { transform: rotateY(0deg) translateZ(300px); background: linear-gradient(45deg, #ff0050, #8400ff); }
-        .carousel-item:nth-child(2) { transform: rotateY(36deg) translateZ(300px); background: linear-gradient(45deg, #00ffaa, #0084ff); }
-        .carousel-item:nth-child(3) { transform: rotateY(72deg) translateZ(300px); background: linear-gradient(45deg, #ffaa00, #ff0050); }
-        .carousel-item:nth-child(4) { transform: rotateY(108deg) translateZ(300px); background: linear-gradient(45deg, #8400ff, #00ffaa); }
-        .carousel-item:nth-child(5) { transform: rotateY(144deg) translateZ(300px); background: linear-gradient(45deg, #0084ff, #ffaa00); }
-        .carousel-item:nth-child(6) { transform: rotateY(180deg) translateZ(300px); background: linear-gradient(45deg, #FFC107, #FF9800); }
-        .carousel-item:nth-child(7) { transform: rotateY(216deg) translateZ(300px); background: linear-gradient(45deg, #4CAF50, #8BC34A); }
-        .carousel-item:nth-child(8) { transform: rotateY(252deg) translateZ(300px); background: linear-gradient(45deg, #00BCD4, #00BCD4); }
-        .carousel-item:nth-child(9) { transform: rotateY(288deg) translateZ(300px); background: linear-gradient(45deg, #9C27B0, #673AB7); }
-        .carousel-item:nth-child(10) { transform: rotateY(324deg) translateZ(300px); background: linear-gradient(45deg, #F44336, #E91E63); }
+        .carousel-item img {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+            margin-bottom: 5px;
+        }
 
+        /* Los transforms de cada item serán generados por JS */
 
         #start-button {
             padding: 15px 30px;
@@ -145,29 +150,32 @@
         }
 
         /* --- Login / Register Pop-up --- */
-        .auth-modal {
-            display: none;
-            position: fixed;
-            z-index: 201;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
+        .auth-modal, .tutorial-modal {
+            display: none; /* Oculto por defecto */
             background-color: rgba(0, 0, 0, 0.8);
-            justify-content: center;
-            align-items: center;
+            z-index: 201; /* Por encima del menú principal */
         }
 
-        .auth-modal-content {
+        .auth-modal-content, .tutorial-modal-content {
             background-color: #1a1a1a;
             padding: 40px;
             border-radius: 15px;
             box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
             text-align: center;
             width: 90%;
-            max-width: 400px;
+            max-width: 450px;
             position: relative;
+            transform: scale(0.9); /* Pequeña animación de entrada */
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
         }
+
+        .auth-modal.show .auth-modal-content,
+        .tutorial-modal.show .tutorial-modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
 
         .close-button {
             position: absolute;
@@ -183,10 +191,9 @@
         .close-button:focus {
             color: #fff;
             text-decoration: none;
-            cursor: pointer;
         }
 
-        .auth-modal-content h2 {
+        .auth-modal-content h2, .tutorial-modal-content h2 {
             margin-bottom: 25px;
             color: #ff0050;
             font-size: 2em;
@@ -207,7 +214,7 @@
             color: #777;
         }
 
-        .auth-modal-content button {
+        .auth-modal-content button, .tutorial-modal-content button {
             width: calc(100% - 20px);
             padding: 12px;
             background-color: #ff0050;
@@ -220,7 +227,7 @@
             transition: background-color 0.3s ease;
         }
 
-        .auth-modal-content button:hover {
+        .auth-modal-content button:hover, .tutorial-modal-content button:hover {
             background-color: #ff3373;
         }
 
@@ -236,17 +243,18 @@
             font-weight: bold;
         }
 
-        /* --- Header / UI General --- */
+        /* --- Header / UI General (Juego) --- */
         .header {
-            position: fixed;
+            position: fixed; /* Fijo en la parte superior */
             top: 0;
             width: 100%;
             display: flex;
             justify-content: space-between;
+            align-items: center; /* Centrar verticalmente */
             padding: 15px;
             background: linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0));
             z-index: 100;
-            display: none; /* Oculto inicialmente, se muestra después del menú */
+            display: none; /* Oculto inicialmente */
         }
 
         .logo {
@@ -259,53 +267,58 @@
             font-size: 20px;
             margin: 0 10px;
             cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .search-icon:hover, .upload-icon:hover {
+            color: #ff0050;
         }
 
         .container {
-            display: none; /* Oculto inicialmente, se muestra después del menú */
-            flex-direction: column;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            position: relative;
+            display: none; /* Oculto inicialmente */
+            /* Se superpone y toma el control cuando se inicia sesión */
+            position: relative; /* Para posicionar los slides dentro */
+        }
+
+        #game-slides-container {
+            width: 100%;
+            height: 100%;
+            position: relative; /* Para los slides absolutos */
+            transition: transform 0.5s ease;
         }
 
         .game-slide {
-            height: 100vh;
-            width: 100vw;
-            position: absolute;
-            top: 0;
-            left: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 20px;
-            transition: transform 0.5s ease;
-            transform: translateY(0);
-            background-size: cover;
-            background-position: center;
-        }
-
-        .game-content-wrapper {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             display: flex;
+            flex-direction: column; /* Contenido apilado */
+            justify-content: center; /* Centrar verticalmente */
+            align-items: center; /* Centrar horizontalmente */
+            background-size: cover;
+            background-position: center;
+            overflow: hidden; /* Por si el contenido del juego es grande */
+        }
+
+        .game-content-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             background-color: rgba(0,0,0,0.6); /* Fondo semi-transparente para el juego */
-            flex-direction: column; /* Para dividir la pantalla en móvil */
+            padding-bottom: 80px; /* Espacio para el indicador y side-buttons */
         }
 
         .game-info {
-            position: relative;
-            z-index: 10;
             background-color: rgba(0, 0, 0, 0.7);
             padding: 20px;
             border-radius: 10px;
             max-width: 90%;
+            margin-bottom: 20px; /* Separación del área de juego */
+            text-align: center;
         }
 
         .game-title {
@@ -313,22 +326,18 @@
             margin-bottom: 10px;
             color: #fff;
             text-shadow: 0 0 10px rgba(0,0,0,0.5);
-            text-align: center;
         }
 
         .game-desc {
             font-size: 16px;
             margin-bottom: 15px;
-            max-width: 100%;
             color: #ddd;
-            text-align: center;
         }
 
         .controls-info {
             font-size: 14px;
             margin-bottom: 10px;
             color: #aaa;
-            text-align: center;
         }
 
         .control-buttons {
@@ -361,11 +370,19 @@
             background-color: #ff3373;
         }
 
+        .game-play-area {
+            /* Contenedor para el contenido específico de cada juego */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Flexibilidad para el tamaño, pero se puede fijar si el juego lo requiere */
+        }
+
         /* --- Botones laterales (Likes, Comentarios, Compartir) --- */
         .side-buttons {
             position: fixed;
             right: 15px;
-            bottom: 100px;
+            bottom: 100px; /* Ajuste para no superponer con el indicador */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -390,7 +407,7 @@
             align-items: center;
             margin-bottom: 5px;
             font-size: 20px;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .side-icon.liked {
@@ -403,6 +420,7 @@
 
         .side-text {
             font-size: 12px;
+            color: #ccc;
         }
 
         .avatar {
@@ -445,39 +463,38 @@
 
         /* --- Controles Móviles (Teclado virtual) --- */
         .mobile-controls {
-            display: none; /* Oculto por defecto, se muestra en móvil */
+            display: none; /* Oculto por defecto, se muestra con media query */
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 50%; /* La mitad inferior de la pantalla */
+            height: 25vh; /* Aproximadamente un cuarto de la pantalla */
             background-color: rgba(0, 0, 0, 0.7);
             z-index: 90;
-            flex-direction: column;
-            justify-content: center;
+            justify-content: space-around; /* Distribuir elementos */
             align-items: center;
             padding: 10px;
             box-sizing: border-box;
-            gap: 10px;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
         }
 
-        .mobile-controls .d-pad {
+        .mobile-controls .d-pad-group {
             display: grid;
-            grid-template-columns: repeat(3, 80px);
-            grid-template-rows: repeat(3, 80px);
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
             gap: 5px;
-            margin-bottom: 10px;
+            width: 180px; /* Tamaño fijo para el d-pad */
+            height: 180px;
         }
 
         .mobile-btn {
-            width: 80px;
-            height: 80px;
             background-color: rgba(255,255,255,0.2);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 32px;
+            font-size: 2em;
             user-select: none;
             -webkit-user-select: none;
             transition: background-color 0.2s ease;
@@ -488,126 +505,129 @@
             background-color: rgba(255,255,255,0.4);
         }
 
+        /* Posicionamiento en el grid del D-pad */
+        .d-pad-group .mobile-btn[data-control="up"] { grid-area: 1 / 2 / 2 / 3; }
+        .d-pad-group .mobile-btn[data-control="left"] { grid-area: 2 / 1 / 3 / 2; }
+        .d-pad-group .mobile-btn[data-control="right"] { grid-area: 2 / 3 / 3 / 4; }
+        .d-pad-group .mobile-btn[data-control="down"] { grid-area: 3 / 2 / 4 / 3; }
+        /* El centro se mantiene vacío */
+        .d-pad-group div:nth-child(5) { grid-area: 2 / 2 / 3 / 3; visibility: hidden; }
+
+
+        .action-button-group {
+            display: flex;
+            gap: 15px;
+        }
+
         .mobile-btn.action-btn {
             background-color: #ff0050;
-            border-radius: 15px; /* Diferente forma para el botón de acción */
-            width: 100px;
-            height: 100px;
-            font-size: 2em;
+            border-radius: 50%; /* Acción principal circular */
+            width: 80px; /* Tamaño del botón de acción */
+            height: 80px;
+            font-size: 1.8em;
         }
 
         .mobile-btn.action-btn:active {
             background-color: #ff3373;
         }
 
-        .d-pad .mobile-btn:nth-child(1) { grid-area: 1 / 2 / 2 / 3; } /* Up */
-        .d-pad .mobile-btn:nth-child(2) { grid-area: 2 / 1 / 3 / 2; } /* Left */
-        .d-pad .mobile-btn:nth-child(3) { grid-area: 2 / 3 / 3 / 4; } /* Right */
-        .d-pad .mobile-btn:nth-child(4) { grid-area: 3 / 2 / 4 / 3; } /* Down */
-        .d-pad .mobile-btn:nth-child(5) { grid-area: 2 / 2 / 3 / 3; visibility: hidden; } /* Centro vacío */
-
-
         /* --- Media Queries para Móviles --- */
         @media (max-width: 768px) {
-            body {
-                flex-direction: column;
+            #gametok-title {
+                font-size: 12vw;
             }
-
-            .header {
-                padding: 10px;
+            #game-carousel-container {
+                height: 200px;
             }
-
-            .logo {
-                font-size: 20px;
-            }
-
-            .search-icon, .upload-icon {
-                font-size: 18px;
-            }
-
-            .game-slide {
-                padding-bottom: 250px; /* Espacio para los controles móviles */
+            .carousel-item {
+                width: 150px;
+                height: 100px;
+                font-size: 1.2em;
             }
 
             .game-content-wrapper {
-                height: 50%; /* La mitad superior para el juego */
-            }
-
-            .game-info {
-                padding: 15px;
-                margin-bottom: 10px;
-                max-width: 95%;
-            }
-
-            .game-title {
-                font-size: 24px;
-            }
-
-            .game-desc {
-                font-size: 14px;
+                /* Para que el juego y la info tengan espacio cuando los controles estén */
+                padding-bottom: calc(25vh + 80px); /* Altura de controles + padding para side-buttons */
             }
 
             .side-buttons {
-                bottom: 200px; /* Ajuste para no superponer con controles */
-                right: 5px;
+                bottom: calc(25vh + 15px); /* Ajuste para no superponer con controles */
+                right: 10px;
             }
 
             .mobile-controls {
                 display: flex; /* Mostrar controles móviles */
             }
-
-            .game-indicator {
-                bottom: 20px; /* Posición original */
-            }
         }
 
-        /* --- Estilos para cada juego (los tuyos + los nuevos) --- */
+        /* --- Estilos específicos de juegos (los que ya tenías) --- */
         #game1 { background: linear-gradient(135deg, #ff0050, #8400ff); } /* Memoria */
         #game2 { background: linear-gradient(135deg, #00ffaa, #0084ff); } /* Serpiente */
         #game3 { background: linear-gradient(135deg, #ffaa00, #ff0050); } /* Pong */
         #game4 { background: linear-gradient(135deg, #8400ff, #00ffaa); } /* Flappy Bird */
         #game5 { background: linear-gradient(135deg, #0084ff, #ffaa00); } /* Breakout */
-        #game6 { background: linear-gradient(135deg, #FFC107, #FF9800); } /* Tic-Tac-Toe */
-        #game7 { background: linear-gradient(135deg, #4CAF50, #8BC34A); } /* Whac-A-Mole */
-        #game8 { background: linear-gradient(135deg, #00BCD4, #00BCD4); } /* Simon Says */
-        #game9 { background: linear-gradient(135deg, #9C27B0, #673AB7); } /* Clicks Counter */
-        #game10 { background: linear-gradient(135deg, #F44336, #E91E63); } /* Typing Game */
 
 
-        /* Estilos específicos de juegos (los que ya tenías) */
+        /* Estilos de las áreas de juego */
         .memory-game {
             display: grid;
-            grid-template-columns: repeat(4, 80px);
-            grid-gap: 10px;
+            grid-template-columns: repeat(4, 70px); /* Más pequeño para centrar mejor */
+            grid-gap: 8px;
+            background-color: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 10px;
         }
 
         .memory-card {
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             background-color: rgba(255,255,255,0.2);
-            border-radius: 10px;
+            border-radius: 8px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 24px;
+            font-size: 20px;
             cursor: pointer;
             transition: all 0.3s;
-            transform-style: preserve-3d;
-        }
-
-        .memory-card.flipped {
-            background-color: white;
-            transform: rotateY(180deg);
-        }
-
-        #snake-game {
-            width: 300px;
-            height: 300px;
+            transform-style: preserve-3d; /* Para el efecto de volteo 3D */
             position: relative;
+        }
+        .memory-card .front, .memory-card .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden; /* Oculta la cara trasera al voltear */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+        }
+        .memory-card .back {
+            background-color: white;
+            color: #333;
+            transform: rotateY(180deg); /* La cara trasera está volteada inicialmente */
+        }
+        .memory-card.flipped {
+            transform: rotateY(180deg); /* Voltea la tarjeta para mostrar la cara trasera */
+        }
+        .memory-card.matched .front, .memory-card.matched .back {
+            opacity: 0.5;
+        }
+
+        #snake-game, #pong-game, #flappy-game, #breakout-game {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: auto; /* Dejar que el canvas/contenido interno defina el ancho */
+            height: auto; /* Dejar que el canvas/contenido interno defina el alto */
+            max-width: 95vw; /* Limitar para móviles */
+            max-height: 50vh; /* Limitar para móviles, dejando espacio a info y controles */
+            border-radius: 5px;
+            overflow: hidden; /* Por si el juego tiene elementos que se salen */
         }
 
         #snake-canvas {
-            background-color: rgba(0,0,0,0.2);
+            background-color: #333; /* Fondo del canvas de la serpiente */
             border-radius: 5px;
         }
 
@@ -616,8 +636,6 @@
             height: 250px;
             position: relative;
             background-color: rgba(0,0,0,0.2);
-            border-radius: 5px;
-            overflow: hidden;
         }
 
         .paddle {
@@ -627,8 +645,8 @@
             background-color: white;
         }
 
-        #left-paddle { left: 10px; top: 85px; }
-        #right-paddle { right: 10px; top: 85px; }
+        #left-paddle { left: 10px; }
+        #right-paddle { right: 10px; }
 
         .ball {
             position: absolute;
@@ -636,15 +654,14 @@
             height: 15px;
             background-color: white;
             border-radius: 50%;
-            left: 192.5px;
-            top: 117.5px;
         }
 
         .score {
             position: absolute;
-            top: 20px;
+            top: 10px;
             font-size: 24px;
             color: white;
+            z-index: 10;
         }
 
         #left-score { left: 150px; }
@@ -655,8 +672,6 @@
             height: 400px;
             position: relative;
             background-color: #70c5ce;
-            overflow: hidden;
-            border-radius: 5px;
         }
 
         #bird {
@@ -665,8 +680,6 @@
             height: 30px;
             background-color: #ffcc00;
             border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            left: 50px;
-            top: 200px;
         }
 
         .pipe {
@@ -677,6 +690,41 @@
 
         .pipe.top { top: 0; }
         .pipe.bottom { bottom: 0; }
+
+        #breakout-canvas {
+            background-color: #333;
+            border-radius: 5px;
+        }
+
+        /* Estilos para el contenido del tutorial */
+        .tutorial-modal-content {
+            background-color: #1a1a1a;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
+            text-align: left; /* Alineado a la izquierda para mejor lectura */
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh; /* Para que no ocupe toda la pantalla en móviles */
+            overflow-y: auto; /* Scroll si el contenido es largo */
+        }
+        .tutorial-modal-content p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            color: #ccc;
+        }
+        .tutorial-modal-content ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+            color: #ccc;
+        }
+        .tutorial-modal-content ul li {
+            margin-bottom: 5px;
+        }
+        .tutorial-modal-content strong {
+            color: #ff0050;
+        }
+
     </style>
 </head>
 <body>
@@ -724,14 +772,16 @@
             </div>
 
         <div class="mobile-controls">
-            <div class="d-pad">
+            <div class="d-pad-group">
                 <div class="mobile-btn" data-control="up"><i class="fas fa-arrow-up"></i></div>
                 <div class="mobile-btn" data-control="left"><i class="fas fa-arrow-left"></i></div>
                 <div class="mobile-btn" data-control="right"><i class="fas fa-arrow-right"></i></div>
                 <div class="mobile-btn" data-control="down"><i class="fas fa-arrow-down"></i></div>
-                <div class="mobile-btn" style="visibility: hidden;"></div>
+                <div class="mobile-btn" style="visibility: hidden;"></div> </div>
+            <div class="action-button-group">
+                <div class="mobile-btn action-btn" data-control="action1"><i class="fas fa-hand-pointer"></i></div>
+                <div class="mobile-btn action-btn" data-control="action2"><i class="fas fa-redo"></i></div>
             </div>
-            <div class="mobile-btn action-btn" data-control="action"><i class="fas fa-hand-pointer"></i></div>
         </div>
 
     </div>
@@ -747,30 +797,132 @@
         </div>
     </div>
 
+    <div id="tutorial-modal" class="tutorial-modal">
+        <div class="tutorial-modal-content">
+            <span class="close-button" id="close-tutorial-button">&times;</span>
+            <h2 id="tutorial-title">Tutorial de Juego</h2>
+            <div id="tutorial-content">
+                </div>
+            <button id="close-tutorial-btn">Entendido</button>
+        </div>
+    </div>
+
     <script>
         // Datos de los juegos
         const games = [
-            { id: 'game1', name: 'Memoria', description: '¡Pon a prueba tu memoria con este divertido juego de cartas!', controls: 'Clic/Toque para voltear', gameContent: '<div class="memory-game"></div>' },
-            { id: 'game2', name: 'Serpiente', description: 'Alimenta a la serpiente y hazla crecer sin chocar.', controls: 'Flechas / D-Pad para mover', gameContent: '<canvas id="snake-canvas" width="300" height="300"></canvas>' },
-            { id: 'game3', name: 'Pong', description: 'El clásico juego de ping-pong. ¡No dejes que la pelota pase!', controls: 'Flechas Arriba/Abajo para mover la paleta', gameContent: '<div id="pong-game"><div class="paddle" id="left-paddle"></div><div class="paddle" id="right-paddle"></div><div class="ball"></div><div class="score" id="left-score">0</div><div class="score" id="right-score">0</div></div>' },
-            { id: 'game4', name: 'Flappy Bird', description: 'Ayuda al pájaro a volar a través de los obstáculos.', controls: 'Espacio / Toque para aletear', gameContent: '<div id="flappy-game"><div id="bird"></div></div>' },
-            { id: 'game5', name: 'Breakout', description: 'Rompe todos los bloques con tu pelota y paleta.', controls: 'Flechas Izquierda/Derecha para mover la paleta', gameContent: '<canvas id="breakout-canvas" width="400" height="300" style="background-color: rgba(0,0,0,0.2); border-radius: 5px;"></canvas>' },
-            { id: 'game6', name: 'Tic-Tac-Toe', description: 'El clásico juego de tres en raya. ¡Juega contra un amigo o la IA!', controls: 'Clic/Toque en el cuadrado deseado', gameContent: '<div class="tic-tac-toe-game" style="display: grid; grid-template-columns: repeat(3, 80px); grid-template-rows: repeat(3, 80px); gap: 5px; background-color: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px;"><div class="tic-tac-toe-cell" style="width: 80px; height: 80px; background-color: rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 2em; cursor: pointer;"></div><div class="tic-tac-toe-cell" style="width: 80px; height: 80px; background-color: rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 2em; cursor: pointer;"></div><div class="tic-tac-toe-cell" style="width: 80px; height: 80px; background-color: rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 2em; cursor: pointer;"></div><div class="tic-tac-toe-cell" style="width: 80px; height: 80px; background-color: rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 2em; cursor: pointer;"></div><div class="tic-tac-toe-cell" style="width: 80px; height: 80px; background-color: rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 2em; cursor: pointer;"></div><div class="tic-tac-toe-cell" style="width: 80px; height: 80px; background-color: rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 2em; cursor: pointer;"></div><div class="tic-tac-toe-cell" style="width: 80px; height: 80px; background-color: rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 2em; cursor: pointer;"></div><div class="tic-tac-toe-cell" style="width: 80px; height: 80px; background-color: rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 2em; cursor: pointer;"></div><div class="tic-tac-toe-cell" style="width: 80px; height: 80px; background-color: rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 2em; cursor: pointer;"></div></div>' },
-            { id: 'game7', name: 'Whac-A-Mole', description: 'Golpea a los topos que aparecen lo más rápido posible.', controls: 'Clic/Toque en el topo', gameContent: '<div class="whac-a-mole-game" style="display: grid; grid-template-columns: repeat(3, 100px); grid-template-rows: repeat(3, 100px); gap: 15px; background-color: rgba(0,0,0,0.2); padding: 20px; border-radius: 10px;"><div class="mole-hole" style="width: 100px; height: 100px; background-color: #555; border-radius: 50%; display: flex; justify-content: center; align-items: center;"><span style="font-size: 0.8em; color: #fff;">Topo</span></div><div class="mole-hole" style="width: 100px; height: 100px; background-color: #555; border-radius: 50%; display: flex; justify-content: center; align-items: center;"><span style="font-size: 0.8em; color: #fff;">Topo</span></div><div class="mole-hole" style="width: 100px; height: 100px; background-color: #555; border-radius: 50%; display: flex; justify-content: center; align-items: center;"><span style="font-size: 0.8em; color: #fff;">Topo</span></div><div class="mole-hole" style="width: 100px; height: 100px; background-color: #555; border-radius: 50%; display: flex; justify-content: center; align-items: center;"><span style="font-size: 0.8em; color: #fff;">Topo</span></div><div class="mole-hole" style="width: 100px; height: 100px; background-color: #555; border-radius: 50%; display: flex; justify-content: center; align-items: center;"><span style="font-size: 0.8em; color: #fff;">Topo</span></div><div class="mole-hole" style="width: 100px; height: 100px; background-color: #555; border-radius: 50%; display: flex; justify-content: center; align-items: center;"><span style="font-size: 0.8em; color: #fff;">Topo</span></div><div class="mole-hole" style="width: 100px; height: 100px; background-color: #555; border-radius: 50%; display: flex; justify-content: center; align-items: center;"><span style="font-size: 0.8em; color: #fff;">Topo</span></div><div class="mole-hole" style="width: 100px; height: 100px; background-color: #555; border-radius: 50%; display: flex; justify-content: center; align-items: center;"><span style="font-size: 0.8em; color: #fff;">Topo</span></div><div class="mole-hole" style="width: 100px; height: 100px; background-color: #555; border-radius: 50%; display: flex; justify-content: center; align-items: center;"><span style="font-size: 0.8em; color: #fff;">Topo</span></div></div>' },
-            { id: 'game8', name: 'Simon Says', description: 'Repite la secuencia de colores en el orden correcto.', controls: 'Clic/Toque en los colores', gameContent: '<div class="simon-says-game" style="display: grid; grid-template-columns: repeat(2, 100px); grid-template-rows: repeat(2, 100px); gap: 10px; background-color: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px;"><div class="simon-btn" style="background-color: red; width: 100px; height: 100px; border-top-left-radius: 10px; cursor: pointer;"></div><div class="simon-btn" style="background-color: blue; width: 100px; height: 100px; border-top-right-radius: 10px; cursor: pointer;"></div><div class="simon-btn" style="background-color: green; width: 100px; height: 100px; border-bottom-left-radius: 10px; cursor: pointer;"></div><div class="simon-btn" style="background-color: yellow; width: 100px; height: 100px; border-bottom-right-radius: 10px; cursor: pointer;"></div></div>' },
-            { id: 'game9', name: 'Clicks Counter', description: 'Haz clic tan rápido como puedas en un tiempo limitado.', controls: 'Clic/Toque en el botón', gameContent: '<div class="click-counter-game" style="text-align: center;"><p style="font-size: 1.5em; margin-bottom: 20px;">Clics: <span id="click-count">0</span></p><button id="click-button" style="padding: 15px 30px; font-size: 1.2em; background-color: #ff0050; color: #fff; border: none; border-radius: 25px; cursor: pointer;">¡Haz clic!</button></div>' },
-            { id: 'game10', name: 'Typing Game', description: 'Escribe las palabras que aparecen en pantalla lo más rápido posible.', controls: 'Teclado', gameContent: '<div class="typing-game" style="text-align: center;"><p style="font-size: 1.5em; margin-bottom: 20px;">Escribe: <span id="word-to-type" style="font-weight: bold; color: #00ffaa;"></span></p><input type="text" id="typing-input" style="width: 80%; padding: 10px; font-size: 1.1em; border-radius: 5px; border: 1px solid #555; background-color: #222; color: #fff;"></div>' }
+            {
+                id: 'game1',
+                name: 'Memoria',
+                description: '¡Pon a prueba tu memoria con este divertido juego de cartas! Encuentra las parejas en el menor tiempo posible.',
+                controls: 'Clic/Toque para voltear las cartas.',
+                gameContent: '<div class="memory-game"></div>',
+                tutorial: `
+                    <h3>Cómo Jugar a la Memoria:</h3>
+                    <ul>
+                        <li>El objetivo es encontrar todas las parejas de cartas iguales.</li>
+                        <li>Haz clic o toca en dos cartas para voltearlas.</li>
+                        <li>Si las cartas son iguales, se quedarán boca arriba.</li>
+                        <li>Si son diferentes, se volverán a ocultar después de un breve momento.</li>
+                        <li>Intenta recordar la posición de las cartas para hacer parejas más rápido.</li>
+                    </ul>
+                    <p><strong>Controles:</strong> Clic izquierdo del ratón o toque en pantalla.</p>
+                `
+            },
+            {
+                id: 'game2',
+                name: 'Serpiente',
+                description: 'Alimenta a la serpiente y hazla crecer sin chocar contra las paredes o su propio cuerpo. ¡Cada manzana te hace más largo!',
+                controls: 'Flechas del teclado (↑↓←→) o ASWD para mover la serpiente. D-Pad en móviles.',
+                gameContent: '<div id="snake-game"><canvas id="snake-canvas" width="300" height="300"></canvas></div>',
+                tutorial: `
+                    <h3>Cómo Jugar a la Serpiente:</h3>
+                    <ul>
+                        <li>Controla a la serpiente para que coma las manzanas que aparecen en el tablero.</li>
+                        <li>Cada vez que come una manzana, la serpiente se hace más larga y ganas puntos.</li>
+                        <li>Evita chocar contra los bordes del tablero o contra tu propio cuerpo.</li>
+                        <li>Si chocas, el juego termina.</li>
+                    </ul>
+                    <p><strong>Controles:</strong></p>
+                    <ul>
+                        <li><strong>PC:</strong> Teclas de flecha (↑↓←→) o ASWD para cambiar la dirección.</li>
+                        <li><strong>Móvil:</strong> D-Pad virtual en pantalla.</li>
+                    </ul>
+                `
+            },
+            {
+                id: 'game3',
+                name: 'Pong',
+                description: 'El clásico juego de ping-pong. Mueve tu paleta para golpear la pelota y evitar que tu oponente anote.',
+                controls: 'Flechas Arriba/Abajo o WS para mover la paleta izquierda. D-Pad en móviles (controla la paleta de la izquierda).',
+                gameContent: '<div id="pong-game"><div class="paddle" id="left-paddle"></div><div class="paddle" id="right-paddle"></div><div class="ball"></div><div class="score" id="left-score">0</div><div class="score" id="right-score">0</div></div>',
+                tutorial: `
+                    <h3>Cómo Jugar a Pong:</h3>
+                    <ul>
+                        <li>Eres la paleta de la izquierda. Tu objetivo es no dejar que la pelota pase por tu lado.</li>
+                        <li>Mueve tu paleta hacia arriba y hacia abajo para interceptar la pelota.</li>
+                        <li>Si la pelota pasa por tu lado, tu oponente (la paleta de la derecha, controlada por IA) anotará un punto.</li>
+                        <li>Gana el primero en alcanzar una puntuación determinada (por ejemplo, 7 puntos).</li>
+                    </ul>
+                    <p><strong>Controles:</strong></p>
+                    <ul>
+                        <li><strong>PC:</strong> Teclas <strong>W</strong> (arriba) y <strong>S</strong> (abajo) o <strong>Flechas Arriba/Abajo</strong> para mover tu paleta.</li>
+                        <li><strong>Móvil:</strong> D-Pad virtual en pantalla (Arriba/Abajo).</li>
+                    </ul>
+                `
+            },
+            {
+                id: 'game4',
+                name: 'Flappy Bird',
+                description: 'Ayuda al pájaro a volar a través de los obstáculos. ¡Cada tubería es un punto, pero cuidado con chocarte!',
+                controls: 'Espacio o clic/toque para aletear. Botón de Acción en móviles.',
+                gameContent: '<div id="flappy-game"><div id="bird"></div></div>',
+                tutorial: `
+                    <h3>Cómo Jugar a Flappy Bird:</h3>
+                    <ul>
+                        <li>Haz que el pájaro aletee para que no caiga al suelo y lo guíe a través de los huecos entre las tuberías.</li>
+                        <li>Cada vez que pases por un par de tuberías, ganas un punto.</li>
+                        <li>Si el pájaro golpea una tubería o cae al suelo, el juego termina.</li>
+                    </ul>
+                    <p><strong>Controles:</strong></p>
+                    <ul>
+                        <li><strong>PC:</strong> Pulsa la tecla <strong>Espacio</strong> o haz <strong>clic</strong> en la pantalla para que el pájaro aletee.</li>
+                        <li><strong>Móvil:</strong> Toca en la pantalla o usa el Botón de Acción virtual.</li>
+                    </ul>
+                `
+            },
+            {
+                id: 'game5',
+                name: 'Breakout',
+                description: 'Destruye todos los bloques con tu pelota y paleta. ¡Sé preciso para limpiar el tablero!',
+                controls: 'Flechas Izquierda/Derecha o AD para mover la paleta. D-Pad en móviles.',
+                gameContent: '<div id="breakout-game"><canvas id="breakout-canvas" width="400" height="300"></canvas></div>',
+                tutorial: `
+                    <h3>Cómo Jugar a Breakout:</h3>
+                    <ul>
+                        <li>Controla la paleta en la parte inferior de la pantalla.</li>
+                        <li>El objetivo es rebotar la pelota para destruir todos los bloques de colores en la parte superior.</li>
+                        <li>Si la pelota cae por debajo de la paleta, pierdes una vida.</li>
+                        <li>Tienes un número limitado de vidas. Cuando se agotan, el juego termina.</li>
+                    </ul>
+                    <p><strong>Controles:</strong></p>
+                    <ul>
+                        <li><strong>PC:</strong> Teclas <strong>A</strong> (izquierda) y <strong>D</strong> (derecha) o <strong>Flechas Izquierda/Derecha</strong> para mover tu paleta.</li>
+                        <li><strong>Móvil:</strong> D-Pad virtual en pantalla (Izquierda/Derecha).</li>
+                    </ul>
+                `
+            }
         ];
 
         let currentActiveGame = 0; // Índice del juego actual
         let isAuthModalOpen = false;
+        let isTutorialModalOpen = false;
         let isMobile = window.innerWidth <= 768; // Para detectar si es móvil
 
         // Referencias a elementos del DOM
         const mainMenu = document.getElementById('main-menu');
         const startButton = document.getElementById('start-button');
         const authModal = document.getElementById('auth-modal');
-        const closeAuthButton = document.querySelector('.auth-modal-content .close-button');
+        const closeAuthButton = authModal.querySelector('.close-button');
         const toggleAuthLink = document.getElementById('toggle-auth');
         const authTitle = document.getElementById('auth-title');
         const authSubmitButton = document.getElementById('auth-submit-button');
@@ -782,6 +934,12 @@
         const likeButton = document.getElementById('like-button');
         const likesCount = document.getElementById('likes-count');
         const mobileControls = document.querySelector('.mobile-controls');
+        const tutorialModal = document.getElementById('tutorial-modal');
+        const tutorialTitle = document.getElementById('tutorial-title');
+        const tutorialContent = document.getElementById('tutorial-content');
+        const closeTutorialButton = document.getElementById('close-tutorial-button');
+        const closeTutorialBtn = document.getElementById('close-tutorial-btn'); // Botón "Entendido"
+
 
         // --- Funciones del Menú de Inicio y Carrusel ---
 
@@ -789,29 +947,39 @@
         function generateCarouselItems() {
             const numGames = games.length;
             const angleStep = 360 / numGames;
+            const radius = 300; // Radio de la órbita del carrusel
+
             gameCarousel.innerHTML = ''; // Limpiar carrusel existente
 
             games.forEach((game, index) => {
                 const carouselItem = document.createElement('div');
                 carouselItem.classList.add('carousel-item');
-                carouselItem.textContent = game.name;
+                // Podrías añadir una imagen si la tienes en tus datos de juego
+                // carouselItem.innerHTML = `<img src="images/${game.id}.png" alt="${game.name}"><span>${game.name}</span>`;
+                carouselItem.innerHTML = `<span>${game.name}</span>`; // Por ahora solo el nombre
+
                 carouselItem.setAttribute('data-game-id', game.id);
 
                 // Calcular la transformación para distribuir uniformemente
-                const transformValue = `rotateY(${index * angleStep}deg) translateZ(300px)`;
+                // Posicionar con rotateY y translateZ para el efecto 3D
+                const transformValue = `rotateY(${index * angleStep}deg) translateZ(${radius}px)`;
                 carouselItem.style.transform = transformValue;
-                carouselItem.style.background = `linear-gradient(45deg, ${getRandomColor()}, ${getRandomColor()})`; // Colores aleatorios
+                // Asigna colores aleatorios al carrusel para que se vea más dinámico
+                carouselItem.style.background = `linear-gradient(45deg, ${getRandomColor()}, ${getRandomColor()})`;
 
                 carouselItem.addEventListener('click', () => {
-                    // Pausar la animación del carrusel al seleccionar un juego
-                    gameCarousel.style.animationPlayState = 'paused';
-                    const targetAngle = -(index * angleStep); // Ángulo para centrar el juego seleccionado
+                    // Centrar el juego seleccionado en el carrusel al hacer clic
+                    // Se calcula el ángulo necesario para que el elemento rote al frente
+                    const targetAngle = -(index * angleStep);
+                    gameCarousel.style.transition = 'transform 0.8s ease-in-out';
                     gameCarousel.style.transform = `rotateY(${targetAngle}deg)`;
+                    gameCarousel.style.animationPlayState = 'paused'; // Pausar la animación automática
 
-                    // Opcional: Deseleccionar después de un tiempo o reanudar la animación
+                    // Reanudar la animación después de un tiempo si no hay otra interacción
                     setTimeout(() => {
+                        gameCarousel.style.transition = ''; // Resetear transición para que la animación automática funcione
                         gameCarousel.style.animationPlayState = 'running';
-                    }, 2000); // Reanudar después de 2 segundos
+                    }, 2500); // Reanudar después de 2.5 segundos
                 });
 
                 gameCarousel.appendChild(carouselItem);
@@ -828,7 +996,6 @@
                 const gameSlide = document.createElement('div');
                 gameSlide.classList.add('game-slide');
                 gameSlide.id = `slide-${game.id}`;
-                gameSlide.style.transform = `translateY(${index * 100}vh)`; // Posicionar slides verticalmente
 
                 // Contenido del slide
                 gameSlide.innerHTML = `
@@ -839,10 +1006,10 @@
                             <p class="controls-info">Controles: ${game.controls}</p>
                             <div class="control-buttons">
                                 <button class="control-btn play-btn" data-game-id="${game.id}">Jugar</button>
-                                <button class="control-btn">Más Info</button>
+                                <button class="control-btn tutorial-btn" data-game-id="${game.id}">Tutorial</button>
                             </div>
                         </div>
-                        <div class="game-play-area">
+                        <div class="game-play-area" id="game-area-${game.id}">
                             ${game.gameContent}
                         </div>
                     </div>
@@ -866,7 +1033,7 @@
         // Muestra el juego especificado por su índice
         function showGame(index) {
             currentActiveGame = index;
-            const translateYValue = -index * 100;
+            const translateYValue = -index * 100; // Desplaza el contenedor verticalmente
             gameSlidesContainer.style.transform = `translateY(${translateYValue}vh)`;
 
             // Actualizar puntos indicadores
@@ -877,72 +1044,84 @@
                     dot.classList.remove('active');
                 }
             });
-            updateGameControlsVisibility();
+
+            // Reiniciar o preparar el juego actual
+            initializeGameSpecificContent(games[currentActiveGame].id);
         }
 
-        // Navegación con la rueda del ratón o swipe
+        // Navegación con la rueda del ratón
         function handleScroll(event) {
-            event.preventDefault();
-            const delta = event.deltaY || event.detail || event.wheelDelta; // Rueda del ratón
-            if (delta > 0) {
-                // Desplazarse hacia abajo (siguiente juego)
+            // No navegar si un modal está abierto
+            if (isAuthModalOpen || isTutorialModalOpen) return;
+
+            event.preventDefault(); // Evitar el scroll predeterminado de la página
+            const delta = event.deltaY || event.detail || event.wheelDelta; // Detecta la dirección de la rueda
+
+            if (delta > 0) { // Desplazarse hacia abajo (siguiente juego)
                 if (currentActiveGame < games.length - 1) {
                     showGame(currentActiveGame + 1);
                 }
-            } else {
-                // Desplazarse hacia arriba (juego anterior)
+            } else { // Desplazarse hacia arriba (juego anterior)
                 if (currentActiveGame > 0) {
                     showGame(currentActiveGame - 1);
                 }
             }
         }
 
+        // Manejo de Swipe para navegación en móviles
         let touchStartY = 0;
         let touchEndY = 0;
 
         function handleTouchStart(event) {
+            if (isAuthModalOpen || isTutorialModalOpen) return;
             touchStartY = event.touches[0].clientY;
         }
 
         function handleTouchMove(event) {
+            if (isAuthModalOpen || isTutorialModalOpen) return;
             touchEndY = event.touches[0].clientY;
         }
 
         function handleTouchEnd() {
-            if (touchStartY - touchEndY > 50) { // Swipe Up (siguiente juego)
+            if (isAuthModalOpen || isTutorialModalOpen) return;
+            const swipeThreshold = 50; // Mínimo de píxeles para considerar un swipe
+
+            if (touchStartY - touchEndY > swipeThreshold) { // Swipe Up (siguiente juego)
                 if (currentActiveGame < games.length - 1) {
                     showGame(currentActiveGame + 1);
                 }
-            } else if (touchEndY - touchStartY > 50) { // Swipe Down (juego anterior)
+            } else if (touchEndY - touchStartY > swipeThreshold) { // Swipe Down (juego anterior)
                 if (currentActiveGame > 0) {
                     showGame(currentActiveGame - 1);
                 }
             }
+            // Resetear valores para el siguiente swipe
             touchStartY = 0;
             touchEndY = 0;
         }
 
-        // --- Funcionalidad de Autenticación ---
+        // --- Funcionalidad de Autenticación (Login/Registro) ---
 
-        // Mostrar/Ocultar modal de autenticación
         startButton.addEventListener('click', () => {
-            mainMenu.classList.add('hidden');
-            // Retrasar la aparición del modal para que la animación del menú termine
+            mainMenu.classList.add('hidden'); // Oculta el menú principal con animación
             setTimeout(() => {
-                authModal.style.display = 'flex';
+                authModal.style.display = 'flex'; // Muestra el modal de login
+                authModal.classList.add('show'); // Activa la animación del modal
                 isAuthModalOpen = true;
-            }, 500);
+            }, 500); // Esperar que termine la animación de ocultar el menú
         });
 
         closeAuthButton.addEventListener('click', () => {
-            authModal.style.display = 'none';
-            mainMenu.classList.remove('hidden'); // Volver al menú principal
-            isAuthModalOpen = false;
+            authModal.classList.remove('show'); // Desactiva la animación del modal
+            setTimeout(() => {
+                authModal.style.display = 'none'; // Oculta el modal de login
+                mainMenu.classList.remove('hidden'); // Volver al menú principal
+                isAuthModalOpen = false;
+            }, 300); // Esperar que termine la animación de ocultar el modal
         });
 
-        // Alternar entre login y registro
         toggleAuthLink.addEventListener('click', (e) => {
-            e.preventDefault();
+            e.preventDefault(); // Evita que el enlace recargue la página
             if (authTitle.textContent === 'Iniciar Sesión') {
                 authTitle.textContent = 'Registrarse';
                 authSubmitButton.textContent = 'Registrarse';
@@ -957,18 +1136,54 @@
         authSubmitButton.addEventListener('click', () => {
             // Aquí iría la lógica real de autenticación (AJAX a un servidor, etc.)
             alert(`Simulando ${authTitle.textContent} para usuario: ${document.getElementById('username').value}`);
-            authModal.style.display = 'none';
-            isAuthModalOpen = false;
-            // Mostrar la interfaz principal de la app
-            appContainer.style.display = 'flex';
-            header.style.display = 'flex';
-            updateGameControlsVisibility(); // Asegurarse de que los controles móviles se muestren si es necesario
-            initializeGames(); // Inicializar juegos al entrar a la app
+            authModal.classList.remove('show');
+            setTimeout(() => {
+                authModal.style.display = 'none';
+                isAuthModalOpen = false;
+                // Mostrar la interfaz principal de la app
+                appContainer.style.display = 'flex';
+                header.style.display = 'flex';
+                updateGameControlsVisibility(); // Asegurarse de que los controles móviles se muestren si es necesario
+                showGame(currentActiveGame); // Mostrar el primer juego o el actual
+            }, 300);
         });
 
-        // --- Funcionalidad de Botones Laterales ---
+        // --- Funcionalidad de Tutorial ---
 
-        // Funcionalidad de "Me gusta"
+        // Delegación de eventos para los botones de tutorial
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('tutorial-btn')) {
+                const gameId = e.target.getAttribute('data-game-id');
+                const game = games.find(g => g.id === gameId);
+                if (game && game.tutorial) {
+                    tutorialTitle.textContent = `Tutorial: ${game.name}`;
+                    tutorialContent.innerHTML = game.tutorial;
+                    tutorialModal.style.display = 'flex'; // Muestra el modal
+                    tutorialModal.classList.add('show'); // Activa la animación
+                    isTutorialModalOpen = true;
+                }
+            }
+        });
+
+        // Cerrar tutorial
+        closeTutorialButton.addEventListener('click', () => {
+            tutorialModal.classList.remove('show');
+            setTimeout(() => {
+                tutorialModal.style.display = 'none';
+                isTutorialModalOpen = false;
+            }, 300);
+        });
+        closeTutorialBtn.addEventListener('click', () => { // Botón "Entendido" dentro del tutorial
+            tutorialModal.classList.remove('show');
+            setTimeout(() => {
+                tutorialModal.style.display = 'none';
+                isTutorialModalOpen = false;
+            }, 300);
+        });
+
+
+        // --- Funcionalidad de Botones Laterales (Likes, etc.) ---
+
         let likes = 0;
         let liked = false;
         likeButton.addEventListener('click', () => {
@@ -984,9 +1199,8 @@
             likesCount.textContent = likes;
         });
 
-        // --- Manejo de Controles de Juego ---
+        // --- Manejo de Controles de Juego (Teclado y Móviles) ---
 
-        // Función para ocultar/mostrar controles móviles según el dispositivo
         function updateGameControlsVisibility() {
             if (isMobile) {
                 mobileControls.style.display = 'flex';
@@ -995,141 +1209,827 @@
             }
         }
 
-        // Event listeners para controles móviles
+        // Event listeners para controles móviles (D-pad y botones de acción)
         document.querySelectorAll('.mobile-btn').forEach(button => {
             button.addEventListener('pointerdown', (e) => {
-                e.preventDefault(); // Evitar el desplazamiento de la página al tocar
+                e.preventDefault(); // Evita el comportamiento predeterminado del navegador
                 const control = button.getAttribute('data-control');
                 console.log(`Control móvil presionado: ${control}`);
-                // Aquí se integraría la lógica para cada juego individual
-                // Por ejemplo, para el juego de la serpiente, podrías llamar a una función `moveSnake(direction)`
+                // Llama a la función de control específica del juego activo
+                if (window.activeGameControls && typeof window.activeGameControls[control] === 'function') {
+                    window.activeGameControls[control]();
+                }
             });
-            button.addEventListener('pointerup', (e) => {
-                e.preventDefault();
-                const control = button.getAttribute('data-control');
-                console.log(`Control móvil liberado: ${control}`);
-            });
+            // Puedes agregar 'pointerup' si necesitas detectar cuándo se suelta el botón móvil
+            // button.addEventListener('pointerup', (e) => {
+            //     const control = button.getAttribute('data-control');
+            //     if (window.activeGameControls && typeof window.activeGameControls.stop === 'function') {
+            //         window.activeGameControls.stop(control); // Llama a una función 'stop' si existe
+            //     }
+            // });
         });
 
-        // Event listener para teclado (controles de juego)
+        // Objeto global para almacenar funciones de control de juego
+        // Cada juego al inicializarse, sobrescribirá estas funciones con las suyas.
+        window.activeGameControls = {};
+        // Objeto para rastrear qué teclas están actualmente presionadas, útil para movimiento continuo
+        const pressedKeys = {};
+
+        // Event listener para teclado (controles de juego ASWD y Flechas)
         document.addEventListener('keydown', (e) => {
-            // Solo si el modal de autenticación NO está abierto y estamos en la app principal
-            if (!isAuthModalOpen && appContainer.style.display === 'flex') {
-                switch (e.key) {
-                    case 'ArrowUp':
-                    case 'w':
-                        console.log('Tecla: Arriba');
-                        // Lógica de juego: Mover personaje hacia arriba
-                        break;
-                    case 'ArrowDown':
-                    case 's':
-                        console.log('Tecla: Abajo');
-                        // Lógica de juego: Mover personaje hacia abajo
-                        break;
-                    case 'ArrowLeft':
-                    case 'a':
-                        console.log('Tecla: Izquierda');
-                        // Lógica de juego: Mover personaje hacia la izquierda
-                        break;
-                    case 'ArrowRight':
-                    case 'd':
-                        console.log('Tecla: Derecha');
-                        // Lógica de juego: Mover personaje hacia la derecha
-                        break;
-                    case ' ': // Espacio para acción o salto
-                        console.log('Tecla: Espacio (Acción)');
-                        // Lógica de juego: Acción principal (saltar, disparar, etc.)
-                        break;
-                    case 'Enter': // Enter para iniciar/pausar
-                        console.log('Tecla: Enter');
-                        // Lógica de juego: Iniciar/Pausar juego
-                        break;
-                }
+            // No procesar si un modal está abierto o la app principal no es visible
+            if (isAuthModalOpen || isTutorialModalOpen || appContainer.style.display !== 'flex') return;
+
+            // Mapeo de teclas a acciones de control
+            let controlAction = null;
+            switch (e.key.toLowerCase()) { // Convertir a minúsculas para ASWD
+                case 'arrowup':
+                case 'w':
+                    controlAction = 'up';
+                    break;
+                case 'arrowdown':
+                case 's':
+                    controlAction = 'down';
+                    break;
+                case 'arrowleft':
+                case 'a':
+                    controlAction = 'left';
+                    break;
+                case 'arrowright':
+                case 'd':
+                    controlAction = 'right';
+                    break;
+                case ' ': // Espacio para acción o salto (Flappy Bird)
+                    controlAction = 'action1';
+                    break;
+                case 'enter': // Enter para iniciar/pausar o una segunda acción
+                    controlAction = 'action2';
+                    break;
+            }
+
+            // Si se detecta una acción y la tecla no está ya registrada como presionada
+            if (controlAction && window.activeGameControls && typeof window.activeGameControls[controlAction] === 'function' && !pressedKeys[controlAction]) {
+                e.preventDefault(); // Evita el scroll u otras acciones predeterminadas del navegador
+                window.activeGameControls[controlAction](); // Ejecuta la función de control del juego
+                pressedKeys[controlAction] = true; // Marca la tecla como presionada
             }
         });
 
-        // --- Inicialización de Juegos (Ejemplos básicos) ---
-        function initializeGames() {
-            // Ejemplo de inicialización para el juego de Memoria
-            const memoryGameDiv = document.querySelector('.memory-game');
-            if (memoryGameDiv) {
-                // Aquí podrías generar las cartas, mezclar, etc.
-                memoryGameDiv.innerHTML = '<p>Juego de Memoria cargado (contenido dinámico)</p>';
-                // Añadir lógica de Memory Game (voltear cartas, chequear parejas)
+        // Event listener para soltar teclas (importante para detener movimiento continuo)
+        document.addEventListener('keyup', (e) => {
+            // No procesar si un modal está abierto o la app principal no es visible
+            if (isAuthModalOpen || isTutorialModalOpen || appContainer.style.display !== 'flex') return;
+
+            let controlAction = null;
+            switch (e.key.toLowerCase()) {
+                case 'arrowleft':
+                case 'a':
+                    controlAction = 'left';
+                    break;
+                case 'arrowright':
+                case 'd':
+                    controlAction = 'right';
+                    break;
             }
 
-            // Ejemplo para Snake
-            const snakeCanvas = document.getElementById('snake-canvas');
-            if (snakeCanvas) {
-                const ctx = snakeCanvas.getContext('2d');
-                ctx.fillStyle = 'lime';
-                ctx.fillRect(10, 10, 20, 20); // Dibuja un cuadrado simple como la cabeza de la serpiente
-                console.log('Canvas de Serpiente inicializado.');
-                // Aquí iría toda la lógica de Snake (movimiento, comida, colisiones)
+            if (controlAction) {
+                // Si la acción es de movimiento y el juego tiene una función para detenerlo
+                if (window.activeGameControls && typeof window.activeGameControls.stopMove === 'function') {
+                    window.activeGameControls.stopMove(controlAction);
+                }
+                delete pressedKeys[controlAction]; // Desmarca la tecla como presionada
             }
+        });
 
-            // Ejemplo para Pong
-            const pongGameDiv = document.getElementById('pong-game');
-            if (pongGameDiv) {
-                // Lógica para mover las paletas y la pelota
-                console.log('Juego de Pong inicializado.');
+        // --- Inicialización de Contenido Específico de Juegos ---
+        function initializeGameSpecificContent(gameId) {
+            // Limpiar controles previos para el juego anterior
+            window.activeGameControls = {};
+
+            // Aquí se ejecutarán funciones específicas para cada juego,
+            // que se encargarán de inicializar su lógica y elementos del DOM.
+            // Esto asegura que cada juego se reinicie o prepare correctamente.
+            switch (gameId) {
+                case 'game1': // Memoria
+                    console.log('Inicializando juego de Memoria...');
+                    initializeMemoryGame();
+                    break;
+                case 'game2': // Serpiente
+                    console.log('Inicializando juego de Serpiente...');
+                    initializeSnakeGame();
+                    break;
+                case 'game3': // Pong
+                    console.log('Inicializando juego de Pong...');
+                    initializePongGame();
+                    break;
+                case 'game4': // Flappy Bird
+                    console.log('Inicializando juego de Flappy Bird...');
+                    initializeFlappyBirdGame();
+                    break;
+                case 'game5': // Breakout
+                    console.log('Inicializando juego de Breakout...');
+                    initializeBreakoutGame();
+                    break;
+                default:
+                    console.log('Juego no reconocido o sin lógica de inicialización específica.');
             }
+        }
 
-            // Aquí puedes añadir más inicializaciones para game6, game7, game8, game9, game10
-            // Por ejemplo, para el Click Counter:
-            const clickButton = document.getElementById('click-button');
-            const clickCountSpan = document.getElementById('click-count');
-            if (clickButton && clickCountSpan) {
-                let clicks = 0;
-                clickButton.addEventListener('click', () => {
-                    clicks++;
-                    clickCountSpan.textContent = clicks;
-                });
-            }
+        // --- Lógica de Juegos Individuales (Esqueletos Funcionales) ---
 
-            // Para el Typing Game:
-            const wordToTypeSpan = document.getElementById('word-to-type');
-            const typingInput = document.getElementById('typing-input');
-            const words = ["hola", "mundo", "javascript", "programacion", "gametok", "teclado"];
-            let currentWordIndex = 0;
+        // Game 1: Memoria
+        function initializeMemoryGame() {
+            const memoryGameDiv = document.querySelector(`#game-area-game1 .memory-game`);
+            if (!memoryGameDiv) return;
 
-            if (wordToTypeSpan && typingInput) {
-                function setNextWord() {
-                    if (currentWordIndex < words.length) {
-                        wordToTypeSpan.textContent = words[currentWordIndex];
-                        typingInput.value = '';
-                        typingInput.focus();
-                    } else {
-                        wordToTypeSpan.textContent = "¡Juego terminado!";
-                        typingInput.disabled = true;
-                    }
+            memoryGameDiv.innerHTML = ''; // Limpiar cualquier juego anterior
+            const icons = ['⭐', '🍄', '👻', '💎', '🚀', '🌈', '⚡', '🤖'];
+            let cards = [...icons, ...icons]; // Duplicar para parejas
+            cards.sort(() => Math.random() - 0.5); // Mezclar aleatoriamente
+
+            let flippedCards = [];
+            let matchedCards = [];
+            let canFlip = true; // Para evitar que el usuario voltee más de 2 cartas
+
+            cards.forEach((icon, index) => {
+                const card = document.createElement('div');
+                card.classList.add('memory-card');
+                card.innerHTML = `<div class="front">?</div><div class="back">${icon}</div>`;
+                card.dataset.index = index;
+                card.dataset.value = icon;
+                card.addEventListener('click', () => flipCard(card));
+                memoryGameDiv.appendChild(card);
+            });
+
+            function flipCard(card) {
+                if (!canFlip || flippedCards.length >= 2 || card.classList.contains('flipped') || card.classList.contains('matched')) {
+                    return; // No permitir voltear si ya hay dos volteadas, no se puede voltear, o ya está volteada/emparejada
                 }
 
-                typingInput.addEventListener('input', () => {
-                    if (typingInput.value === wordToTypeSpan.textContent) {
-                        alert('¡Correcto!');
-                        currentWordIndex++;
-                        setNextWord();
-                    }
-                });
-                setNextWord(); // Iniciar el juego
+                card.classList.add('flipped');
+                flippedCards.push(card);
+
+                if (flippedCards.length === 2) {
+                    canFlip = false; // Bloquear más volteos
+                    setTimeout(checkForMatch, 1000); // Esperar 1 segundo antes de comprobar
+                }
             }
 
-            // Asignar eventos a los botones "Jugar"
-            document.querySelectorAll('.play-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const gameId = e.target.getAttribute('data-game-id');
-                    alert(`Iniciando juego: ${gameId}`);
-                    // Aquí es donde integrarías la lógica real para cargar y ejecutar el juego.
-                    // Por ahora, solo es una alerta.
+            function checkForMatch() {
+                const [card1, card2] = flippedCards;
+                if (card1.dataset.value === card2.dataset.value) {
+                    card1.classList.add('matched');
+                    card2.classList.add('matched');
+                    matchedCards.push(card1, card2);
+                    if (matchedCards.length === cards.length) {
+                        alert('¡Felicidades, encontraste todas las parejas!');
+                        // Opcional: Reiniciar el juego automáticamente
+                        // initializeMemoryGame();
+                    }
+                } else {
+                    card1.classList.remove('flipped');
+                    card2.classList.remove('flipped');
+                }
+                flippedCards = [];
+                canFlip = true; // Permitir voltear de nuevo
+            }
+
+            // Exponer un control para reiniciar el juego, por ejemplo.
+            window.activeGameControls = {
+                action2: () => { // Botón de Reiniciar
+                    console.log('Reiniciando juego de Memoria...');
+                    initializeMemoryGame();
+                }
+            };
+        }
+
+
+        // Game 2: Serpiente
+        let snakeGameInterval = null; // Para almacenar la instancia del juego
+        function initializeSnakeGame() {
+            const canvas = document.getElementById('snake-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            const gridSize = 15; // Tamaño de cada segmento de la serpiente
+            const tileCount = canvas.width / gridSize; // Número de celdas en el tablero
+
+            let snake = [{ x: 10, y: 10 }]; // Posición inicial de la serpiente
+            let food = {};
+            let dx = 0; // Dirección horizontal (1: derecha, -1: izquierda)
+            let dy = 0; // Dirección vertical (1: abajo, -1: arriba)
+            let score = 0;
+            let gamePaused = false;
+            let changingDirection = false; // Para evitar giros dobles rápidos
+
+            function generateFood() {
+                food = {
+                    x: Math.floor(Math.random() * tileCount),
+                    y: Math.floor(Math.random() * tileCount)
+                };
+                // Asegurarse de que la comida no aparezca en la serpiente
+                for (let i = 0; i < snake.length; i++) {
+                    if (food.x === snake[i].x && food.y === snake[i].y) {
+                        generateFood(); // Regenerar si la comida está en la serpiente
+                    }
+                }
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el canvas
+                ctx.fillStyle = '#333'; // Fondo del canvas
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Dibujar comida
+                ctx.fillStyle = 'red';
+                ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
+
+                // Dibujar serpiente
+                ctx.fillStyle = 'lime';
+                snake.forEach(segment => {
+                    ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
+                    ctx.strokeStyle = '#006600'; // Borde oscuro
+                    ctx.strokeRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
                 });
-            });
+            }
+
+            function moveSnake() {
+                if (gamePaused) return; // No mover si está pausado
+
+                if (gameOver()) {
+                    clearInterval(snakeGameInterval);
+                    alert(`¡Juego Terminado! Puntuación: ${score}`);
+                    return;
+                }
+
+                const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+                snake.unshift(head); // Añadir nueva cabeza
+
+                // Si come la comida
+                if (head.x === food.x && head.y === food.y) {
+                    score++;
+                    generateFood(); // Generar nueva comida
+                } else {
+                    snake.pop(); // Quitar la cola
+                }
+                changingDirection = false; // Permitir cambiar de dirección de nuevo
+                draw();
+            }
+
+            function gameOver() {
+                // Chocar con la pared
+                const hitLeftWall = snake[0].x < 0;
+                const hitRightWall = snake[0].x >= tileCount;
+                const hitTopWall = snake[0].y < 0;
+                const hitBottomWall = snake[0].y >= tileCount;
+
+                if (hitLeftWall || hitRightWall || hitTopWall || hitBottomWall) return true;
+
+                // Chocar con el propio cuerpo (empezar a comprobar desde el 4º segmento)
+                for (let i = 4; i < snake.length; i++) {
+                    if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true;
+                }
+                return false;
+            }
+
+            function changeDirection(newDx, newDy) {
+                if (changingDirection || (dx === -newDx && newDx !== 0) || (dy === -newDy && newDy !== 0)) {
+                    // Evitar giros múltiples en un mismo frame o giro de 180 grados
+                    return;
+                }
+                changingDirection = true;
+                dx = newDx;
+                dy = newDy;
+            }
+
+            function togglePause() {
+                gamePaused = !gamePaused;
+                if (!gamePaused) {
+                    snakeGameInterval = setInterval(moveSnake, 100);
+                    console.log('Juego de Serpiente reanudado');
+                } else {
+                    clearInterval(snakeGameInterval);
+                    console.log('Juego de Serpiente pausado');
+                }
+            }
+
+            function resetSnakeGame() {
+                clearInterval(snakeGameInterval);
+                snake = [{ x: 10, y: 10 }];
+                dx = 0; dy = 0; score = 0;
+                gamePaused = false;
+                generateFood();
+                draw();
+                snakeGameInterval = setInterval(moveSnake, 100);
+                console.log('Juego de Serpiente reiniciado');
+            }
+
+            // Exponer controles al objeto global
+            window.activeGameControls = {
+                up: () => changeDirection(0, -1),
+                down: () => changeDirection(0, 1),
+                left: () => changeDirection(-1, 0),
+                right: () => changeDirection(1, 0),
+                action1: togglePause, // Botón de acción para pausar/reanudar
+                action2: resetSnakeGame // Botón de acción para reiniciar
+            };
+
+            // Iniciar el juego
+            resetSnakeGame(); // Llamar para asegurar un estado inicial limpio
+        }
+
+        // Game 3: Pong
+        let pongGameInterval;
+        let leftPaddleY;
+        let rightPaddleY;
+        let ballX;
+        let ballY;
+        let ballDx; // Velocidad de la pelota en X
+        let ballDy; // Velocidad de la pelota en Y
+        let leftScore;
+        let rightScore;
+        const paddleSpeed = 8; // Velocidad de las paletas
+        let pongGamePaused = false;
+
+        function initializePongGame() {
+            const pongGameDiv = document.getElementById('pong-game');
+            if (!pongGameDiv) return;
+
+            const leftPaddle = document.getElementById('left-paddle');
+            const rightPaddle = document.getElementById('right-paddle');
+            const ball = document.querySelector('.ball');
+            const leftScoreElem = document.getElementById('left-score');
+            const rightScoreElem = document.getElementById('right-score');
+
+            // Resetear estado
+            leftPaddleY = pongGameDiv.offsetHeight / 2 - leftPaddle.offsetHeight / 2;
+            rightPaddleY = pongGameDiv.offsetHeight / 2 - rightPaddle.offsetHeight / 2;
+            resetBall(); // Inicializa la posición y dirección de la pelota
+            leftScore = 0; rightScore = 0;
+            leftScoreElem.textContent = leftScore;
+            rightScoreElem.textContent = rightScore;
+            pongGamePaused = false;
+
+            function updatePongGame() {
+                if (pongGamePaused) return;
+
+                // Mover paletas (simulación de IA básica para la derecha)
+                if (ballY > rightPaddleY + rightPaddle.offsetHeight / 2) {
+                    rightPaddleY += Math.min(paddleSpeed, ballY - (rightPaddleY + rightPaddle.offsetHeight / 2));
+                } else if (ballY < rightPaddleY + rightPaddle.offsetHeight / 2) {
+                    rightPaddleY -= Math.min(paddleSpeed, (rightPaddleY + rightPaddle.offsetHeight / 2) - ballY);
+                }
+
+                // Limitar paletas a los bordes
+                leftPaddleY = Math.max(0, Math.min(pongGameDiv.offsetHeight - leftPaddle.offsetHeight, leftPaddleY));
+                rightPaddleY = Math.max(0, Math.min(pongGameDiv.offsetHeight - rightPaddle.offsetHeight, rightPaddleY));
+
+                leftPaddle.style.top = `${leftPaddleY}px`;
+                rightPaddle.style.top = `${rightPaddleY}px`;
+
+                // Mover pelota
+                ballX += ballDx;
+                ballY += ballDy;
+
+                // Rebote en paredes superior/inferior
+                if (ballY <= 0 || ballY >= pongGameDiv.offsetHeight - ball.offsetHeight) {
+                    ballDy *= -1;
+                }
+
+                // Rebote en paletas
+                // Paleta izquierda
+                if (ballX <= leftPaddle.offsetLeft + leftPaddle.offsetWidth &&
+                    ballY + ball.offsetHeight >= leftPaddleY &&
+                    ballY <= leftPaddleY + leftPaddle.offsetHeight) {
+                    ballDx *= -1;
+                    ballX = leftPaddle.offsetLeft + leftPaddle.offsetWidth; // Ajustar posición para evitar que se pegue
+                }
+                // Paleta derecha
+                if (ballX + ball.offsetWidth >= rightPaddle.offsetLeft &&
+                    ballY + ball.offsetHeight >= rightPaddleY &&
+                    ballY <= rightPaddleY + rightPaddle.offsetHeight) {
+                    ballDx *= -1;
+                    ballX = rightPaddle.offsetLeft - ball.offsetWidth; // Ajustar posición
+                }
+
+                // Anotar puntos
+                if (ballX < 0) {
+                    rightScore++;
+                    rightScoreElem.textContent = rightScore;
+                    if (rightScore >= 7) { gameOverPong('¡Perdiste!'); return; }
+                    resetBall();
+                } else if (ballX > pongGameDiv.offsetWidth - ball.offsetWidth) {
+                    leftScore++;
+                    leftScoreElem.textContent = leftScore;
+                    if (leftScore >= 7) { gameOverPong('¡Ganaste!'); return; }
+                    resetBall();
+                }
+
+                ball.style.left = `${ballX}px`;
+                ball.style.top = `${ballY}px`;
+            }
+
+            function resetBall() {
+                ballX = pongGameDiv.offsetWidth / 2 - ball.offsetWidth / 2;
+                ballY = pongGameDiv.offsetHeight / 2 - ball.offsetHeight / 2;
+                ballDx = (Math.random() > 0.5 ? 1 : -1) * 5; // Dirección aleatoria al reiniciar
+                ballDy = (Math.random() > 0.5 ? 1 : -1) * 5;
+            }
+
+            function gameOverPong(message) {
+                clearInterval(pongGameInterval);
+                pongGamePaused = true;
+                alert(`¡Fin del juego! ${message}`);
+            }
+
+            function togglePongPause() {
+                pongGamePaused = !pongGamePaused;
+                if (!pongGamePaused) {
+                    pongGameInterval = setInterval(updatePongGame, 1000 / 60); // 60 FPS
+                    console.log('Juego de Pong reanudado');
+                } else {
+                    clearInterval(pongGameInterval);
+                    console.log('Juego de Pong pausado');
+                }
+            }
+
+            function resetPongGame() {
+                clearInterval(pongGameInterval);
+                initializePongGame(); // Re-inicializar todo el juego
+                pongGameInterval = setInterval(updatePongGame, 1000 / 60);
+            }
+
+            // Exponer controles
+            window.activeGameControls = {
+                up: () => { leftPaddleY -= paddleSpeed; },
+                down: () => { leftPaddleY += paddleSpeed; },
+                // ASWD también controla la paleta izquierda
+                w: () => { leftPaddleY -= paddleSpeed; },
+                s: () => { leftPaddleY += paddleSpeed; },
+                action1: togglePongPause, // Iniciar/Pausar
+                action2: resetPongGame // Reiniciar
+            };
+
+            // Iniciar el juego automáticamente
+            clearInterval(pongGameInterval); // Asegurarse de que no hay otro intervalo corriendo
+            pongGameInterval = setInterval(updatePongGame, 1000 / 60); // 60 FPS
+        }
+
+        // Game 4: Flappy Bird
+        let flappyGameInterval;
+        let flappyBirdGameStarted = false;
+        let birdY;
+        let birdVelocity;
+        let pipes;
+        let flappyScore;
+
+        function initializeFlappyBirdGame() {
+            const gameArea = document.getElementById('flappy-game');
+            const bird = document.getElementById('bird');
+            if (!gameArea || !bird) return;
+
+            // Restablecer posiciones y estados iniciales
+            bird.style.top = '200px';
+            bird.style.left = '50px';
+            // Limpiar tuberías previas
+            gameArea.querySelectorAll('.pipe').forEach(p => p.remove());
+
+            birdY = 200;
+            birdVelocity = 0;
+            const gravity = 0.5;
+            const flapStrength = -8;
+            pipes = [];
+            flappyScore = 0;
+            flappyBirdGameStarted = false; // El juego empieza al primer aleteo
+
+            function createPipe() {
+                const pipeHeight = Math.floor(Math.random() * (gameArea.offsetHeight / 2 - 50)) + 50; // Altura aleatoria del hueco
+                const gap = 120; // Tamaño del hueco entre tuberías
+
+                const topPipe = document.createElement('div');
+                topPipe.classList.add('pipe', 'top');
+                topPipe.style.height = `${pipeHeight}px`;
+                topPipe.style.left = `${gameArea.offsetWidth}px`;
+
+                const bottomPipe = document.createElement('div');
+                bottomPipe.classList.add('pipe', 'bottom');
+                bottomPipe.style.height = `${gameArea.offsetHeight - pipeHeight - gap}px`;
+                bottomPipe.style.left = `${gameArea.offsetWidth}px`;
+
+                gameArea.appendChild(topPipe);
+                gameArea.appendChild(bottomPipe);
+
+                pipes.push({ top: topPipe, bottom: bottomPipe, passed: false });
+            }
+
+            function updateFlappyBirdGame() {
+                if (!flappyBirdGameStarted) return; // No actualizar si no ha comenzado
+
+                birdVelocity += gravity;
+                birdY += birdVelocity;
+                bird.style.top = `${birdY}px`;
+
+                // Game Over si golpea el suelo o el techo
+                if (birdY <= 0 || birdY >= gameArea.offsetHeight - bird.offsetHeight) {
+                    gameOverFlappy();
+                    return;
+                }
+
+                // Mover y crear tuberías
+                pipes.forEach(pipePair => {
+                    pipePair.top.style.left = `${pipePair.top.offsetLeft - 3}px`;
+                    pipePair.bottom.style.left = `${pipePair.bottom.offsetLeft - 3}px`;
+
+                    // Eliminar tuberías fuera de pantalla
+                    if (pipePair.top.offsetLeft + pipePair.top.offsetWidth < 0) {
+                        pipePair.top.remove();
+                        pipePair.bottom.remove();
+                        pipes = pipes.filter(p => p !== pipePair); // Remover del array
+                    }
+
+                    // Detección de colisión con tuberías
+                    // (birdX < pipeRight && birdRight > pipeX) && (birdY < pipeBottom || birdBottom > pipeY)
+                    const birdRight = bird.offsetLeft + bird.offsetWidth;
+                    const birdBottom = birdY + bird.offsetHeight;
+                    const pipeTopX = pipePair.top.offsetLeft;
+                    const pipeTopRight = pipeTopX + pipePair.top.offsetWidth;
+                    const pipeTopBottom = pipePair.top.offsetHeight;
+                    const pipeBottomX = pipePair.bottom.offsetLeft;
+                    const pipeBottomRight = pipeBottomX + pipePair.bottom.offsetWidth;
+                    const pipeBottomTop = gameArea.offsetHeight - pipePair.bottom.offsetHeight;
+
+                    if (birdRight > pipeTopX && bird.offsetLeft < pipeTopRight) {
+                        if (birdY < pipeTopBottom || birdBottom > pipeBottomTop) {
+                            gameOverFlappy();
+                            return;
+                        }
+                    }
+
+                    // Aumentar puntuación
+                    if (bird.offsetLeft > pipeTopRight && !pipePair.passed) {
+                        flappyScore++;
+                        console.log('Flappy Score:', flappyScore);
+                        pipePair.passed = true;
+                    }
+                });
+
+                // Crear nuevas tuberías (cuando la última tubería visible está a la mitad)
+                if (pipes.length === 0 || pipes[pipes.length - 1].top.offsetLeft < gameArea.offsetWidth / 2) {
+                    createPipe();
+                }
+            }
+
+            function flap() {
+                if (!flappyBirdGameStarted) {
+                    flappyBirdGameStarted = true;
+                    clearInterval(flappyGameInterval); // Asegurarse de que solo haya un intervalo
+                    flappyGameInterval = setInterval(updateFlappyBirdGame, 1000 / 60); // 60 FPS
+                    createPipe(); // La primera tubería se crea al iniciar el juego
+                }
+                birdVelocity = flapStrength;
+            }
+
+            function gameOverFlappy() {
+                clearInterval(flappyGameInterval);
+                flappyBirdGameStarted = false;
+                alert(`¡Flappy Bird! Puntuación: ${flappyScore}. Haz clic para reiniciar.`);
+                initializeFlappyBirdGame(); // Reinicia la UI y espera el nuevo "flap"
+            }
+
+            // Exponer controles
+            window.activeGameControls = {
+                action1: flap, // Espacio o botón de acción para aletear
+                action2: () => { // Reiniciar
+                    gameOverFlappy(); // Detiene el juego si está corriendo y lo reinicia
+                }
+            };
+
+            // Evento de clic en el área de juego para aletear
+            gameArea.onclick = flap;
+
+            // Al inicializar el juego, esperamos el primer aleteo para empezar
+            // (esto es lo que significa flappyBirdGameStarted = false;)
+        }
+
+        // Game 5: Breakout
+        let breakoutGameInterval = null; // Para el intervalo de juego
+        let breakoutCanvas, breakoutCtx;
+        let breakoutPaddle, breakoutBall, breakoutBricks;
+        let breakoutScore, breakoutLives;
+        let breakoutGameActive = false; // Para controlar si el juego está en marcha
+        const brickConfig = {
+            rowCount: 5,
+            columnCount: 8,
+            width: 40,
+            height: 15,
+            padding: 5,
+            offsetTop: 30,
+            offsetLeft: 30
+        };
+
+        function initializeBreakoutGame() {
+            breakoutCanvas = document.getElementById('breakout-canvas');
+            if (!breakoutCanvas) return;
+            breakoutCtx = breakoutCanvas.getContext('2d');
+
+            breakoutPaddle = {
+                x: breakoutCanvas.width / 2 - 40,
+                y: breakoutCanvas.height - 20,
+                width: 80,
+                height: 10,
+                dx: 0, // Movimiento horizontal actual
+                speed: 7
+            };
+
+            breakoutBall = {
+                x: breakoutCanvas.width / 2,
+                y: breakoutPaddle.y - 10,
+                radius: 7,
+                dx: 4 * (Math.random() > 0.5 ? 1 : -1), // Dirección horizontal aleatoria
+                dy: -4 // Siempre hacia arriba al inicio
+            };
+
+            breakoutBricks = [];
+            breakoutScore = 0;
+            breakoutLives = 3;
+            breakoutGameActive = false; // El juego empieza al primer 'action1' o 'play-btn'
+
+            createBreakoutBricks(); // Generar los ladrillos inicialmente
+            drawBreakoutGame(); // Dibujar el estado inicial
+
+            // Exponer controles
+            window.activeGameControls = {
+                left: () => { if (breakoutGameActive) breakoutPaddle.dx = -breakoutPaddle.speed; },
+                right: () => { if (breakoutGameActive) breakoutPaddle.dx = breakoutPaddle.speed; },
+                a: () => { if (breakoutGameActive) breakoutPaddle.dx = -breakoutPaddle.speed; },
+                d: () => { if (breakoutGameActive) breakoutPaddle.dx = breakoutPaddle.speed; },
+                stopMove: () => { breakoutPaddle.dx = 0; }, // Detiene el movimiento
+                action1: toggleBreakoutGame, // Iniciar/Pausar
+                action2: resetBreakoutGame // Reiniciar
+            };
+        }
+
+        function createBreakoutBricks() {
+            breakoutBricks = [];
+            for (let c = 0; c < brickConfig.columnCount; c++) {
+                breakoutBricks[c] = [];
+                for (let r = 0; r < brickConfig.rowCount; r++) {
+                    breakoutBricks[c][r] = { x: 0, y: 0, status: 1 }; // Status 1 = visible
+                }
+            }
+        }
+
+        function drawPaddle() {
+            breakoutCtx.fillStyle = '#fff';
+            breakoutCtx.fillRect(breakoutPaddle.x, breakoutPaddle.y, breakoutPaddle.width, breakoutPaddle.height);
+        }
+
+        function drawBall() {
+            breakoutCtx.beginPath();
+            breakoutCtx.arc(breakoutBall.x, breakoutBall.y, breakoutBall.radius, 0, Math.PI * 2);
+            breakoutCtx.fillStyle = '#ff0050';
+            breakoutCtx.fill();
+            breakoutCtx.closePath();
+        }
+
+        function drawBricks() {
+            for (let c = 0; c < brickConfig.columnCount; c++) {
+                for (let r = 0; r < brickConfig.rowCount; r++) {
+                    if (breakoutBricks[c][r].status === 1) {
+                        const brickX = (c * (brickConfig.width + brickConfig.padding)) + brickConfig.offsetLeft;
+                        const brickY = (r * (brickConfig.height + brickConfig.padding)) + brickConfig.offsetTop;
+                        breakoutBricks[c][r].x = brickX;
+                        breakoutBricks[c][r].y = brickY;
+                        breakoutCtx.fillStyle = '#00ffaa'; // Color de los ladrillos
+                        breakoutCtx.fillRect(brickX, brickY, brickConfig.width, brickConfig.height);
+                    }
+                }
+            }
+        }
+
+        function collisionDetection() {
+            for (let c = 0; c < brickConfig.columnCount; c++) {
+                for (let r = 0; r < brickConfig.rowCount; r++) {
+                    const b = breakoutBricks[c][r];
+                    if (b.status === 1) {
+                        // Simple AABB collision detection
+                        if (breakoutBall.x + breakoutBall.radius > b.x && breakoutBall.x - breakoutBall.radius < b.x + brickConfig.width &&
+                            breakoutBall.y + breakoutBall.radius > b.y && breakoutBall.y - breakoutBall.radius < b.y + brickConfig.height) {
+                            breakoutBall.dy *= -1; // Invertir dirección vertical
+                            b.status = 0; // Marcar ladrillo como destruido
+                            breakoutScore++;
+                            if (breakoutScore === brickConfig.rowCount * brickConfig.columnCount) {
+                                gameOverBreakout("¡GANASTE, FELICIDADES!");
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function drawScore() {
+            breakoutCtx.font = "16px Arial";
+            breakoutCtx.fillStyle = "#fff";
+            breakoutCtx.fillText(`Puntos: ${breakoutScore}`, 8, 20);
+        }
+
+        function drawLives() {
+            breakoutCtx.font = "16px Arial";
+            breakoutCtx.fillStyle = "#fff";
+            breakoutCtx.fillText(`Vidas: ${breakoutLives}`, breakoutCanvas.width - 75, 20);
+        }
+
+        function drawBreakoutGame() {
+            breakoutCtx.clearRect(0, 0, breakoutCanvas.width, breakoutCanvas.height); // Limpiar el canvas
+
+            drawBricks();
+            drawPaddle();
+            drawBall();
+            drawScore();
+            drawLives();
+        }
+
+        function updateBreakoutGame() {
+            if (!breakoutGameActive) return; // No actualizar si no está activo
+
+            drawBreakoutGame(); // Dibuja el estado actual antes de mover
+            collisionDetection();
+
+            breakoutBall.x += breakoutBall.dx;
+            breakoutBall.y += breakoutBall.dy;
+
+            // Rebote en paredes laterales
+            if (breakoutBall.x + breakoutBall.radius > breakoutCanvas.width || breakoutBall.x - breakoutBall.radius < 0) {
+                breakoutBall.dx *= -1;
+            }
+            // Rebote en pared superior
+            if (breakoutBall.y - breakoutBall.radius < 0) {
+                breakoutBall.dy *= -1;
+            }
+
+            // Rebote en paleta
+            if (breakoutBall.y + breakoutBall.radius > breakoutPaddle.y &&
+                breakoutBall.x > breakoutPaddle.x &&
+                breakoutBall.x < breakoutPaddle.x + breakoutPaddle.width) {
+                breakoutBall.dy *= -1;
+            }
+
+            // Pelota cae al fondo
+            if (breakoutBall.y + breakoutBall.radius > breakoutCanvas.height) {
+                breakoutLives--;
+                if (breakoutLives === 0) {
+                    gameOverBreakout("¡FIN DEL JUEGO!");
+                } else {
+                    // Reiniciar posición de la pelota y paleta
+                    breakoutBall.x = breakoutCanvas.width / 2;
+                    breakoutBall.y = breakoutPaddle.y - 10;
+                    breakoutBall.dx = 4 * (Math.random() > 0.5 ? 1 : -1);
+                    breakoutBall.dy = -4;
+                    breakoutPaddle.x = breakoutCanvas.width / 2 - 40;
+                }
+            }
+
+            // Mover paleta
+            breakoutPaddle.x += breakoutPaddle.dx;
+            if (breakoutPaddle.x < 0) breakoutPaddle.x = 0;
+            if (breakoutPaddle.x + breakoutPaddle.width > breakoutCanvas.width) {
+                breakoutPaddle.x = breakoutCanvas.width - breakoutPaddle.width;
+            }
+        }
+
+        function toggleBreakoutGame() {
+            breakoutGameActive = !breakoutGameActive;
+            if (breakoutGameActive) {
+                if (!breakoutGameInterval) { // Solo iniciar si no está ya activo
+                    breakoutGameInterval = setInterval(updateBreakoutGame, 1000 / 60); // 60 FPS
+                    console.log('Juego de Breakout reanudado/iniciado');
+                }
+            } else {
+                clearInterval(breakoutGameInterval);
+                breakoutGameInterval = null;
+                console.log('Juego de Breakout pausado');
+            }
+        }
+
+        function resetBreakoutGame() {
+            clearInterval(breakoutGameInterval);
+            breakoutGameInterval = null; // Asegurarse de que el intervalo se limpie
+            initializeBreakoutGame(); // Reinicializa todos los valores
+            console.log('Juego de Breakout reiniciado');
+        }
+
+        function gameOverBreakout(message) {
+            clearInterval(breakoutGameInterval);
+            breakoutGameInterval = null;
+            breakoutGameActive = false;
+            alert(message);
+            // Opcional: mostrar un botón de "Reiniciar" o volver al menú
         }
 
 
         // --- Utilidades ---
 
-        // Función para obtener un color aleatorio (para el carrusel)
         function getRandomColor() {
             const letters = '0123456789ABCDEF';
             let color = '#';
@@ -1143,6 +2043,8 @@
         window.addEventListener('resize', () => {
             isMobile = window.innerWidth <= 768;
             updateGameControlsVisibility();
+            // Si tus juegos tienen tamaños de canvas dinámicos, aquí podrías redibujarlos.
+            // Para juegos basados en CSS como Pong, Flappy, solo se ajustará por CSS.
         });
 
         // Inicializar al cargar la página
@@ -1150,17 +2052,40 @@
             generateCarouselItems();
             generateGameSlides(); // Generar los slides y sus indicadores
             updateGameControlsVisibility(); // Establecer la visibilidad inicial de los controles móviles
+
+            // Asegurar que los elementos estén en el estado inicial correcto
+            mainMenu.classList.remove('hidden');
+            appContainer.style.display = 'none';
+            header.style.display = 'none';
+            authModal.style.display = 'none';
+            tutorialModal.style.display = 'none';
         });
 
         // Añadir eventos de scroll para la navegación entre juegos
-        // Deshabilitado por ahora para permitir el scroll normal en el body si se agregara contenido
-        // document.body.addEventListener('wheel', handleScroll, { passive: false });
+        document.body.addEventListener('wheel', handleScroll, { passive: false });
 
         // Añadir eventos de touch para navegación en móviles
         document.body.addEventListener('touchstart', handleTouchStart, { passive: true });
         document.body.addEventListener('touchmove', handleTouchMove, { passive: true });
         document.body.addEventListener('touchend', handleTouchEnd);
 
+        // Asignar eventos a los botones "Jugar" (después de que los slides existan en el DOM)
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('play-btn')) {
+                const gameId = e.target.getAttribute('data-game-id');
+                console.log(`Presionaste Jugar para: ${gameId}`);
+                // Forzar reinicio/inicio del juego al presionar "Jugar"
+                initializeGameSpecificContent(gameId);
+                // Si el juego necesita ser "activado" después del inicio (como Flappy Bird o Breakout)
+                // puedes llamar a su función de inicio aquí, si no se hace en initializeGameSpecificContent.
+                if (gameId === 'game4' && !flappyBirdGameStarted) { // Flappy Bird inicia al primer 'flap'
+                    // Esto está manejado por el primer clic/tecla de acción
+                }
+                if (gameId === 'game5' && !breakoutGameActive) {
+                    toggleBreakoutGame(); // Iniciar Breakout si no está activo
+                }
+            }
+        });
 
     </script>
 </body>
