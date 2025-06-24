@@ -3,1334 +3,2692 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Hero Academia: Tu Historia en UA</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>GameTok - ¡Tu plataforma de juegos!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
+        /* Estilos generales */
+        * {
             margin: 0;
             padding: 0;
-            overflow-x: hidden;
-            background-color: #1a1a2e;
-            color: #e2e8f0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent; /* Elimina el resaltado azul al tocar en móviles */
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            line-height: 1.6;
-            background-image: url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=1471&auto=format&fit=crop');
+            transition: background-color 0.5s ease;
+        }
+
+        /* --- Menú de Inicio --- */
+        #main-menu {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            background: linear-gradient(135deg, #1a0033, #000);
+            position: relative;
+            z-index: 200;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        #main-menu.hidden {
+            opacity: 0;
+            transform: translateY(-100vh);
+            pointer-events: none;
+        }
+
+        #gametok-title {
+            font-size: 8vw; /* Responsive font size */
+            font-weight: bold;
+            color: #ff0050;
+            text-shadow: 0 0 20px rgba(255, 0, 80, 0.7);
+            margin-bottom: 50px;
+            animation: pulse 2s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from {
+                transform: scale(1);
+            }
+            to {
+                transform: scale(1.05);
+            }
+        }
+
+        #game-carousel-container {
+            width: 80%;
+            height: 300px;
+            perspective: 1000px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        #game-carousel {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            animation: rotateCarousel 30s infinite linear;
+        }
+
+        @keyframes rotateCarousel {
+            from {
+                transform: rotateY(0deg);
+            }
+            to {
+                transform: rotateY(360deg);
+            }
+        }
+
+        .carousel-item {
+            position: absolute;
+            width: 200px;
+            height: 150px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            opacity: 0.9;
+            backface-visibility: hidden;
+            cursor: pointer;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+
+        /* Posiciones iniciales para los ítems del carrusel (ajusta según la cantidad de juegos) */
+        /* Tendrás que ajustar esto con JS para distribuir los juegos equitativamente */
+        .carousel-item:nth-child(1) { transform: rotateY(0deg) translateZ(300px); background: linear-gradient(45deg, #ff0050, #8400ff); }
+        .carousel-item:nth-child(2) { transform: rotateY(36deg) translateZ(300px); background: linear-gradient(45deg, #00ffaa, #0084ff); }
+        .carousel-item:nth-child(3) { transform: rotateY(72deg) translateZ(300px); background: linear-gradient(45deg, #ffaa00, #ff0050); }
+        .carousel-item:nth-child(4) { transform: rotateY(108deg) translateZ(300px); background: linear-gradient(45deg, #8400ff, #00ffaa); }
+        .carousel-item:nth-child(5) { transform: rotateY(144deg) translateZ(300px); background: linear-gradient(45deg, #0084ff, #ffaa00); }
+        .carousel-item:nth-child(6) { transform: rotateY(180deg) translateZ(300px); background: linear-gradient(45deg, #ff0050, #00ffaa); }
+        .carousel-item:nth-child(7) { transform: rotateY(216deg) translateZ(300px); background: linear-gradient(45deg, #8400ff, #ffaa00); }
+        .carousel-item:nth-child(8) { transform: rotateY(252deg) translateZ(300px); background: linear-gradient(45deg, #00ffaa, #ff0050); }
+        .carousel-item:nth-child(9) { transform: rotateY(288deg) translateZ(300px); background: linear-gradient(45deg, #ffaa00, #0084ff); }
+        .carousel-item:nth-child(10) { transform: rotateY(324deg) translateZ(300px); background: linear-gradient(45deg, #0084ff, #8400ff); }
+
+
+        #start-button {
+            padding: 15px 30px;
+            font-size: 1.5em;
+            font-weight: bold;
+            background-color: #ff0050;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 0, 80, 0.5);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        #start-button:hover {
+            background-color: #ff3373;
+            transform: translateY(-3px);
+        }
+
+        /* --- Login / Register Pop-up --- */
+        .auth-modal {
+            display: none;
+            position: fixed;
+            z-index: 201;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .auth-modal-content {
+            background-color: #1a1a1a;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: #fff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .auth-modal-content h2 {
+            margin-bottom: 25px;
+            color: #ff0050;
+            font-size: 2em;
+        }
+
+        .auth-modal-content input {
+            width: calc(100% - 20px);
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background-color: #0d0d0d;
+            color: #fff;
+            font-size: 1em;
+        }
+
+        .auth-modal-content input::placeholder {
+            color: #777;
+        }
+
+        .auth-modal-content button {
+            width: calc(100% - 20px);
+            padding: 12px;
+            background-color: #ff0050;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .auth-modal-content button:hover {
+            background-color: #ff3373;
+        }
+
+        .auth-modal-content p {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #ccc;
+        }
+
+        .auth-modal-content p a {
+            color: #ff0050;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* --- Header / UI General --- */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0));
+            z-index: 100;
+            display: none; /* Oculto inicialmente, se muestra después del menú */
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff0050;
+        }
+
+        .search-icon, .upload-icon {
+            font-size: 20px;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+
+        .container {
+            display: none; /* Oculto inicialmente, se muestra después del menú */
+            flex-direction: column;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .game-slide {
+            height: 100vh;
+            width: 100vw;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px;
+            transition: transform 0.5s ease;
+            transform: translateY(0);
             background-size: cover;
             background-position: center;
-            background-attachment: fixed;
         }
 
-        .adventure-container {
-            background-color: rgba(45, 49, 66, 0.9);
-            border-radius: 1rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-            padding: 2.5rem;
-            max-width: 900px;
-            width: 95%;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            border: 2px solid #f72585;
-        }
-
-        .adventure-title {
-            font-size: 2.8rem;
-            font-weight: bold;
-            color: #f72585;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-            margin-bottom: 1.5rem;
-            font-family: 'Arial Black', sans-serif;
-        }
-
-        #story-text {
-            font-size: 1.25rem;
-            margin-bottom: 2rem;
-            min-height: 150px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: rgba(26, 32, 44, 0.8);
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
-            text-align: left;
-            border: 1px solid #4cc9f0;
-            line-height: 1.8;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-        #story-text.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        #choices-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
-        .choice-button {
-            background: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 0.75rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            box-shadow: 0 4px 15px rgba(114, 9, 183, 0.4);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .choice-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(114, 9, 183, 0.6);
-        }
-
-        .choice-button:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 5px rgba(114, 9, 183, 0.4);
-        }
-
-        .choice-button::after {
-            content: '';
+        .game-content-wrapper {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
-            transition: all 0.3s ease;
-        }
-
-        .choice-button:hover::after {
-            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%);
-        }
-
-        #restart-button {
-            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 0.75rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.4);
-            margin-top: 2rem;
-        }
-        #restart-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.6);
-        }
-
-        #player-stats {
-            background-color: rgba(43, 59, 74, 0.8);
-            padding: 1rem;
-            border-radius: 0.75rem;
-            font-size: 0.9rem;
-            color: #cbd5e0;
-            margin-top: 1.5rem;
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
-            gap: 1rem;
-            border: 1px solid #4cc9f0;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
-        }
-        #player-stats div {
-            margin: 0 0.5rem;
-        }
-        #player-stats span {
-            font-weight: bold;
-            color: #4cc9f0;
-        }
-        #player-inventory {
-            font-size: 0.9rem;
-            color: #cbd5e0;
-            margin-top: 1rem;
-            text-align: center;
-        }
-        #player-inventory ul {
-            list-style: none;
-            padding: 0;
-            display: inline-block;
-            text-align: left;
-        }
-        #player-inventory li {
-            margin-bottom: 0.3rem;
-            color: #9ae6b4;
+            align-items: center;
+            background-color: rgba(0,0,0,0.6); /* Fondo semi-transparente para el juego */
+            flex-direction: column; /* Para dividir la pantalla en móvil */
         }
 
-        /* Estilos para la pantalla de inicio */
-        #start-screen {
-            background-color: rgba(45, 49, 66, 0.95);
-            border-radius: 1rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-            padding: 2.5rem;
-            max-width: 600px;
-            width: 95%;
+        .game-info {
+            position: relative;
+            z-index: 10;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 90%;
+        }
+
+        .game-title {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
             text-align: center;
+        }
+
+        .game-desc {
+            font-size: 16px;
+            margin-bottom: 15px;
+            max-width: 100%;
+            color: #ddd;
+            text-align: center;
+        }
+
+        .controls-info {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #aaa;
+            text-align: center;
+        }
+
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .control-btn {
+            background-color: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .control-btn:hover {
+            background-color: rgba(255,255,255,0.4);
+        }
+
+        .play-btn {
+            background-color: #ff0050;
+        }
+
+        .play-btn:hover {
+            background-color: #ff3373;
+        }
+
+        /* --- Botones laterales (Likes, Comentarios, Compartir) --- */
+        .side-buttons {
+            position: fixed;
+            right: 15px;
+            bottom: 100px;
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
-            border: 2px solid #f72585;
-            position: absolute;
+            align-items: center;
+            z-index: 50;
+        }
+
+        .side-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .side-icon {
+            background-color: rgba(255,255,255,0.1);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 5px;
+            font-size: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .side-icon.liked {
+            color: #ff0050;
+        }
+
+        .side-icon:hover {
+            background-color: rgba(255,255,255,0.3);
+        }
+
+        .side-text {
+            font-size: 12px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #ff0050;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            margin-bottom: 5px;
+            border: 2px solid white;
+        }
+
+        /* --- Indicadores de juego --- */
+        .game-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
             z-index: 100;
         }
-        #start-screen h2 {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #4cc9f0;
-            margin-bottom: 1rem;
-        }
-        #start-screen label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-            color: #cbd5e0;
-        }
-        #start-screen select, #start-screen button {
-            width: 100%;
-            padding: 0.8rem;
-            border-radius: 0.5rem;
-            border: 1px solid #4a5568;
-            background-color: rgba(26, 32, 44, 0.8);
-            color: #e2e8f0;
-            font-size: 1rem;
+
+        .indicator-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.5);
+            margin: 0 5px;
             cursor: pointer;
-            margin-bottom: 1rem;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
         }
-        #start-screen select:focus, #start-screen button:focus {
-            outline: none;
-            border-color: #4cc9f0;
-            box-shadow: 0 0 0 2px rgba(76, 201, 240, 0.3);
+
+        .indicator-dot.active {
+            background-color: #ff0050;
+            transform: scale(1.2);
         }
-        #start-screen button {
-            background: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
-            transition: all 0.3s ease;
-            border: none;
-            box-shadow: 0 4px 15px rgba(114, 9, 183, 0.4);
-        }
-        #start-screen button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(114, 9, 183, 0.6);
-        }
-        
-        /* Estilos para el minijuego de combate */
-        #battle-screen {
-            display: none;
+
+        /* --- Controles Móviles (Teclado virtual) --- */
+        .mobile-controls {
+            display: none; /* Oculto por defecto, se muestra en móvil */
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%; /* La mitad inferior de la pantalla */
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 90;
             flex-direction: column;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-        
-        .battle-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-        }
-        
-        .battle-character {
-            display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            width: 45%;
+            padding: 10px;
+            box-sizing: border-box;
+            gap: 10px;
         }
-        
-        .battle-character img {
+
+        .mobile-controls .d-pad {
+            display: grid;
+            grid-template-columns: repeat(3, 80px);
+            grid-template-rows: repeat(3, 80px);
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .mobile-btn {
+            width: 80px;
+            height: 80px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 32px;
+            user-select: none;
+            -webkit-user-select: none;
+            transition: background-color 0.2s ease;
+            cursor: pointer;
+        }
+
+        .mobile-btn:active {
+            background-color: rgba(255,255,255,0.4);
+        }
+
+        .mobile-btn.action-btn {
+            background-color: #ff0050;
+            border-radius: 15px; /* Diferente forma para el botón de acción */
             width: 100px;
             height: 100px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 3px solid #f72585;
-            margin-bottom: 0.5rem;
+            font-size: 2em;
         }
-        
-        .health-bar {
-            width: 100%;
-            height: 20px;
-            background-color: #4a5568;
+
+        .mobile-btn.action-btn:active {
+            background-color: #ff3373;
+        }
+
+        .d-pad .mobile-btn:nth-child(1) { grid-area: 1 / 2 / 2 / 3; } /* Up */
+        .d-pad .mobile-btn:nth-child(2) { grid-area: 2 / 1 / 3 / 2; } /* Left */
+        .d-pad .mobile-btn:nth-child(3) { grid-area: 2 / 3 / 3 / 4; } /* Right */
+        .d-pad .mobile-btn:nth-child(4) { grid-area: 3 / 2 / 4 / 3; } /* Down */
+        .d-pad .mobile-btn:nth-child(5) { grid-area: 2 / 2 / 3 / 3; visibility: hidden; } /* Centro vacío */
+
+
+        /* --- Media Queries para Móviles --- */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .header {
+                padding: 10px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .search-icon, .upload-icon {
+                font-size: 18px;
+            }
+
+            .game-slide {
+                padding-bottom: 250px; /* Espacio para los controles móviles */
+            }
+
+            .game-content-wrapper {
+                height: 50%; /* La mitad superior para el juego */
+            }
+
+            .game-info {
+                padding: 15px;
+                margin-bottom: 10px;
+                max-width: 95%;
+            }
+
+            .game-title {
+                font-size: 24px;
+            }
+
+            .game-desc {
+                font-size: 14px;
+            }
+
+            .side-buttons {
+                bottom: 200px; /* Ajuste para no superponer con controles */
+                right: 5px;
+            }
+
+            .mobile-controls {
+                display: flex; /* Mostrar controles móviles */
+            }
+
+            .game-indicator {
+                bottom: 20px; /* Posición original */
+            }
+        }
+
+        /* --- Estilos para cada juego (los tuyos + los nuevos) --- */
+        #game1 { background: linear-gradient(135deg, #ff0050, #8400ff); } /* Memoria */
+        #game2 { background: linear-gradient(135deg, #00ffaa, #0084ff); } /* Serpiente */
+        #game3 { background: linear-gradient(135deg, #ffaa00, #ff0050); } /* Pong */
+        #game4 { background: linear-gradient(135deg, #8400ff, #00ffaa); } /* Flappy Bird */
+        #game5 { background: linear-gradient(135deg, #0084ff, #ffaa00); } /* Breakout */
+        #game6 { background: linear-gradient(135deg, #FFC107, #FF9800); } /* Tic-Tac-Toe */
+        #game7 { background: linear-gradient(135deg, #4CAF50, #8BC34A); } /* Whac-A-Mole */
+        #game8 { background: linear-gradient(135deg, #00BCD4, #00BCD4); } /* Simon Says */
+        #game9 { background: linear-gradient(135deg, #9C27B0, #673AB7); } /* Clicks Counter */
+        #game10 { background: linear-gradient(135deg, #F44336, #E91E63); } /* Typing Game */
+
+
+        /* Estilos específicos de juegos (los que ya tenías) */
+        .memory-game {
+            display: grid;
+            grid-template-columns: repeat(4, 80px);
+            grid-gap: 10px;
+        }
+
+        .memory-card {
+            width: 80px;
+            height: 80px;
+            background-color: rgba(255,255,255,0.2);
             border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            transform-style: preserve-3d;
+        }
+
+        .memory-card.flipped {
+            background-color: white;
+            transform: rotateY(180deg);
+        }
+
+        #snake-game {
+            width: 300px;
+            height: 300px;
+            position: relative;
+        }
+
+        #snake-canvas {
+            background-color: rgba(0,0,0,0.2);
+            border-radius: 5px;
+        }
+
+        #pong-game {
+            width: 400px;
+            height: 250px;
+            position: relative;
+            background-color: rgba(0,0,0,0.2);
+            border-radius: 5px;
             overflow: hidden;
-            margin-bottom: 0.5rem;
         }
-        
-        .health-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #f72585, #7209b7);
+
+        .paddle {
+            position: absolute;
+            width: 15px;
+            height: 80px;
+            background-color: white;
+        }
+
+        #left-paddle { left: 10px; top: 85px; }
+        #right-paddle { right: 10px; top: 85px; }
+
+        .ball {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: white;
+            border-radius: 50%;
+            left: 192.5px;
+            top: 117.5px;
+        }
+
+        .score {
+            position: absolute;
+            top: 20px;
+            font-size: 24px;
+            color: white;
+        }
+
+        #left-score { left: 150px; }
+        #right-score { right: 150px; }
+
+        #flappy-game {
+            width: 300px;
+            height: 400px;
+            position: relative;
+            background-color: #70c5ce;
+            overflow: hidden;
+            border-radius: 5px;
+        }
+
+        #bird {
+            position: absolute;
+            width: 40px;
+            height: 30px;
+            background-color: #ffcc00;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            left: 50px;
+            top: 200px;
+        }
+
+        .pipe {
+            position: absolute;
+            width: 60px;
+            background-color: #5cb85c;
+            right: -60px;
+        }
+
+        .pipe-top { top: 0; }
+        .pipe-bottom { bottom: 0; }
+
+        #breakout-game {
+            width: 400px;
+            height: 500px;
+            position: relative;
+            background-color: #111;
+            border-radius: 5px;
+        }
+
+        #breakout-canvas {
+            background-color: rgba(0,0,0,0.2);
+        }
+
+        /* --- Nuevos juegos: Estilos iniciales (adaptar según la implementación JS) --- */
+        #tictactoe-game {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 5px;
+            background-color: rgba(0,0,0,0.3);
+            border-radius: 5px;
+        }
+
+        .tictactoe-cell {
+            width: 100px;
+            height: 100px;
+            background-color: rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 4em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.2s ease;
+        }
+        .tictactoe-cell:hover:empty {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        #whackamole-game {
+            width: 350px;
+            height: 250px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 10px;
+            background-color: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .mole-hole {
             width: 100%;
-            transition: width 0.3s ease;
+            height: 100%;
+            background-color: #5C4033; /* Color de tierra */
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            overflow: hidden;
+            position: relative;
         }
-        
-        .battle-actions {
+
+        .mole {
+            width: 80%;
+            height: 80%;
+            background-color: #8B4513; /* Color topo */
+            border-radius: 50% 50% 0 0;
+            position: absolute;
+            bottom: -80%; /* Escondido */
+            transition: bottom 0.2s ease-out;
+            cursor: pointer;
+        }
+
+        .mole.visible {
+            bottom: 0;
+        }
+
+        #simonsays-game {
+            width: 300px;
+            height: 300px;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 0.5rem;
+            grid-template-rows: repeat(2, 1fr);
+            gap: 10px;
+            background-color: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 5px;
         }
-        
-        .battle-log {
-            height: 100px;
-            overflow-y: auto;
-            background-color: rgba(26, 32, 44, 0.8);
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            margin-top: 1rem;
-            text-align: left;
-            border: 1px solid #4cc9f0;
-        }
-        
-        /* Estilos para la barra de progreso del don */
-        .quirk-progress-container {
+
+        .simon-button {
             width: 100%;
-            background-color: #4a5568;
-            border-radius: 10px;
-            margin: 1rem 0;
-            overflow: hidden;
-        }
-        
-        .quirk-progress-bar {
-            height: 20px;
-            background: linear-gradient(90deg, #4cc9f0, #4361ee);
-            width: 0%;
-            transition: width 0.5s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-        
-        /* Estilos para la pantalla de entrenamiento */
-        .training-minigame {
-            display: none;
-            flex-direction: column;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-        
-        .training-progress {
-            width: 100%;
-            height: 30px;
-            background-color: #4a5568;
-            border-radius: 15px;
-            margin-bottom: 1rem;
-            overflow: hidden;
-        }
-        
-        .training-fill {
             height: 100%;
-            background: linear-gradient(90deg, #f72585, #7209b7);
-            width: 0%;
-            transition: width 0.3s ease;
+            border-radius: 10px;
+            opacity: 0.8;
+            transition: opacity 0.1s ease;
+            cursor: pointer;
         }
-        
-        .training-button {
-            padding: 0.8rem;
-            border-radius: 0.5rem;
-            background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+
+        .simon-button:active, .simon-button.highlight {
+            opacity: 1;
+            box-shadow: 0 0 20px rgba(255,255,255,0.7);
+        }
+
+        #simon-green { background-color: green; }
+        #simon-red { background-color: red; }
+        #simon-yellow { background-color: yellow; }
+        #simon-blue { background-color: blue; }
+
+        #clicks-game {
+            font-size: 3em;
+            text-align: center;
+        }
+
+        #click-button {
+            padding: 30px 50px;
+            font-size: 2em;
+            background-color: #ff0050;
             color: white;
             border: none;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: bold;
-            transition: all 0.2s ease;
+            margin-top: 20px;
+            transition: background-color 0.2s ease;
         }
-        
-        .training-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.4);
-        }
-        
-        .training-button:active {
-            transform: translateY(0);
-        }
-        
-        /* Estilos para el sistema de reputación con personajes */
-        .character-rep {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-        
-        .character-rep img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            margin-right: 0.5rem;
-            border: 2px solid #4cc9f0;
-        }
-        
-        .rep-level {
-            font-size: 0.8rem;
-            color: #a0aec0;
+        #click-button:active {
+            background-color: #ff3373;
         }
 
-        .hidden {
-            display: none !important;
+        #typing-game {
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .adventure-title { font-size: 2rem; }
-            #story-text { font-size: 1rem; min-height: 120px; }
-            .choice-button { font-size: 1rem; padding: 0.8rem 1rem; }
-            .adventure-container { padding: 1.5rem; gap: 1rem; }
-            #start-screen h2 { font-size: 1.6rem; }
-            #start-screen select, #start-screen button { padding: 0.7rem; font-size: 0.9rem; }
+        #typing-text {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            line-height: 1.5;
         }
-        @media (max-width: 480px) {
-            .adventure-title { font-size: 1.6rem; }
-            #story-text { font-size: 0.9rem; min-height: 100px; }
-            .choice-button { font-size: 0.9rem; padding: 0.7rem 0.8rem; }
-            #player-stats { flex-direction: column; gap: 0.5rem; }
-            .battle-actions { grid-template-columns: 1fr; }
-            .battle-character { width: 100%; margin-bottom: 1rem; }
-            .battle-info { flex-direction: column; }
+
+        #typing-input {
+            width: 80%;
+            padding: 10px;
+            font-size: 1.2em;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            background-color: #0d0d0d;
+            color: #fff;
         }
     </style>
 </head>
 <body>
 
-    <div id="start-screen">
-        <h1 class="adventure-title">My Hero Academia: Tu Historia en UA</h1>
-        <h2>¡Crea tu Héroe!</h2>
-        
-        <div class="mb-4">
-            <label for="gender-select">Elige tu Género:</label>
-            <select id="gender-select">
-                <option value="neutral">Neutral</option>
-                <option value="male">Masculino</option>
-                <option value="female">Femenino</option>
-            </select>
+    <div id="main-menu">
+        <h1 id="gametok-title">GAMETOK</h1>
+        <div id="game-carousel-container">
+            <div id="game-carousel">
+                </div>
         </div>
-        
-        <div class="mb-4">
-            <label for="name-input">Nombre de tu Héroe:</label>
-            <input type="text" id="name-input" placeholder="Ej: Dynamight Jr." class="w-full p-2 rounded border border-gray-600 bg-gray-800 text-white">
-        </div>
-        
-        <div class="mb-6">
-            <label for="quirk-select">Elige tu Don (Quirk):</label>
-            <select id="quirk-select">
-                <option value="fire">Manipulación de Fuego 🔥</option>
-                <option value="ice">Generación de Hielo ❄️</option>
-                <option value="strength">Super Fuerza 💪</option>
-                <option value="speed">Super Velocidad ⚡</option>
-                <option value="shadow">Manipulación de Sombras 🌑</option>
-                <option value="healing">Regeneración ✨</option>
-                <option value="electricity">Manipulación Eléctrica ⚡</option>
-                <option value="gravity">Control de Gravedad 🌌</option>
-            </select>
-        </div>
-        
-        <div class="mb-6">
-            <label for="personality-select">Personalidad Principal:</label>
-            <select id="personality-select">
-                <option value="heroic">Heroica 🦸 (Valiente, justo)</option>
-                <option value="strategic">Estratégica 🧠 (Inteligente, calculador)</option>
-                <option value="rebel">Rebelde 😈 (Impulsivo, independiente)</option>
-                <option value="friendly">Amistoso 😊 (Sociable, compasivo)</option>
-            </select>
-        </div>
-        
-        <button id="start-game-button">¡Ingresar a UA!</button>
+        <button id="start-button">¡Empezar a Jugar!</button>
     </div>
 
-    <div class="adventure-container hidden" id="game-container">
-        <h1 class="adventure-title">My Hero Academia: Tu Historia en UA</h1>
+    <div id="auth-modal" class="auth-modal">
+        <div class="auth-modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="auth-title">Iniciar Sesión</h2>
+            <form id="auth-form">
+                <input type="text" id="username" placeholder="Usuario" required autocomplete="username">
+                <input type="password" id="password" placeholder="Contraseña" required autocomplete="current-password">
+                <button type="submit" id="auth-submit-btn">Entrar</button>
+            </form>
+            <p id="toggle-auth">¿No tienes cuenta? <a href="#" id="toggle-register-link">Regístrate aquí</a></p>
+        </div>
+    </div>
 
-        <div id="story-text" class="visible"></div>
+    <div class="header" id="app-header">
+        <div class="logo">GameTok</div>
+        <div>
+            <i class="fas fa-search search-icon"></i>
+            <i class="fas fa-upload upload-icon"></i>
+        </div>
+    </div>
 
-        <div id="choices-container"></div>
-        
-        <div id="battle-screen">
-            <div class="battle-info">
-                <div class="battle-character">
-                    <img id="player-battle-img" src="https://via.placeholder.com/100" alt="Tu personaje">
-                    <div id="player-battle-name">Tú</div>
-                    <div class="health-bar">
-                        <div id="player-health" class="health-fill" style="width: 100%">100%</div>
-                    </div>
-                </div>
-                <div class="battle-character">
-                    <img id="enemy-battle-img" src="https://via.placeholder.com/100" alt="Enemigo">
-                    <div id="enemy-battle-name">Enemigo</div>
-                    <div class="health-bar">
-                        <div id="enemy-health" class="health-fill" style="width: 100%">100%</div>
-                    </div>
+    <div class="container" id="game-container">
+        <div class="game-slide" id="game1">
+            <div class="game-content-wrapper">
+                <div class="memory-game" id="memory-game-board"></div>
+            </div>
+            <div class="game-info">
+                <h2 class="game-title">Juego de Memoria</h2>
+                <p class="game-desc">Encuentra todas las parejas de cartas iguales. Haz clic en las cartas para voltearlas.</p>
+                <div class="controls-info">Controles: Clic/Toque en las cartas</div>
+                <div class="control-buttons">
+                    <button class="control-btn play-btn" onclick="startMemoryGame()">Jugar</button>
+                    <button class="control-btn" onclick="resetMemoryGame()">Reiniciar</button>
                 </div>
             </div>
-            
-            <div class="battle-actions">
-                <button class="battle-action" data-action="attack">Atacar 👊</button>
-                <button class="battle-action" data-action="quirk">Usar Don 💥</button>
-                <button class="battle-action" data-action="defend">Defender 🛡️</button>
-                <button class="battle-action" data-action="item">Usar Objeto 🎒</button>
-            </div>
-            
-            <div class="battle-log" id="battle-log"></div>
-        </div>
-        
-        <div class="training-minigame">
-            <h3>Entrenamiento de Don</h3>
-            <p id="training-instruction">Haz clic repetidamente para entrenar tu don y aumentar su nivel.</p>
-            <div class="training-progress">
-                <div id="training-progress" class="training-fill" style="width: 0%"></div>
-            </div>
-            <button id="training-button" class="training-button">Entrenar 💪</button>
-            <button id="finish-training" class="training-button">Finalizar Entrenamiento</button>
-        </div>
-
-        <button id="restart-button" class="hidden" onclick="startGame()">Reiniciar Aventura</button>
-
-        <div id="player-stats">
-            <div>Nombre: <span id="stat-name"></span></div>
-            <div>Don: <span id="stat-quirk"></span></div>
-            <div>Nivel Don: <span id="stat-quirklevel">1</span></div>
-            <div>Heroísmo: <span id="stat-heroism">50</span></div>
-            <div>Fuerza: <span id="stat-strength">5</span></div>
-            <div>Velocidad: <span id="stat-speed">5</span></div>
-            <div>Inteligencia: <span id="stat-intelligence">5</span></div>
-            <div>Popularidad: <span id="stat-popularity">5</span></div>
-        </div>
-        
-        <div class="quirk-progress-container">
-            <div id="quirk-progress" class="quirk-progress-bar">Progreso del Don: 0%</div>
-        </div>
-        
-        <div id="character-reps">
-            <h3>Relaciones:</h3>
-            <div class="character-rep">
-                <img src="https://i.imgur.com/J6y2g8W.png" alt="Midoriya">
-                <span>Midoriya: </span>
-                <span id="rep-midoriya">Neutral</span>
-                <span class="rep-level">(0/100)</span>
-            </div>
-            <div class="character-rep">
-                <img src="https://i.imgur.com/3QX5WQb.png" alt="Bakugo">
-                <span>Bakugo: </span>
-                <span id="rep-bakugo">Neutral</span>
-                <span class="rep-level">(0/100)</span>
-            </div>
-            <div class="character-rep">
-                <img src="https://i.imgur.com/5Z2WQ9X.png" alt="Todoroki">
-                <span>Todoroki: </span>
-                <span id="rep-todoroki">Neutral</span>
-                <span class="rep-level">(0/100)</span>
-            </div>
-            <div class="character-rep">
-                <img src="https://i.imgur.com/7Q2WQ9X.png" alt="Uraraka">
-                <span>Uraraka: </span>
-                <span id="rep-uraraka">Neutral</span>
-                <span class="rep-level">(0/100)</span>
+            <div class="side-buttons">
+                <div class="side-button like-button">
+                    <div class="side-icon"><i class="fas fa-heart"></i></div>
+                    <div class="side-text like-count">12.5K</div>
+                </div>
+                <div class="side-button comment-button">
+                    <div class="side-icon"><i class="fas fa-comment-dots"></i></div>
+                    <div class="side-text comment-count">543</div>
+                </div>
+                <div class="side-button share-button">
+                    <div class="side-icon"><i class="fas fa-share"></i></div>
+                    <div class="side-text">Compartir</div>
+                </div>
+                <div class="side-button">
+                    <div class="avatar">JD</div>
+                </div>
             </div>
         </div>
 
-        <div id="player-inventory">
-            <h3>Inventario:</h3>
-            <ul id="inventory-list">
-                <li>Uniforme de UA</li>
-            </ul>
+        <div class="game-slide" id="game2">
+            <div class="game-content-wrapper">
+                <div id="snake-game">
+                    <canvas id="snake-canvas" width="300" height="300"></canvas>
+                </div>
+            </div>
+            <div class="game-info">
+                <h2 class="game-title">Snake Clásico</h2>
+                <p class="game-desc">Controla la serpiente con WASD o flechas. Come la comida y hazla crecer.</p>
+                <div class="controls-info">Controles: WASD / Flechas (PC), Teclado virtual (Móvil)</div>
+                <div class="control-buttons">
+                    <button class="control-btn play-btn" onclick="startSnakeGame()">Jugar</button>
+                    <button class="control-btn" onclick="pauseSnakeGame()">Pausar</button>
+                </div>
+            </div>
+            <div class="side-buttons">
+                <div class="side-button like-button">
+                    <div class="side-icon"><i class="fas fa-heart"></i></div>
+                    <div class="side-text like-count">18.2K</div>
+                </div>
+                <div class="side-button comment-button">
+                    <div class="side-icon"><i class="fas fa-comment-dots"></i></div>
+                    <div class="side-text comment-count">892</div>
+                </div>
+                <div class="side-button share-button">
+                    <div class="side-icon"><i class="fas fa-share"></i></div>
+                    <div class="side-text">Compartir</div>
+                </div>
+                <div class="side-button">
+                    <div class="avatar">SN</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-slide" id="game3">
+            <div class="game-content-wrapper">
+                <div id="pong-game">
+                    <div class="score" id="left-score">0</div>
+                    <div class="score" id="right-score">0</div>
+                    <div class="paddle" id="left-paddle"></div>
+                    <div class="paddle" id="right-paddle"></div>
+                    <div class="ball" id="ball"></div>
+                </div>
+            </div>
+            <div class="game-info">
+                <h2 class="game-title">Pong Retro</h2>
+                <p class="game-desc">Usa las teclas W/S para mover tu paleta. Anota 5 puntos para ganar.</p>
+                <div class="controls-info">Controles: W (Arriba), S (Abajo) (PC), Teclado virtual (Móvil)</div>
+                <div class="control-buttons">
+                    <button class="control-btn play-btn" onclick="startPongGame()">Jugar</button>
+                    <button class="control-btn" onclick="resetPongGame()">Reiniciar</button>
+                </div>
+            </div>
+            <div class="side-buttons">
+                <div class="side-button like-button">
+                    <div class="side-icon"><i class="fas fa-heart"></i></div>
+                    <div class="side-text like-count">9.7K</div>
+                </div>
+                <div class="side-button comment-button">
+                    <div class="side-icon"><i class="fas fa-comment-dots"></i></div>
+                    <div class="side-text comment-count">431</div>
+                </div>
+                <div class="side-button share-button">
+                    <div class="side-icon"><i class="fas fa-share"></i></div>
+                    <div class="side-text">Compartir</div>
+                </div>
+                <div class="side-button">
+                    <div class="avatar">PG</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-slide" id="game4">
+            <div class="game-content-wrapper">
+                <div id="flappy-game">
+                    <div id="bird"></div>
+                </div>
+            </div>
+            <div class="game-info">
+                <h2 class="game-title">Flappy Bird</h2>
+                <p class="game-desc">Presiona ESPACIO o haz clic/toca para hacer volar al pájaro. Evita los tubos.</p>
+                <div class="controls-info">Controles: ESPACIO / Clic / Toque (PC/Móvil)</div>
+                <div class="control-buttons">
+                    <button class="control-btn play-btn" onclick="startFlappyGame()">Jugar</button>
+                    <button class="control-btn" onclick="resetFlappyGame()">Reiniciar</button>
+                </div>
+            </div>
+            <div class="side-buttons">
+                <div class="side-button like-button">
+                    <div class="side-icon"><i class="fas fa-heart"></i></div>
+                    <div class="side-text like-count">15.3K</div>
+                </div>
+                <div class="side-button comment-button">
+                    <div class="side-icon"><i class="fas fa-comment-dots"></i></div>
+                    <div class="side-text comment-count">726</div>
+                </div>
+                <div class="side-button share-button">
+                    <div class="side-icon"><i class="fas fa-share"></i></div>
+                    <div class="side-text">Compartir</div>
+                </div>
+                <div class="side-button">
+                    <div class="avatar">FB</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-slide" id="game5">
+            <div class="game-content-wrapper">
+                <div id="breakout-game">
+                    <canvas id="breakout-canvas" width="400" height="500"></canvas>
+                </div>
+            </div>
+            <div class="game-info">
+                <h2 class="game-title">Breakout</h2>
+                <p class="game-desc">Usa A/D o flechas para mover la plataforma y rebotar la pelota. Rompe todos los bloques.</p>
+                <div class="controls-info">Controles: A (Izquierda), D (Derecha) / Flechas (PC), Teclado virtual (Móvil)</div>
+                <div class="control-buttons">
+                    <button class="control-btn play-btn" onclick="startBreakoutGame()">Jugar</button>
+                    <button class="control-btn" onclick="resetBreakoutGame()">Reiniciar</button>
+                </div>
+            </div>
+            <div class="side-buttons">
+                <div class="side-button like-button">
+                    <div class="side-icon"><i class="fas fa-heart"></i></div>
+                    <div class="side-text like-count">11.8K</div>
+                </div>
+                <div class="side-button comment-button">
+                    <div class="side-icon"><i class="fas fa-comment-dots"></i></div>
+                    <div class="side-text comment-count">609</div>
+                </div>
+                <div class="side-button share-button">
+                    <div class="side-icon"><i class="fas fa-share"></i></div>
+                    <div class="side-text">Compartir</div>
+                </div>
+                <div class="side-button">
+                    <div class="avatar">BR</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-slide" id="game6">
+            <div class="game-content-wrapper">
+                <div id="tictactoe-game">
+                    </div>
+            </div>
+            <div class="game-info">
+                <h2 class="game-title">Tic-Tac-Toe</h2>
+                <p class="game-desc">Juega al clásico Gato contra la IA. ¡Intenta ganar tres en raya!</p>
+                <div class="controls-info">Controles: Clic/Toque en las celdas</div>
+                <div class="control-buttons">
+                    <button class="control-btn play-btn" onclick="startTicTacToeGame()">Jugar</button>
+                    <button class="control-btn" onclick="resetTicTacToeGame()">Reiniciar</button>
+                </div>
+            </div>
+            <div class="side-buttons">
+                <div class="side-button like-button">
+                    <div class="side-icon"><i class="fas fa-heart"></i></div>
+                    <div class="side-text like-count">7.1K</div>
+                </div>
+                <div class="side-button comment-button">
+                    <div class="side-icon"><i class="fas fa-comment-dots"></i></div>
+                    <div class="side-text comment-count">210</div>
+                </div>
+                <div class="side-button share-button">
+                    <div class="side-icon"><i class="fas fa-share"></i></div>
+                    <div class="side-text">Compartir</div>
+                </div>
+                <div class="side-button">
+                    <div class="avatar">TT</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-slide" id="game7">
+            <div class="game-content-wrapper">
+                <div id="whackamole-game">
+                    </div>
+            </div>
+            <div class="game-info">
+                <h2 class="game-title">Whac-A-Mole</h2>
+                <p class="game-desc">¡Golpea a los topos tan rápido como puedas cuando aparezcan!</p>
+                <div class="controls-info">Controles: Clic/Toque en los topos</div>
+                <div class="control-buttons">
+                    <button class="control-btn play-btn" onclick="startWhacAMoleGame()">Jugar</button>
+                    <button class="control-btn" onclick="resetWhacAMoleGame()">Reiniciar</button>
+                </div>
+            </div>
+            <div class="side-buttons">
+                <div class="side-button like-button">
+                    <div class="side-icon"><i class="fas fa-heart"></i></div>
+                    <div class="side-text like-count">9.2K</div>
+                </div>
+                <div class="side-button comment-button">
+                    <div class="side-icon"><i class="fas fa-comment-dots"></i></div>
+                    <div class="side-text comment-count">350</div>
+                </div>
+                <div class="side-button share-button">
+                    <div class="side-icon"><i class="fas fa-share"></i></div>
+                    <div class="side-text">Compartir</div>
+                </div>
+                <div class="side-button">
+                    <div class="avatar">WM</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-slide" id="game8">
+            <div class="game-content-wrapper">
+                <div id="simonsays-game">
+                    <div class="simon-button" id="simon-green"></div>
+                    <div class="simon-button" id="simon-red"></div>
+                    <div class="simon-button" id="simon-yellow"></div>
+                    <div class="simon-button" id="simon-blue"></div>
+                </div>
+            </div>
+            <div class="game-info">
+                <h2 class="game-title">Simon Says</h2>
+                <p class="game-desc">Repite la secuencia de colores. ¡Cada ronda se hace más larga!</p>
+                <div class="controls-info">Controles: Clic/Toque en los botones de color</div>
+                <div class="control-buttons">
+                    <button class="control-btn play-btn" onclick="startSimonSaysGame()">Jugar</button>
+                    <button class="control-btn" onclick="resetSimonSaysGame()">Reiniciar</button>
+                </div>
+            </div>
+            <div class="side-buttons">
+                <div class="side-button like-button">
+                    <div class="side-icon"><i class="fas fa-heart"></i></div>
+                    <div class="side-text like-count">6.8K</div>
+                </div>
+                <div class="side-button comment-button">
+                    <div class="side-icon"><i class="fas fa-comment-dots"></i></div>
+                    <div class="side-text comment-count">180</div>
+                </div>
+                <div class="side-button share-button">
+                    <div class="side-icon"><i class="fas fa-share"></i></div>
+                    <div class="side-text">Compartir</div>
+                </div>
+                <div class="side-button">
+                    <div class="avatar">SS</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-slide" id="game9">
+            <div class="game-content-wrapper">
+                <div id="clicks-game">
+                    <p>Clics: <span id="click-count">0</span></p>
+                    <button id="click-button">¡Haz clic!</button>
+                </div>
+            </div>
+            <div class="game-info">
+                <h2 class="game-title">Contador de Clics</h2>
+                <p class="game-desc">Haz clic tan rápido como puedas en el botón durante 10 segundos.</p>
+                <div class="controls-info">Controles: Clic/Toque en el botón</div>
+                <div class="control-buttons">
+                    <button class="control-btn play-btn" onclick="startClicksCounterGame()">Jugar</button>
+                    <button class="control-btn" onclick="resetClicksCounterGame()">Reiniciar</button>
+                </div>
+            </div>
+            <div class="side-buttons">
+                <div class="side-button like-button">
+                    <div class="side-icon"><i class="fas fa-heart"></i></div>
+                    <div class="side-text like-count">4.5K</div>
+                </div>
+                <div class="side-button comment-button">
+                    <div class="side-icon"><i class="fas fa-comment-dots"></i></div>
+                    <div class="side-text comment-count">90</div>
+                </div>
+                <div class="side-button share-button">
+                    <div class="side-icon"><i class="fas fa-share"></i></div>
+                    <div class="side-text">Compartir</div>
+                </div>
+                <div class="side-button">
+                    <div class="avatar">CC</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-slide" id="game10">
+            <div class="game-content-wrapper">
+                <div id="typing-game">
+                    <p id="typing-text"></p>
+                    <input type="text" id="typing-input" placeholder="Empieza a escribir aquí...">
+                    <p>Tiempo restante: <span id="typing-timer">60</span>s</p>
+                    <p>Puntuación: <span id="typing-score">0</span></p>
+                </div>
+            </div>
+            <div class="game-info">
+                <h2 class="game-title">Juego de Escritura</h2>
+                <p class="game-desc">Escribe la frase lo más rápido y preciso posible. ¡Mejora tu velocidad!</p>
+                <div class="controls-info">Controles: Teclado (PC), Teclado virtual (Móvil)</div>
+                <div class="control-buttons">
+                    <button class="control-btn play-btn" onclick="startTypingGame()">Jugar</button>
+                    <button class="control-btn" onclick="resetTypingGame()">Reiniciar</button>
+                </div>
+            </div>
+            <div class="side-buttons">
+                <div class="side-button like-button">
+                    <div class="side-icon"><i class="fas fa-heart"></i></div>
+                    <div class="side-text like-count">8.0K</div>
+                </div>
+                <div class="side-button comment-button">
+                    <div class="side-icon"><i class="fas fa-comment-dots"></i></div>
+                    <div class="side-text comment-count">250</div>
+                </div>
+                <div class="side-button share-button">
+                    <div class="side-icon"><i class="fas fa-share"></i></div>
+                    <div class="side-text">Compartir</div>
+                </div>
+                <div class="side-button">
+                    <div class="avatar">TG</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div id="endings-summary-container" class="adventure-container hidden">
-        <h2 class="adventure-title">Tu Legado en UA</h2>
-        <div id="main-ending-text" class="story-text"></div>
-        <h3 class="text-xl font-bold text-gray-300 mt-6 mb-3">Logros y Relaciones:</h3>
-        <ul id="secondary-endings-list" class="text-left mx-auto max-w-md">
-        </ul>
-        <button id="final-restart-button" class="restart-button mt-8" onclick="showStartScreen()">Volver al Inicio</button>
+    <div class="mobile-controls" id="mobile-controls">
+        <div class="d-pad">
+            <div class="mobile-btn" id="mobile-up"><i class="fas fa-arrow-up"></i></div>
+            <div class="mobile-btn" id="mobile-left"><i class="fas fa-arrow-left"></i></div>
+            <div class="mobile-btn" id="mobile-right"><i class="fas fa-arrow-right"></i></div>
+            <div class="mobile-btn" id="mobile-down"><i class="fas fa-arrow-down"></i></div>
+            <div class="mobile-btn"></div> </div>
+        <div class="mobile-btn action-btn" id="mobile-action-btn"><i class="fas fa-circle"></i></div>
     </div>
+
+    <div class="game-indicator" id="game-indicator">
+        </div>
 
     <script>
-        // --- Variables del Juego ---
-        let playerState = {
-            name: "",
-            gender: "neutral",
-            quirk: "fire",
-            quirkLevel: 1,
-            quirkProgress: 0,
-            heroism: 50,
-            strength: 5,
-            speed: 5,
-            intelligence: 5,
-            popularity: 5,
-            inventory: ["Uniforme de UA"],
-            relationships: {
-                midoriya: 0,
-                bakugo: 0,
-                todoroki: 0,
-                uraraka: 0,
-                allmight: 0,
-                aizawa: 0
-            },
-            storyFlags: [],
-            trainingProgress: 0,
-            battleStats: {
-                health: 100,
-                maxHealth: 100,
-                attack: 10,
-                defense: 5,
-                quirkPower: 15
-            },
-            currentEnemy: null,
-            currentScene: "start",
-            completedStorylines: []
-        };
+        // --- Variables Globales y Estado de la Aplicación ---
+        const mainMenu = document.getElementById('main-menu');
+        const authModal = document.getElementById('auth-modal');
+        const authTitle = document.getElementById('auth-title');
+        const authForm = document.getElementById('auth-form');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const authSubmitBtn = document.getElementById('auth-submit-btn');
+        const toggleAuthLink = document.getElementById('toggle-register-link');
+        const closeAuthButton = document.querySelector('.auth-modal .close-button');
 
-        // --- Definición de la Historia ---
-        const story = {
-            "start": {
-                "text": (player) => `¡Bienvenid${player.gender === 'female' ? 'a' : 'o'} a la Academia UA, ${player.name}! El primer día de clases está por comenzar. El salón 1-A está lleno de futuros héroes, incluyendo a conocidos como Midoriya, Bakugo y Todoroki. El profesor Aizawa entra con una expresión sombría. "Hoy tendrán una prueba de aptitud", dice. ¿Qué haces?`,
-                "choices": [
-                    { "text": "Acercarte a Midoriya para hacer equipo 🤝", "nextSceneId": "team_midoriya", "effects": { "midoriya": 10 } },
-                    { "text": "Retar a Bakugo a una competencia 💥", "nextSceneId": "challenge_bakugo", "effects": { "bakugo": 5, "heroism": -5 } },
-                    { "text": "Quedarte solo y concentrarte en la prueba 🧠", "nextSceneId": "solo_test", "effects": { "intelligence": 2 } }
-                ]
-            },
-            "team_midoriya": {
-                "text": "Midoriya parece sorprendido pero contento de que te acerques. \"¡Claro que podemos ser equipo!\" dice con entusiasmo. Juntos, se preparan para la prueba que consiste en una carrera de obstáculos combinada con combate simulado.",
-                "choices": [
-                    { "text": "Usar tu don para crear un ataque combinado con Midoriya 💥", "nextSceneId": "combo_attack", "effects": { "midoriya": 15, "quirkProgress": 10 }, "requires": { "quirkLevel": 2 } },
-                    { "text": "Dejar que Midoriya lidere mientras tú apoyas 🛡️", "nextSceneId": "support_midoriya", "effects": { "midoriya": 10, "popularity": 5 } },
-                    { "text": "Tomar la iniciativa y liderar el equipo 🦸", "nextSceneId": "lead_team", "effects": { "heroism": 10, "strength": 3 } }
-                ]
-            },
-            "challenge_bakugo": {
-                "text": "Bakugo se ríe con arrogancia. \"¡Ja! ¿Crees que puedes competir conmigo? ¡Te destruiré!\" La prueba se convierte en un duelo personal entre ustedes dos.",
-                "choices": [
-                    { "text": "Atacar con todo tu poder desde el inicio 💢", "nextSceneId": "full_power_bakugo", "battle": "bakugo", "effects": { "bakugo": -10, "heroism": -5 } },
-                    { "text": "Analizar los movimientos de Bakugo y contraatacar 🧠", "nextSceneId": "analyze_bakugo", "effects": { "intelligence": 5, "bakugo": 5 } },
-                    { "text": "Intentar razonar con él durante la pelea 🗣️", "nextSceneId": "reason_bakugo", "effects": { "bakugo": -20, "popularity": -5 } }
-                ]
-            },
-            "solo_test": {
-                "text": "Decides enfrentar la prueba solo. Los obstáculos son difíciles, pero tu determinación es fuerte. En el segmento de combate, te enfrentas a robots de entrenamiento.",
-                "choices": [
-                    { "text": "Usar tu don de manera ofensiva contra los robots 💥", "nextSceneId": "offensive_quirk", "effects": { "quirkProgress": 15, "strength": 3 } },
-                    { "text": "Encontrar debilidades en los robots y explotarlas 🎯", "nextSceneId": "exploit_weakness", "effects": { "intelligence": 5, "quirkProgress": 5 } },
-                    { "text": "Ayudar a otros estudiantes mientras avanzas 🤝", "nextSceneId": "help_others", "effects": { "heroism": 10, "popularity": 10 } }
-                ]
-            },
-            "combo_attack": {
-                "text": "Tú y Midoriya crean un ataque combinado impresionante. Tu don y su One For All se complementan perfectamente, destruyendo los obstáculos con facilidad. Aizawa asiente aprobadoramente.",
-                "choices": [
-                    { "text": "Seguir trabajando con Midoriya en el resto de la prueba 🤝", "nextSceneId": "continue_with_midoriya", "effects": { "midoriya": 20, "quirkProgress": 10 } },
-                    { "text": "Separarse para cubrir más terreno 🏃", "nextSceneId": "split_up", "effects": { "speed": 5 } },
-                    { "text": "Demostrar tu poder individual para impresionar a los profesores 💪", "nextSceneId": "show_off", "effects": { "heroism": 10, "popularity": 5, "midoriya": -5 } }
-                ]
-            },
-            "support_midoriya": {
-                "text": "Dejas que Midoriya lidere mientras tú cubres sus puntos débiles. Trabajan bien juntos, pero algunos profesores parecen esperar más iniciativa de tu parte.",
-                "choices": [
-                    { "text": "Cambiar de estrategia y tomar más iniciativa 🦸", "nextSceneId": "take_initiative", "effects": { "heroism": 10, "midoriya": 5 } },
-                    { "text": "Continuar apoyando, perfeccionando tu rol 🛡️", "nextSceneId": "perfect_support", "effects": { "intelligence": 5, "midoriya": 10 } },
-                    { "text": "Pedir consejo a Midoriya sobre cómo mejorar 🗣️", "nextSceneId": "ask_advice", "effects": { "midoriya": 15, "quirkProgress": 10 } }
-                ]
-            },
-            "lead_team": {
-                "text": "Tomas el liderazgo del equipo. Midoriya parece sorprendido pero sigue tus órdenes. Tu confianza inspira a otros estudiantes a unirse a tu grupo.",
-                "choices": [
-                    { "text": "Organizar un ataque coordinado con todo el equipo 🎯", "nextSceneId": "coordinated_attack", "effects": { "heroism": 15, "popularity": 10 } },
-                    { "text": "Enfrentar el mayor desafío tú solo para proteger a los demás 🛡️", "nextSceneId": "protect_others", "effects": { "heroism": 20, "strength": 5 } },
-                    { "text": "Dividir al equipo en grupos especializados 🧩", "nextSceneId": "specialize_groups", "effects": { "intelligence": 10, "popularity": 5 } }
-                ]
-            },
-            // ... (continuar con todas las escenas)
-            
-            // Batalla con Bakugo
-            "full_power_bakugo": {
-                "text": "¡La batalla contra Bakugo comienza! Él no se contendrá, así que prepárate para una pelea intensa.",
-                "battle": "bakugo",
-                "onWin": {
-                    "nextSceneId": "win_against_bakugo",
-                    "effects": { "bakugo": -20, "heroism": 15, "strength": 5 }
-                },
-                "onLose": {
-                    "nextSceneId": "lose_against_bakugo",
-                    "effects": { "bakugo": 20, "heroism": -10 }
+        const appHeader = document.getElementById('app-header');
+        const gameContainer = document.getElementById('game-container');
+        const gameSlides = document.querySelectorAll('.game-slide');
+        const gameIndicator = document.getElementById('game-indicator');
+        const mobileControls = document.getElementById('mobile-controls');
+
+        let isMobile = /Mobi|Android/i.test(navigator.userAgent);
+        let currentAuthMode = 'login'; // 'login' o 'register'
+        let loggedInUser = null; // Simulación de usuario logueado
+        let users = JSON.parse(localStorage.getItem('gametokUsers')) || {}; // Cargar usuarios de localStorage
+
+        let currentGameIndex = 0;
+        let allowNavigation = true; // Controla si se puede cambiar de juego
+        let gameActive = false; // Indica si un juego está en curso para deshabilitar navegación
+
+        // Nombres de los juegos para el carrusel y los avatares
+        const gameDetails = [
+            { name: "Memoria", avatar: "MM" },
+            { name: "Snake", avatar: "SN" },
+            { name: "Pong", avatar: "PG" },
+            { name: "Flappy Bird", avatar: "FB" },
+            { name: "Breakout", avatar: "BR" },
+            { name: "Tic-Tac-Toe", avatar: "TT" },
+            { name: "Whac-A-Mole", avatar: "WM" },
+            { name: "Simon Says", avatar: "SS" },
+            { name: "Clicks Counter", avatar: "CC" },
+            { name: "Typing Game", avatar: "TG" }
+        ];
+
+        // --- Funciones de Inicio de la Aplicación y Navegación ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Inicializar menú y carrusel
+            populateGameCarousel();
+            updateGameIndicators();
+            updateGamePosition(); // Asegurar que los juegos están en su posición inicial (apilados)
+
+            // Mostrar el menú principal
+            mainMenu.style.display = 'flex';
+            appHeader.style.display = 'none';
+            gameContainer.style.display = 'none';
+            mobileControls.style.display = 'none'; // Ocultar controles móviles inicialmente
+
+            // Ocultar instrucciones si las hubiera (ya se eliminaron del HTML final)
+        });
+
+        document.getElementById('start-button').addEventListener('click', () => {
+            showAuthModal('login');
+        });
+
+        // --- Funciones de Autenticación (Login/Register) ---
+
+        function showAuthModal(mode) {
+            currentAuthMode = mode;
+            authTitle.textContent = mode === 'login' ? 'Iniciar Sesión' : 'Registrarse';
+            authSubmitBtn.textContent = mode === 'login' ? 'Entrar' : 'Registrar';
+            toggleAuthLink.textContent = mode === 'login' ? 'Regístrate aquí' : 'Inicia Sesión aquí';
+            authModal.style.display = 'flex';
+        }
+
+        closeAuthButton.addEventListener('click', () => {
+            authModal.style.display = 'none';
+        });
+
+        toggleAuthLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showAuthModal(currentAuthMode === 'login' ? 'register' : 'login');
+        });
+
+        authForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = usernameInput.value;
+            const password = passwordInput.value;
+
+            if (currentAuthMode === 'register') {
+                if (users[username]) {
+                    alert('El usuario ya existe. Por favor, elige otro nombre de usuario.');
+                    return;
                 }
-            },
-            
-            "win_against_bakugo": {
-                "text": "¡Increíble! Has derrotado a Bakugo, quien parece genuinamente sorprendido. \"No está mal... para un novato\", gruñe, pero puedes ver un destello de respeto en sus ojos.",
-                "choices": [
-                    { "text": "Ayudar a Bakugo a levantarse 🤝", "nextSceneId": "help_bakugo_up", "effects": { "bakugo": 10, "heroism": 10 } },
-                    { "text": "Dejarlo ahí y continuar con la prueba 🏃", "nextSceneId": "continue_after_bakugo", "effects": { "speed": 5 } },
-                    { "text": "Frotarle la victoria en la cara 😈", "nextSceneId": "taunt_bakugo", "effects": { "bakugo": -30, "heroism": -15 } }
-                ]
-            },
-            
-            // Escenas de entrenamiento
-            "quirk_training": {
-                "text": "Has decidido entrenar tu don. El gimnasio de UA está equipado con todo lo necesario para desarrollar tus habilidades. ¿Cómo quieres entrenar?",
-                "choices": [
-                    { "text": "Entrenamiento de potencia 💥", "nextSceneId": "power_training", "minigame": "training", "effects": { "strength": 2 } },
-                    { "text": "Entrenamiento de control 🎯", "nextSceneId": "control_training", "minigame": "training", "effects": { "intelligence": 2 } },
-                    { "text": "Entrenamiento de resistencia 🏋️", "nextSceneId": "endurance_training", "minigame": "training", "effects": { "speed": 2 } }
-                ]
-            },
-            
-            // Finales principales
-            "hero_exam": {
-                "text": "¡El día del examen de héroe ha llegado! Después de todo tu entrenamiento, es hora de demostrar de qué estás hecho. El examen consiste en rescatar civiles en una ciudad simulada bajo ataque.",
-                "choices": [
-                    { "text": "Enfocarte en salvar a tantos civiles como puedas 🦸", "nextSceneId": "save_civilians", "effects": { "heroism": 20 } },
-                    { "text": "Confrontar directamente a los villanos principales 💢", "nextSceneId": "fight_villains", "effects": { "strength": 10 } },
-                    { "text": "Coordinar los esfuerzos de todos los estudiantes 🧠", "nextSceneId": "coordinate_rescue", "effects": { "intelligence": 15 } }
-                ],
-                "mainEndingPoint": true
-            },
-            
-            "determine_ending": {
-                "text": (player) => {
-                    if (player.heroism >= 80) {
-                        return story["ending_top_hero"].text;
-                    } else if (player.heroism <= 20) {
-                        return story["ending_villain"].text;
-                    } else {
-                        return story["ending_underground_hero"].text;
-                    }
-                },
-                "choices": [],
-                "ending": true
-            },
-            
-            "ending_top_hero": {
-                "text": "¡Felicidades! Te has graduado de UA como uno de los mejores héroes de tu generación. Tu valentía, compasión y habilidades te han ganado el respeto de todos, incluyendo a All Might. El futuro del heroísmo está en buenas             manos. ¡Plus Ultra!",
-            "ending": true,
-            "effects": { "popularity": 30 }
-        },
-        
-        "ending_villain": {
-            "text": "Tus acciones durante el examen revelan una oscura verdad: has estado usando métodos cuestionables. En lugar de un título de héroe, enfrentas consecuencias. Pero tal vez esto es lo que realmente querías...",
-            "ending": true,
-            "effects": { "heroism": -50 }
-        },
-        
-        "ending_underground_hero": {
-            "text": "Te gradúas de UA, pero no como un héroe de alto perfil. Prefieres trabajar entre bastidores, haciendo el trabajo importante que pocos ven. Aizawa te respeta por ello, y encuentras satisfacción en tu propio camino.",
-            "ending": true,
-            "effects": { "intelligence": 20 }
-        }
-    };
+                users[username] = password;
+                localStorage.setItem('gametokUsers', JSON.stringify(users));
+                alert('Registro exitoso. ¡Ahora puedes iniciar sesión!');
+                showAuthModal('login');
+            } else { // Login mode
+                if (users[username] && users[username] === password) {
+                    loggedInUser = username;
+                    alert(`¡Bienvenido de nuevo, ${loggedInUser}!`);
+                    authModal.style.display = 'none';
+                    mainMenu.classList.add('hidden'); // Ocultar el menú principal con animación
+                    setTimeout(() => {
+                        mainMenu.style.display = 'none'; // Quitar del flujo después de la animación
+                        appHeader.style.display = 'flex';
+                        gameContainer.style.display = 'flex';
+                        if (isMobile) {
+                            mobileControls.style.display = 'flex';
+                        }
+                    }, 500); // Coincide con la duración de la transición CSS
+                } else {
+                    alert('Usuario o contraseña incorrectos.');
+                }
+            }
+        });
 
-    // --- Funciones del Juego ---
-    function startGame() {
-        // Obtener valores del formulario de inicio
-        playerState.name = document.getElementById('name-input').value || "Héroe sin Nombre";
-        playerState.gender = document.getElementById('gender-select').value;
-        playerState.quirk = document.getElementById('quirk-select').value.split(' ')[0];
-        
-        // Actualizar estadísticas mostradas
-        updateStatsDisplay();
-        
-        // Ocultar pantalla de inicio y mostrar juego
-        document.getElementById('start-screen').classList.add('hidden');
-        document.getElementById('game-container').classList.remove('hidden');
-        
-        // Comenzar la historia
-        showScene("start");
-    }
-    
-    function showScene(sceneId) {
-        playerState.currentScene = sceneId;
-        const scene = story[sceneId];
-        
-        // Mostrar texto de la escena
-        const storyTextElement = document.getElementById('story-text');
-        storyTextElement.classList.remove('visible');
-        
-        setTimeout(() => {
-            storyTextElement.innerHTML = typeof scene.text === 'function' ? scene.text(playerState) : scene.text;
-            storyTextElement.classList.add('visible');
-        }, 300);
-        
-        // Limpiar opciones anteriores
-        const choicesContainer = document.getElementById('choices-container');
-        choicesContainer.innerHTML = '';
-        
-        // Ocultar elementos de batalla o entrenamiento si no son necesarios
-        document.getElementById('battle-screen').style.display = 'none';
-        document.querySelector('.training-minigame').style.display = 'none';
-        
-        // Mostrar minijuego si la escena lo requiere
-        if (scene.minigame === 'training') {
-            startTrainingMinigame(sceneId);
-            return;
+        // --- Navegación entre Juegos ---
+
+        function updateGamePosition() {
+            gameSlides.forEach((slide, index) => {
+                slide.style.transform = `translateY(${(index - currentGameIndex) * 100}vh)`;
+            });
+            updateGameIndicators();
+            // Actualizar la visibilidad de los controles móviles para el juego actual
+            if (isMobile) {
+                // Solo mostrar controles si el juego actual lo requiere
+                const controlsInfo = gameSlides[currentGameIndex].querySelector('.controls-info').textContent;
+                if (controlsInfo.includes('WASD') || controlsInfo.includes('Flechas') || controlsInfo.includes('Teclado virtual')) {
+                    mobileControls.style.display = 'flex';
+                } else {
+                    mobileControls.style.display = 'none';
+                }
+            } else {
+                mobileControls.style.display = 'none';
+            }
         }
-        
-        // Mostrar opciones de la escena
-        if (scene.choices && scene.choices.length > 0) {
-            scene.choices.forEach(choice => {
-                // Verificar si el jugador cumple con los requisitos para esta opción
-                let meetsRequirements = true;
-                if (choice.requires) {
-                    for (const [key, value] of Object.entries(choice.requires)) {
-                        if (playerState[key] < value) {
-                            meetsRequirements = false;
-                            break;
+
+        function goToGame(index) {
+            if (index >= 0 && index < gameSlides.length && allowNavigation) {
+                currentGameIndex = index;
+                updateGamePosition();
+                pauseAllGames(); // Pausar cualquier juego activo al cambiar
+                gameActive = false; // Resetear el estado de juego activo
+            }
+        }
+
+        function nextGame() {
+            if (currentGameIndex < gameSlides.length - 1 && allowNavigation) {
+                currentGameIndex++;
+                updateGamePosition();
+                pauseAllGames();
+                gameActive = false;
+            }
+        }
+
+        function prevGame() {
+            if (currentGameIndex > 0 && allowNavigation) {
+                currentGameIndex--;
+                updateGamePosition();
+                pauseAllGames();
+                gameActive = false;
+            }
+        }
+
+        function updateGameIndicators() {
+            gameIndicator.innerHTML = ''; // Limpiar los puntos existentes
+            gameSlides.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.classList.add('indicator-dot');
+                if (index === currentGameIndex) {
+                    dot.classList.add('active');
+                }
+                dot.dataset.index = index;
+                dot.addEventListener('click', () => goToGame(index));
+                gameIndicator.appendChild(dot);
+            });
+        }
+
+        // Eventos de teclado para navegación (solo si no hay juego activo)
+        document.addEventListener('keydown', (e) => {
+            if (gameActive) return; // Si un juego está activo, no navegamos con flechas
+
+            if (e.key === 'ArrowDown') {
+                nextGame();
+            } else if (e.key === 'ArrowUp') {
+                prevGame();
+            }
+        });
+
+        // --- Carousel de Juegos en el Menú de Inicio ---
+        function populateGameCarousel() {
+            const carousel = document.getElementById('game-carousel');
+            carousel.innerHTML = '';
+            const angleStep = 360 / gameDetails.length;
+            gameDetails.forEach((game, index) => {
+                const item = document.createElement('div');
+                item.classList.add('carousel-item');
+                item.textContent = game.name;
+                // Esto es solo para la visualización inicial. Los colores se toman del CSS.
+                item.style.transform = `rotateY(${index * angleStep}deg) translateZ(300px)`;
+                item.addEventListener('click', () => {
+                    // Si haces clic en un juego en el carrusel, puedes llevar al usuario directamente a él
+                    // Esto requiere que el carousel-item tenga un data-game-index
+                    // item.dataset.gameIndex = index;
+                    // goToGame(index); // Implementar esto si quieres que el clic en el carrusel te lleve al juego
+                    alert(`Has seleccionado el juego: ${game.name}. ¡Pulsa "Empezar a Jugar!"`);
+                });
+                carousel.appendChild(item);
+            });
+        }
+
+        // --- Funcionalidad de Likes y Comentarios (Simulada) ---
+
+        document.querySelectorAll('.like-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const icon = button.querySelector('.side-icon');
+                const countElement = button.querySelector('.like-count');
+                let currentLikes = parseInt(countElement.textContent.replace('K', '')) * 1000;
+
+                if (icon.classList.contains('liked')) {
+                    icon.classList.remove('liked');
+                    currentLikes -= 1;
+                } else {
+                    icon.classList.add('liked');
+                    currentLikes += 1;
+                }
+                countElement.textContent = (currentLikes / 1000).toFixed(1) + 'K';
+            });
+        });
+
+        document.querySelectorAll('.comment-button').forEach(button => {
+            button.addEventListener('click', () => {
+                // Aquí podrías abrir un modal de comentarios o redirigir a una página de comentarios
+                alert('Funcionalidad de comentarios (simulada). Se abriría un modal para ver/añadir comentarios.');
+            });
+        });
+
+        // --- Gestión de Controles por Dispositivo ---
+        function setDeviceControls() {
+            if (isMobile) {
+                // Configurar elementos específicos para móvil si es necesario
+            } else {
+                // Configurar elementos específicos para PC si es necesario
+            }
+        }
+        setDeviceControls(); // Llamar al inicio
+
+        // --- Funciones de Pausa para Todos los Juegos ---
+        // Necesitas añadir estas funciones para cada juego
+        function pauseAllGames() {
+            // Memory Game
+            if (memoryGameStarted) resetMemoryGame(); // O una función para solo pausar si fuera más complejo
+
+            // Snake Game
+            if (snakeGameStarted) pauseSnakeGame();
+
+            // Pong Game
+            if (pongGameStarted) resetPongGame(); // O pausa si es posible
+
+            // Flappy Bird
+            if (flappyGameStarted) resetFlappyGame();
+
+            // Breakout
+            if (breakoutGameStarted) resetBreakoutGame();
+
+            // Tic-Tac-Toe
+            if (ticTacToeGameStarted) resetTicTacToeGame();
+
+            // Whac-A-Mole
+            if (whacAMoleGameStarted) resetWhacAMoleGame();
+
+            // Simon Says
+            if (simonSaysGameStarted) resetSimonSaysGame();
+
+            // Clicks Counter
+            if (clicksCounterGameStarted) resetClicksCounterGame();
+
+            // Typing Game
+            if (typingGameStarted) resetTypingGame();
+
+            gameActive = false; // Asegurarse de que se puede navegar de nuevo
+        }
+
+        // --- Controladores de Botones Móviles ---
+        document.getElementById('mobile-up').addEventListener('touchstart', (e) => { e.preventDefault(); handleMobileControl('up'); });
+        document.getElementById('mobile-left').addEventListener('touchstart', (e) => { e.preventDefault(); handleMobileControl('left'); });
+        document.getElementById('mobile-right').addEventListener('touchstart', (e) => { e.preventDefault(); handleMobileControl('right'); });
+        document.getElementById('mobile-down').addEventListener('touchstart', (e) => { e.preventDefault(); handleMobileControl('down'); });
+        document.getElementById('mobile-action-btn').addEventListener('touchstart', (e) => { e.preventDefault(); handleMobileControl('action'); });
+
+
+        // Esta función enviará la acción del control móvil al juego activo
+        function handleMobileControl(direction) {
+            // Basado en currentGameIndex, llama a la función de control del juego específico
+            switch(currentGameIndex) {
+                case 1: // Snake
+                    if (snakeGameStarted) {
+                        if (direction === 'up' && snakeDirection !== 'down') snakeNextDirection = 'up';
+                        else if (direction === 'down' && snakeDirection !== 'up') snakeNextDirection = 'down';
+                        else if (direction === 'left' && snakeDirection !== 'right') snakeNextDirection = 'left';
+                        else if (direction === 'right' && snakeDirection !== 'left') snakeNextDirection = 'right';
+                    }
+                    break;
+                case 2: // Pong (simular W/S)
+                    if (pongGameStarted) {
+                        if (direction === 'up') movePaddle('left', -10); // Simular W
+                        else if (direction === 'down') movePaddle('left', 10); // Simular S
+                    }
+                    break;
+                case 3: // Flappy Bird (simular SPACE)
+                    if (flappyGameStarted) {
+                        if (direction === 'action') birdJump();
+                    }
+                    break;
+                case 4: // Breakout (simular A/D)
+                    if (breakoutGameStarted) {
+                        if (direction === 'left') breakoutPaddleDx = -5;
+                        else if (direction === 'right') breakoutPaddleDx = 5;
+                    }
+                    break;
+                // Para los nuevos juegos, implementa lógica similar si tienen controles de dirección
+                // Tic-Tac-Toe y Whac-A-Mole, Simon Says, Clicks Counter usarán clics/toques directos en el juego
+                case 9: // Typing Game
+                    if (typingGameStarted && direction === 'action') {
+                        // Puedes usar el botón de acción como un 'Enter' para el juego de escritura
+                        // o simplemente el teclado virtual del dispositivo ya maneja el input.
+                        // Para este juego, el input de texto ya maneja la interacción principal.
+                    }
+                    break;
+            }
+        }
+
+        // Eventos para levantar el dedo de los controles (para detener el movimiento continuo en Breakout, etc.)
+        document.querySelectorAll('.mobile-btn').forEach(button => {
+            button.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                // Si es el juego de Breakout, parar el movimiento de la paleta al levantar el dedo
+                if (currentGameIndex === 4 && breakoutGameStarted) {
+                    breakoutPaddleDx = 0;
+                }
+            });
+        });
+
+
+        // --- Implementaciones de Juegos (EXISTENTES + NUEVOS) ---
+
+        // =========================================================
+        // Juego 1: Memoria
+        // =========================================================
+        const memoryCardsEmojis = ['🍎', '🍎', '🍌', '🍌', '🍒', '🍒', '🍓', '🍓', '🍊', '🍊', '🍋', '🍋', '🍉', '🍉', '🍇', '🍇'];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let memoryGameStarted = false;
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function createMemoryGame() {
+            const gameContainer = document.getElementById('memory-game-board');
+            gameContainer.innerHTML = '';
+            const shuffledCards = shuffleArray([...memoryCardsEmojis]);
+
+            shuffledCards.forEach((emoji, index) => {
+                const card = document.createElement('div');
+                card.className = 'memory-card';
+                card.dataset.index = index;
+                card.dataset.value = emoji;
+                card.addEventListener('click', flipCard);
+                gameContainer.appendChild(card);
+            });
+        }
+
+        function flipCard() {
+            if (!memoryGameStarted || flippedCards.length >= 2 || this.classList.contains('flipped')) return;
+
+            this.classList.add('flipped');
+            this.textContent = this.dataset.value;
+            flippedCards.push(this);
+
+            if (flippedCards.length === 2) {
+                setTimeout(checkForMatch, 700);
+            }
+        }
+
+        function checkForMatch() {
+            const [card1, card2] = flippedCards;
+
+            if (card1.dataset.value === card2.dataset.value) {
+                card1.removeEventListener('click', flipCard);
+                card2.removeEventListener('click', flipCard);
+                matchedPairs++;
+
+                if (matchedPairs === memoryCardsEmojis.length / 2) {
+                    setTimeout(() => alert('¡Felicidades! Has ganado el juego de Memoria.'), 300);
+                    allowNavigation = true;
+                    memoryGameStarted = false;
+                    document.querySelector('#game1 .play-btn').textContent = 'Jugar';
+                }
+            } else {
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+                card1.textContent = '';
+                card2.textContent = '';
+            }
+
+            flippedCards = [];
+        }
+
+        function startMemoryGame() {
+            if (!memoryGameStarted) {
+                memoryGameStarted = true;
+                allowNavigation = false;
+                gameActive = true;
+                createMemoryGame();
+                document.querySelector('#game1 .play-btn').textContent = 'Jugando...';
+            }
+        }
+
+        function resetMemoryGame() {
+            memoryGameStarted = false;
+            allowNavigation = true;
+            gameActive = false;
+            matchedPairs = 0;
+            flippedCards = [];
+            createMemoryGame(); // Restablecer el tablero
+            document.querySelector('#game1 .play-btn').textContent = 'Jugar';
+        }
+
+
+        // =========================================================
+        // Juego 2: Serpiente
+        // =========================================================
+        const snakeCanvas = document.getElementById('snake-canvas');
+        const snakeCtx = snakeCanvas.getContext('2d');
+        let snake = [];
+        let food = {};
+        let snakeDirection = 'right';
+        let snakeNextDirection = 'right';
+        let snakeGameInterval;
+        let snakeGameStarted = false;
+
+        function initSnake() {
+            snake = [
+                {x: 150, y: 150},
+                {x: 140, y: 150},
+                {x: 130, y: 150},
+                {x: 120, y: 150},
+                {x: 110, y: 150}
+            ];
+            snakeDirection = 'right';
+            snakeNextDirection = 'right';
+            generateFood();
+            drawSnake();
+        }
+
+        function generateFood() {
+            food = {
+                x: Math.floor(Math.random() * (snakeCanvas.width / 10)) * 10,
+                y: Math.floor(Math.random() * (snakeCanvas.height / 10)) * 10
+            };
+            for (let segment of snake) {
+                if (segment.x === food.x && segment.y === food.y) {
+                    return generateFood(); // Regenerar si la comida aparece en la serpiente
+                }
+            }
+        }
+
+        function drawSnake() {
+            snakeCtx.clearRect(0, 0, snakeCanvas.width, snakeCanvas.height); // Limpiar el lienzo
+            snakeCtx.fillStyle = 'black';
+            snakeCtx.fillRect(0, 0, snakeCanvas.width, snakeCanvas.height); // Rellenar fondo
+
+            // Dibujar la serpiente
+            snake.forEach((segment, index) => {
+                snakeCtx.fillStyle = index === 0 ? '#ff0050' : '#00ffaa';
+                snakeCtx.fillRect(segment.x, segment.y, 10, 10);
+                snakeCtx.strokeStyle = 'black';
+                snakeCtx.strokeRect(segment.x, segment.y, 10, 10);
+            });
+
+            // Dibujar la comida
+            snakeCtx.fillStyle = '#ffcc00';
+            snakeCtx.fillRect(food.x, food.y, 10, 10);
+        }
+
+        function moveSnake() {
+            snakeDirection = snakeNextDirection;
+            const head = {x: snake[0].x, y: snake[0].y};
+
+            switch (snakeDirection) {
+                case 'up': head.y -= 10; break;
+                case 'down': head.y += 10; break;
+                case 'left': head.x -= 10; break;
+                case 'right': head.x += 10; break;
+            }
+
+            // Verificar colisión con los bordes
+            if (head.x < 0 || head.x >= snakeCanvas.width || head.y < 0 || head.y >= snakeCanvas.height) {
+                gameOverSnake();
+                return;
+            }
+
+            // Verificar colisión consigo misma
+            for (let i = 0; i < snake.length; i++) {
+                if (head.x === snake[i].x && head.y === snake[i].y) {
+                    gameOverSnake();
+                    return;
+                }
+            }
+
+            snake.unshift(head); // Añadir nueva cabeza
+
+            // Verificar si comió la comida
+            if (head.x === food.x && head.y === food.y) {
+                generateFood();
+            } else {
+                snake.pop(); // Remover la cola si no comió
+            }
+
+            drawSnake();
+        }
+
+        function gameOverSnake() {
+            clearInterval(snakeGameInterval);
+            alert('¡Juego terminado! Puntuación: ' + (snake.length - 5));
+            snakeGameStarted = false;
+            allowNavigation = true;
+            gameActive = false;
+            document.querySelector('#game2 .play-btn').textContent = 'Jugar';
+        }
+
+        function startSnakeGame() {
+            if (!snakeGameStarted) {
+                snakeGameStarted = true;
+                allowNavigation = false;
+                gameActive = true;
+                initSnake();
+                snakeGameInterval = setInterval(moveSnake, 100);
+                document.querySelector('#game2 .play-btn').textContent = 'Jugando...';
+            }
+        }
+
+        function pauseSnakeGame() {
+            if (snakeGameStarted) {
+                clearInterval(snakeGameInterval);
+                snakeGameStarted = false;
+                allowNavigation = true;
+                gameActive = false; // Permitir navegación al pausar
+                document.querySelector('#game2 .play-btn').textContent = 'Continuar';
+            } else if (snake.length > 0) { // Si está pausado y no recién iniciado
+                startSnakeGame(); // Reanudar
+            }
+        }
+
+        // Eventos de teclado para Snake (para PC)
+        document.addEventListener('keydown', (e) => {
+            if (currentGameIndex !== 1 || !snakeGameStarted) return; // Solo si es el juego de Snake y está activo
+
+            const keyPressed = e.key;
+            if (keyPressed === 'w' && snakeDirection !== 'down') snakeNextDirection = 'up';
+            else if (keyPressed === 's' && snakeDirection !== 'up') snakeNextDirection = 'down';
+            else if (keyPressed === 'a' && snakeDirection !== 'right') snakeNextDirection = 'left';
+            else if (keyPressed === 'd' && snakeDirection !== 'left') snakeNextDirection = 'right';
+            else if (keyPressed === 'ArrowUp' && snakeDirection !== 'down') snakeNextDirection = 'up';
+            else if (keyPressed === 'ArrowDown' && snakeDirection !== 'up') snakeNextDirection = 'down';
+            else if (keyPressed === 'ArrowLeft' && snakeDirection !== 'right') snakeNextDirection = 'left';
+            else if (keyPressed === 'ArrowRight' && snakeDirection !== 'left') snakeNextDirection = 'right';
+        });
+
+
+        // =========================================================
+        // Juego 3: Pong
+        // =========================================================
+        const leftPaddle = document.getElementById('left-paddle');
+        const rightPaddle = document.getElementById('right-paddle');
+        const ball = document.getElementById('ball');
+        const leftScoreElem = document.getElementById('left-score');
+        const rightScoreElem = document.getElementById('right-score');
+        const pongGameArea = document.getElementById('pong-game');
+
+        let leftPaddleY = 85;
+        let rightPaddleY = 85;
+        let ballX = 192.5;
+        let ballY = 117.5;
+        let ballDx = 5; // Velocidad X
+        let ballDy = 5; // Velocidad Y
+        let leftScore = 0;
+        let rightScore = 0;
+        let pongGameInterval;
+        let pongGameStarted = false;
+
+        const PADDLE_SPEED = 10;
+        let leftPaddleDy = 0; // Movimiento de la paleta izquierda (para WASD)
+
+        function updatePongGameArea() {
+            leftPaddle.style.top = `${leftPaddleY}px`;
+            rightPaddle.style.top = `${rightPaddleY}px`;
+            ball.style.left = `${ballX}px`;
+            ball.style.top = `${ballY}px`;
+        }
+
+        function resetBall() {
+            ballX = 192.5;
+            ballY = 117.5;
+            ballDx = (Math.random() > 0.5 ? 1 : -1) * 5; // Dirección aleatoria
+            ballDy = (Math.random() > 0.5 ? 1 : -1) * 5;
+        }
+
+        function gameLoopPong() {
+            // Mover la pelota
+            ballX += ballDx;
+            ballY += ballDy;
+
+            // Mover la paleta izquierda (jugador)
+            leftPaddleY += leftPaddleDy;
+
+            // Asegurarse de que las paletas no salgan del área de juego
+            if (leftPaddleY < 0) leftPaddleY = 0;
+            if (leftPaddleY > pongGameArea.clientHeight - leftPaddle.clientHeight) leftPaddleY = pongGameArea.clientHeight - leftPaddle.clientHeight;
+
+            // Movimiento de la paleta derecha (IA simple)
+            if (ballY < rightPaddleY + rightPaddle.clientHeight / 2) {
+                rightPaddleY -= 3; // Ajustar velocidad de la IA
+            } else {
+                rightPaddleY += 3;
+            }
+            if (rightPaddleY < 0) rightPaddleY = 0;
+            if (rightPaddleY > pongGameArea.clientHeight - rightPaddle.clientHeight) rightPaddleY = pongGameArea.clientHeight - rightPaddle.clientHeight;
+
+
+            // Colisión con paredes superiores/inferiores
+            if (ballY + ball.clientHeight > pongGameArea.clientHeight || ballY < 0) {
+                ballDy *= -1;
+            }
+
+            // Colisión con paletas
+            if (ballX <= leftPaddle.clientWidth && ballY + ball.clientHeight > leftPaddleY && ballY < leftPaddleY + leftPaddle.clientHeight) {
+                ballDx *= -1;
+            }
+            if (ballX + ball.clientWidth >= pongGameArea.clientWidth - rightPaddle.clientWidth && ballY + ball.clientHeight > rightPaddleY && ballY < rightPaddleY + rightPaddle.clientHeight) {
+                ballDx *= -1;
+            }
+
+            // Puntuación
+            if (ballX < 0) {
+                rightScore++;
+                rightScoreElem.textContent = rightScore;
+                if (rightScore === 5) {
+                    alert('¡La IA gana el Pong!');
+                    resetPongGame();
+                    return;
+                }
+                resetBall();
+            } else if (ballX + ball.clientWidth > pongGameArea.clientWidth) {
+                leftScore++;
+                leftScoreElem.textContent = leftScore;
+                if (leftScore === 5) {
+                    alert('¡Has ganado el Pong!');
+                    resetPongGame();
+                    return;
+                }
+                resetBall();
+            }
+
+            updatePongGameArea();
+        }
+
+        function startPongGame() {
+            if (!pongGameStarted) {
+                pongGameStarted = true;
+                allowNavigation = false;
+                gameActive = true;
+                resetPongGame(); // Para asegurar el estado inicial
+                pongGameInterval = setInterval(gameLoopPong, 1000 / 60); // 60 FPS
+                document.querySelector('#game3 .play-btn').textContent = 'Jugando...';
+            }
+        }
+
+        function resetPongGame() {
+            clearInterval(pongGameInterval);
+            pongGameStarted = false;
+            allowNavigation = true;
+            gameActive = false;
+            leftScore = 0;
+            rightScore = 0;
+            leftScoreElem.textContent = '0';
+            rightScoreElem.textContent = '0';
+            leftPaddleY = 85;
+            rightPaddleY = 85;
+            resetBall();
+            updatePongGameArea();
+            document.querySelector('#game3 .play-btn').textContent = 'Jugar';
+        }
+
+        // Controles de Pong (PC)
+        document.addEventListener('keydown', (e) => {
+            if (currentGameIndex !== 2 || !pongGameStarted) return;
+            if (e.key === 'w' || e.key === 'W') {
+                leftPaddleDy = -PADDLE_SPEED;
+            } else if (e.key === 's' || e.key === 'S') {
+                leftPaddleDy = PADDLE_SPEED;
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (currentGameIndex !== 2 || !pongGameStarted) return;
+            if (e.key === 'w' || e.key === 'W' || e.key === 's' || e.key === 'S') {
+                leftPaddleDy = 0;
+            }
+        });
+
+
+        // =========================================================
+        // Juego 4: Flappy Bird
+        // =========================================================
+        const flappyGameArea = document.getElementById('flappy-game');
+        const bird = document.getElementById('bird');
+        let birdY = 200;
+        let birdVelocity = 0;
+        const GRAVITY = 0.5;
+        const JUMP = -8;
+        let pipes = [];
+        let flappyGameInterval;
+        let pipeGenerationInterval;
+        let flappyGameStarted = false;
+
+        function initFlappyBird() {
+            birdY = 200;
+            birdVelocity = 0;
+            pipes = [];
+            flappyGameArea.innerHTML = '<div id="bird"></div>'; // Restablecer el pájaro
+            document.getElementById('bird').style.top = `${birdY}px`;
+            createPipe(); // Crear el primer set de tubos
+        }
+
+        function createPipe() {
+            const pipeGap = 100; // Espacio entre los tubos
+            const minHeight = 50;
+            const maxHeight = flappyGameArea.clientHeight - pipeGap - minHeight;
+            const topPipeHeight = Math.floor(Math.random() * (maxHeight - minHeight + 1)) + minHeight;
+            const bottomPipeHeight = flappyGameArea.clientHeight - topPipeHeight - pipeGap;
+
+            const topPipe = document.createElement('div');
+            topPipe.classList.add('pipe', 'pipe-top');
+            topPipe.style.height = `${topPipeHeight}px`;
+            topPipe.style.left = `${flappyGameArea.clientWidth}px`;
+
+            const bottomPipe = document.createElement('div');
+            bottomPipe.classList.add('pipe', 'pipe-bottom');
+            bottomPipe.style.height = `${bottomPipeHeight}px`;
+            bottomPipe.style.left = `${flappyGameArea.clientWidth}px`;
+
+            flappyGameArea.appendChild(topPipe);
+            flappyGameArea.appendChild(bottomPipe);
+
+            pipes.push({ top: topPipe, bottom: bottomPipe, passed: false });
+        }
+
+        function gameLoopFlappy() {
+            // Mover pájaro
+            birdVelocity += GRAVITY;
+            birdY += birdVelocity;
+            bird.style.top = `${birdY}px`;
+
+            // Mover y limpiar tubos
+            pipes.forEach(pipePair => {
+                pipePair.top.style.left = `${parseInt(pipePair.top.style.left) - 2}px`; // Ajustar velocidad de los tubos
+                pipePair.bottom.style.left = `${parseInt(pipePair.bottom.style.left) - 2}px`;
+
+                // Eliminar tubos que salen de la pantalla
+                if (parseInt(pipePair.top.style.left) + pipePair.top.clientWidth < 0) {
+                    pipePair.top.remove();
+                    pipePair.bottom.remove();
+                    pipes.shift(); // Eliminar del array
+                }
+
+                // Detección de colisiones
+                const birdRect = bird.getBoundingClientRect();
+                const topPipeRect = pipePair.top.getBoundingClientRect();
+                const bottomPipeRect = pipePair.bottom.getBoundingClientRect();
+
+                if (
+                    birdRect.right > topPipeRect.left &&
+                    birdRect.left < topPipeRect.right &&
+                    (birdRect.top < topPipeRect.bottom || birdRect.bottom > bottomPipeRect.top)
+                ) {
+                    gameOverFlappy();
+                }
+            });
+
+            // Colisión con el suelo o el techo
+            if (birdY + bird.clientHeight > flappyGameArea.clientHeight || birdY < 0) {
+                gameOverFlappy();
+            }
+        }
+
+        function birdJump() {
+            if (flappyGameStarted) {
+                birdVelocity = JUMP;
+            }
+        }
+
+        function gameOverFlappy() {
+            clearInterval(flappyGameInterval);
+            clearInterval(pipeGenerationInterval);
+            alert('¡Juego terminado en Flappy Bird!');
+            flappyGameStarted = false;
+            allowNavigation = true;
+            gameActive = false;
+            document.querySelector('#game4 .play-btn').textContent = 'Jugar';
+        }
+
+        function startFlappyGame() {
+            if (!flappyGameStarted) {
+                flappyGameStarted = true;
+                allowNavigation = false;
+                gameActive = true;
+                initFlappyBird();
+                flappyGameInterval = setInterval(gameLoopFlappy, 1000 / 60);
+                pipeGenerationInterval = setInterval(createPipe, 2000); // Generar tubos cada 2 segundos
+                document.querySelector('#game4 .play-btn').textContent = 'Jugando...';
+            }
+        }
+
+        function resetFlappyGame() {
+            clearInterval(flappyGameInterval);
+            clearInterval(pipeGenerationInterval);
+            flappyGameStarted = false;
+            allowNavigation = true;
+            gameActive = false;
+            pipes.forEach(pipePair => { // Limpiar todos los tubos restantes
+                pipePair.top.remove();
+                pipePair.bottom.remove();
+            });
+            pipes = []; // Asegurarse de que el array de tubos esté vacío
+            initFlappyBird(); // Re-inicializar para un nuevo juego
+            document.querySelector('#game4 .play-btn').textContent = 'Jugar';
+        }
+
+        // Controles de Flappy Bird (PC)
+        document.addEventListener('keydown', (e) => {
+            if (currentGameIndex === 3 && flappyGameStarted && e.key === ' ') {
+                birdJump();
+            }
+        });
+        // Control de Flappy Bird (Clic/Toque para PC/Móvil)
+        document.querySelector('#game4 .game-content-wrapper').addEventListener('click', () => {
+            if (currentGameIndex === 3 && flappyGameStarted) {
+                birdJump();
+            }
+        });
+
+
+        // =========================================================
+        // Juego 5: Breakout
+        // =========================================================
+        const breakoutCanvas = document.getElementById('breakout-canvas');
+        const breakoutCtx = breakoutCanvas.getContext('2d');
+        let breakoutPaddleX, breakoutPaddleDx;
+        let breakoutBallX, breakoutBallY, breakoutBallDx, breakoutBallDy;
+        let bricks = [];
+        let breakoutGameInterval;
+        let breakoutGameStarted = false;
+
+        const BRICK_ROW_COUNT = 5;
+        const BRICK_COLUMN_COUNT = 8;
+        const BRICK_WIDTH = 45;
+        const BRICK_HEIGHT = 15;
+        const BRICK_PADDING = 5;
+        const BRICK_OFFSET_TOP = 30;
+        const BRICK_OFFSET_LEFT = 15;
+
+        function initBreakout() {
+            breakoutPaddleX = (breakoutCanvas.width - 75) / 2;
+            breakoutPaddleDx = 0;
+            breakoutBallX = breakoutCanvas.width / 2;
+            breakoutBallY = breakoutCanvas.height - 30;
+            breakoutBallDx = 2; // Velocidad X de la bola
+            breakoutBallDy = -2; // Velocidad Y de la bola
+            createBricks();
+            drawBreakout();
+        }
+
+        function createBricks() {
+            bricks = [];
+            for (let c = 0; c < BRICK_COLUMN_COUNT; c++) {
+                bricks[c] = [];
+                for (let r = 0; r < BRICK_ROW_COUNT; r++) {
+                    bricks[c][r] = { x: 0, y: 0, status: 1 }; // Status 1 = visible
+                }
+            }
+        }
+
+        function drawBricks() {
+            for (let c = 0; c < BRICK_COLUMN_COUNT; c++) {
+                for (let r = 0; r < BRICK_ROW_COUNT; r++) {
+                    if (bricks[c][r].status === 1) {
+                        const brickX = (c * (BRICK_WIDTH + BRICK_PADDING)) + BRICK_OFFSET_LEFT;
+                        const brickY = (r * (BRICK_HEIGHT + BRICK_PADDING)) + BRICK_OFFSET_TOP;
+                        bricks[c][r].x = brickX;
+                        bricks[c][r].y = brickY;
+                        breakoutCtx.beginPath();
+                        breakoutCtx.rect(brickX, brickY, BRICK_WIDTH, BRICK_HEIGHT);
+                        breakoutCtx.fillStyle = '#0095DD';
+                        breakoutCtx.fill();
+                        breakoutCtx.closePath();
+                    }
+                }
+            }
+        }
+
+        function drawPaddle() {
+            breakoutCtx.beginPath();
+            breakoutCtx.rect(breakoutPaddleX, breakoutCanvas.height - 10, 75, 10);
+            breakoutCtx.fillStyle = '#0095DD';
+            breakoutCtx.fill();
+            breakoutCtx.closePath();
+        }
+
+        function drawBall() {
+            breakoutCtx.beginPath();
+            breakoutCtx.arc(breakoutBallX, breakoutBallY, 10, 0, Math.PI * 2);
+            breakoutCtx.fillStyle = '#0095DD';
+            breakoutCtx.fill();
+            breakoutCtx.closePath();
+        }
+
+        function drawBreakout() {
+            breakoutCtx.clearRect(0, 0, breakoutCanvas.width, breakoutCanvas.height);
+            drawBricks();
+            drawPaddle();
+            drawBall();
+        }
+
+        function collisionDetectionBreakout() {
+            for (let c = 0; c < BRICK_COLUMN_COUNT; c++) {
+                for (let r = 0; r < BRICK_ROW_COUNT; r++) {
+                    const b = bricks[c][r];
+                    if (b.status === 1) {
+                        if (breakoutBallX > b.x && breakoutBallX < b.x + BRICK_WIDTH && breakoutBallY > b.y && breakoutBallY < b.y + BRICK_HEIGHT) {
+                            breakoutBallDy *= -1; // Invertir dirección Y de la bola
+                            b.status = 0; // Marcar ladrillo como roto
                         }
                     }
                 }
-                
-                if (meetsRequirements) {
-                    const button = document.createElement('button');
-                    button.className = 'choice-button';
-                    button.textContent = choice.text;
-                    button.onclick = () => selectChoice(choice);
-                    choicesContainer.appendChild(button);
+            }
+        }
+
+        function gameLoopBreakout() {
+            drawBreakout();
+            collisionDetectionBreakout();
+
+            // Mover la paleta
+            breakoutPaddleX += breakoutPaddleDx;
+            if (breakoutPaddleX < 0) breakoutPaddleX = 0;
+            if (breakoutPaddleX > breakoutCanvas.width - 75) breakoutPaddleX = breakoutCanvas.width - 75;
+
+            // Mover la bola
+            breakoutBallX += breakoutBallDx;
+            breakoutBallY += breakoutBallDy;
+
+            // Rebote en paredes
+            if (breakoutBallX + breakoutBallDx > breakoutCanvas.width - 10 || breakoutBallX + breakoutBallDx < 10) {
+                breakoutBallDx *= -1;
+            }
+            if (breakoutBallY + breakoutBallDy < 10) {
+                breakoutBallDy *= -1;
+            } else if (breakoutBallY + breakoutBallDy > breakoutCanvas.height - 10) {
+                // Colisión con la paleta
+                if (breakoutBallX > breakoutPaddleX && breakoutBallX < breakoutPaddleX + 75) {
+                    breakoutBallDy *= -1;
+                } else {
+                    gameOverBreakout(); // La bola toca el fondo
+                    return;
                 }
+            }
+
+            // Ganar el juego
+            if (bricks.every(col => col.every(brick => brick.status === 0))) {
+                alert('¡Has ganado el juego de Breakout!');
+                resetBreakoutGame();
+            }
+        }
+
+        function gameOverBreakout() {
+            clearInterval(breakoutGameInterval);
+            alert('¡Juego terminado en Breakout!');
+            breakoutGameStarted = false;
+            allowNavigation = true;
+            gameActive = false;
+            document.querySelector('#game5 .play-btn').textContent = 'Jugar';
+        }
+
+        function startBreakoutGame() {
+            if (!breakoutGameStarted) {
+                breakoutGameStarted = true;
+                allowNavigation = false;
+                gameActive = true;
+                initBreakout();
+                breakoutGameInterval = setInterval(gameLoopBreakout, 10);
+                document.querySelector('#game5 .play-btn').textContent = 'Jugando...';
+            }
+        }
+
+        function resetBreakoutGame() {
+            clearInterval(breakoutGameInterval);
+            breakoutGameStarted = false;
+            allowNavigation = true;
+            gameActive = false;
+            initBreakout(); // Reiniciar el estado del juego
+            document.querySelector('#game5 .play-btn').textContent = 'Jugar';
+        }
+
+        // Controles de Breakout (PC)
+        document.addEventListener('keydown', (e) => {
+            if (currentGameIndex !== 4 || !breakoutGameStarted) return;
+            if (e.key === 'a' || e.key === 'ArrowLeft') {
+                breakoutPaddleDx = -7; // Velocidad de la paleta
+            } else if (e.key === 'd' || e.key === 'ArrowRight') {
+                breakoutPaddleDx = 7;
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (currentGameIndex !== 4 || !breakoutGameStarted) return;
+            if (e.key === 'a' || e.key === 'd' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                breakoutPaddleDx = 0;
+            }
+        });
+
+
+        // =========================================================
+        // Juego 6: Tic-Tac-Toe (Nuevo)
+        // =========================================================
+        const ticTacToeBoard = document.getElementById('tictactoe-game');
+        let ticTacToeBoardState = ['', '', '', '', '', '', '', '', ''];
+        let currentPlayer = 'X';
+        let ticTacToeGameStarted = false;
+
+        const winningCombinations = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Filas
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columnas
+            [0, 4, 8], [2, 4, 6]             // Diagonales
+        ];
+
+        function initTicTacToe() {
+            ticTacToeBoardState = ['', '', '', '', '', '', '', '', ''];
+            currentPlayer = 'X';
+            ticTacToeBoard.innerHTML = '';
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('tictactoe-cell');
+                cell.dataset.index = i;
+                cell.addEventListener('click', handleTicTacToeClick);
+                ticTacToeBoard.appendChild(cell);
+            }
+        }
+
+        function handleTicTacToeClick(event) {
+            if (!ticTacToeGameStarted) return;
+            const index = event.target.dataset.index;
+
+            if (ticTacToeBoardState[index] === '') {
+                ticTacToeBoardState[index] = currentPlayer;
+                event.target.textContent = currentPlayer;
+
+                if (checkTicTacToeWinner()) {
+                    alert(`¡Jugador ${currentPlayer} ha ganado!`);
+                    resetTicTacToeGame();
+                    return;
+                }
+
+                if (ticTacToeBoardState.every(cell => cell !== '')) {
+                    alert('¡Empate!');
+                    resetTicTacToeGame();
+                    return;
+                }
+
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                if (currentPlayer === 'O') {
+                    setTimeout(aiMoveTicTacToe, 500); // IA juega después de un breve retraso
+                }
+            }
+        }
+
+        function checkTicTacToeWinner() {
+            return winningCombinations.some(combination => {
+                const [a, b, c] = combination;
+                return ticTacToeBoardState[a] !== '' &&
+                       ticTacToeBoardState[a] === ticTacToeBoardState[b] &&
+                       ticTacToeBoardState[b] === ticTacToeBoardState[c];
             });
-        } else if (scene.ending) {
-            // Mostrar pantalla de finalización
-            showEnding(sceneId);
         }
-    }
-    
-    function selectChoice(choice) {
-        // Aplicar efectos de la elección
-        if (choice.effects) {
-            for (const [key, value] of Object.entries(choice.effects)) {
-                if (key in playerState) {
-                    playerState[key] += value;
-                } else if (key in playerState.relationships) {
-                    playerState.relationships[key] += value;
-                }
-                
-                // Asegurar que los valores no sean negativos (excepto relaciones)
-                if (key !== 'midoriya' && key !== 'bakugo' && key !== 'todoroki' && key !== 'uraraka' && 
-                    key in playerState && playerState[key] < 0) {
-                    playerState[key] = 0;
-                }
+
+        function aiMoveTicTacToe() {
+            // IA simple: elige una celda vacía aleatoria
+            const availableCells = ticTacToeBoardState.map((cell, index) => cell === '' ? index : -1).filter(index => index !== -1);
+            if (availableCells.length > 0) {
+                const randomIndex = availableCells[Math.floor(Math.random() * availableCells.length)];
+                const cellElement = ticTacToeBoard.querySelector(`[data-index="${randomIndex}"]`);
+                cellElement.click(); // Simular clic
             }
         }
-        
-        // Actualizar estadísticas mostradas
-        updateStatsDisplay();
-        
-        // Manejar batallas si la elección lleva a una
-        if (choice.battle) {
-            startBattle(choice.battle, choice.nextSceneId);
-            return;
-        }
-        
-        // Continuar a la siguiente escena
-        if (choice.nextSceneId) {
-            showScene(choice.nextSceneId);
-        }
-    }
-    
-    function updateStatsDisplay() {
-        document.getElementById('stat-name').textContent = playerState.name;
-        document.getElementById('stat-quirk').textContent = getQuirkName(playerState.quirk);
-        document.getElementById('stat-quirklevel').textContent = playerState.quirkLevel;
-        document.getElementById('stat-heroism').textContent = playerState.heroism;
-        document.getElementById('stat-strength').textContent = playerState.strength;
-        document.getElementById('stat-speed').textContent = playerState.speed;
-        document.getElementById('stat-intelligence').textContent = playerState.intelligence;
-        document.getElementById('stat-popularity').textContent = playerState.popularity;
-        
-        // Actualizar barra de progreso del don
-        const quirkProgress = document.getElementById('quirk-progress');
-        const progressPercentage = Math.min(100, (playerState.quirkProgress / (playerState.quirkLevel * 100)) * 100);
-        quirkProgress.style.width = `${progressPercentage}%`;
-        quirkProgress.textContent = `Progreso del Don: ${Math.floor(progressPercentage)}%`;
-        
-        // Actualizar relaciones
-        updateRelationshipDisplay('midoriya');
-        updateRelationshipDisplay('bakugo');
-        updateRelationshipDisplay('todoroki');
-        updateRelationshipDisplay('uraraka');
-        
-        // Actualizar inventario
-        const inventoryList = document.getElementById('inventory-list');
-        inventoryList.innerHTML = '';
-        playerState.inventory.forEach(item => {
-            const li = document.createElement('li');
-            li.textContent = item;
-            inventoryList.appendChild(li);
-        });
-    }
-    
-    function updateRelationshipDisplay(character) {
-        const rep = playerState.relationships[character];
-        const repElement = document.getElementById(`rep-${character}`);
-        
-        if (rep >= 50) {
-            repElement.textContent = "Amistoso";
-            repElement.style.color = "#4ade80";
-        } else if (rep >= 20) {
-            repElement.textContent = "Positivo";
-            repElement.style.color = "#a3e635";
-        } else if (rep <= -20) {
-            repElement.textContent = "Hostil";
-            repElement.style.color = "#f87171";
-        } else if (rep <= -50) {
-            repElement.textContent = "Enemigo";
-            repElement.style.color = "#ef4444";
-        } else {
-            repElement.textContent = "Neutral";
-            repElement.style.color = "#cbd5e0";
-        }
-        
-        // Actualizar contador numérico
-        const repLevelElement = repElement.nextElementSibling;
-        repLevelElement.textContent = `(${rep}/100)`;
-    }
-    
-    function getQuirkName(quirkKey) {
-        const quirkNames = {
-            "fire": "Manipulación de Fuego",
-            "ice": "Generación de Hielo",
-            "strength": "Super Fuerza",
-            "speed": "Super Velocidad",
-            "shadow": "Manipulación de Sombras",
-            "healing": "Regeneración",
-            "electricity": "Manipulación Eléctrica",
-            "gravity": "Control de Gravedad"
-        };
-        return quirkNames[quirkKey] || quirkKey;
-    }
-    
-    // --- Sistema de Batalla ---
-    function startBattle(enemyId, nextSceneId) {
-        playerState.currentEnemy = enemyId;
-        playerState.battleStats.health = playerState.battleStats.maxHealth;
-        
-        // Configurar enemigo
-        const enemies = {
-            "bakugo": {
-                name: "Bakugo",
-                img: "https://i.imgur.com/3QX5WQb.png",
-                health: 80,
-                maxHealth: 80,
-                attack: 15,
-                defense: 8,
-                quirkPower: 20
-            },
-            "villain": {
-                name: "Villano",
-                img: "https://i.imgur.com/9Q2WQ9X.png",
-                health: 60,
-                maxHealth: 60,
-                attack: 12,
-                defense: 5,
-                quirkPower: 15
-            },
-            "robot": {
-                name: "Robot de Entrenamiento",
-                img: "https://i.imgur.com/8Q2WQ9X.png",
-                health: 40,
-                maxHealth: 40,
-                attack: 10,
-                defense: 10,
-                quirkPower: 0
+
+        function startTicTacToeGame() {
+            if (!ticTacToeGameStarted) {
+                ticTacToeGameStarted = true;
+                allowNavigation = false;
+                gameActive = true;
+                initTicTacToe();
+                document.querySelector('#game6 .play-btn').textContent = 'Jugando...';
             }
-        };
-        
-        const enemy = enemies[enemyId];
-        playerState.currentEnemyData = enemy;
-        
-        // Actualizar UI de batalla
-        document.getElementById('enemy-battle-name').textContent = enemy.name;
-        document.getElementById('enemy-battle-img').src = enemy.img;
-        document.getElementById('enemy-health').style.width = '100%';
-        document.getElementById('enemy-health').textContent = '100%';
-        
-        document.getElementById('player-battle-name').textContent = playerState.name;
-        document.getElementById('player-health').style.width = '100%';
-        document.getElementById('player-health').textContent = '100%';
-        
-        // Limpiar registro de batalla
-        document.getElementById('battle-log').innerHTML = '';
-        
-        // Mostrar pantalla de batalla
-        document.getElementById('battle-screen').style.display = 'flex';
-        document.getElementById('choices-container').innerHTML = '';
-        
-        // Configurar botones de batalla
-        document.querySelectorAll('.battle-action').forEach(button => {
-            button.onclick = () => handleBattleAction(button.dataset.action, nextSceneId);
-        });
-    }
-    
-    function handleBattleAction(action, nextSceneId) {
-        const player = playerState.battleStats;
-        const enemy = playerState.currentEnemyData;
-        
-        // Acción del jugador
-        let playerDamage = 0;
-        let enemyDamage = 0;
-        let battleLog = document.getElementById('battle-log');
-        
-        switch(action) {
-            case 'attack':
-                playerDamage = Math.max(1, player.attack - Math.floor(enemy.defense / 2));
-                addBattleLog(`${playerState.name} ataca a ${enemy.name} por ${playerDamage} de daño!`);
-                break;
-            case 'quirk':
-                if (playerState.quirkLevel >= 2) {
-                    playerDamage = Math.max(3, player.quirkPower - Math.floor(enemy.defense / 3));
-                    addBattleLog(`${playerState.name} usa ${getQuirkName(playerState.quirk)} contra ${enemy.name} por ${playerDamage} de daño!`);
-                    playerState.quirkProgress += 5;
-                } else {
-                    addBattleLog("¡Tu don no está lo suficientemente desarrollado para usarlo en batalla!");
-                    return;
-                }
-                break;
-            case 'defend':
-                player.defense *= 1.5;
-                addBattleLog(`${playerState.name} se defiende! La defensa aumenta temporalmente.`);
-                break;
-            case 'item':
-                if (playerState.inventory.includes("Botiquín")) {
-                    player.health = Math.min(player.maxHealth, player.health + 30);
-                    playerState.inventory = playerState.inventory.filter(item => item !== "Botiquín");
-                    addBattleLog(`${playerState.name} usa un Botiquín y recupera 30 de salud!`);
-                } else {
-                    addBattleLog("¡No tienes objetos para usar!");
-                    return;
-                }
-                break;
         }
-        
-        // Aplicar daño al enemigo
-        enemy.health -= playerDamage;
-        if (enemy.health <= 0) {
-            enemy.health = 0;
-            endBattle(true, nextSceneId);
-            return;
+
+        function resetTicTacToeGame() {
+            ticTacToeGameStarted = false;
+            allowNavigation = true;
+            gameActive = false;
+            initTicTacToe();
+            document.querySelector('#game6 .play-btn').textContent = 'Jugar';
         }
-        
-        // Turno del enemigo (si no se defendió)
-        if (action !== 'defend') {
-            enemyDamage = Math.max(1, enemy.attack - Math.floor(player.defense / 2));
-            player.health -= enemyDamage;
-            addBattleLog(`${enemy.name} contraataca y causa ${enemyDamage} de daño!`);
-            
-            if (player.health <= 0) {
-                player.health = 0;
-                endBattle(false, nextSceneId);
+
+
+        // =========================================================
+        // Juego 7: Whac-A-Mole (Nuevo)
+        // =========================================================
+        const moleHolesContainer = document.getElementById('whackamole-game');
+        let moles = [];
+        let score = 0;
+        let gameTimer;
+        let moleInterval;
+        let whacAMoleGameStarted = false;
+
+        const GAME_DURATION = 30; // Segundos
+
+        function initWhacAMole() {
+            moleHolesContainer.innerHTML = '';
+            moles = [];
+            score = 0;
+            document.querySelector('#game7 .game-info p:nth-child(3)').textContent = `Puntuación: ${score}`; // Actualizar score display
+            for (let i = 0; i < 6; i++) { // Crear 6 hoyos
+                const hole = document.createElement('div');
+                hole.classList.add('mole-hole');
+                const mole = document.createElement('div');
+                mole.classList.add('mole');
+                mole.addEventListener('click', whackMole);
+                hole.appendChild(mole);
+                moleHolesContainer.appendChild(hole);
+                moles.push(mole);
+            }
+        }
+
+        function popUpMole() {
+            if (!whacAMoleGameStarted) return;
+            const randomIndex = Math.floor(Math.random() * moles.length);
+            const moleToPop = moles[randomIndex];
+
+            // Asegurarse de que no salgan dos topos en el mismo lugar rápidamente
+            if (moleToPop.classList.contains('visible')) {
                 return;
             }
-        } else {
-            // Restablecer defensa después del turno
-            player.defense = playerState.battleStats.defense;
-        }
-        
-        // Actualizar barras de salud
-        updateHealthBars();
-    }
-    
-    function addBattleLog(message) {
-        const log = document.getElementById('battle-log');
-        const entry = document.createElement('div');
-        entry.textContent = message;
-        log.appendChild(entry);
-        log.scrollTop = log.scrollHeight;
-    }
-    
-    function updateHealthBars() {
-        const player = playerState.battleStats;
-        const enemy = playerState.currentEnemyData;
-        
-        const playerHealthPercent = (player.health / player.maxHealth) * 100;
-        const enemyHealthPercent = (enemy.health / enemy.maxHealth) * 100;
-        
-        const playerHealthBar = document.getElementById('player-health');
-        const enemyHealthBar = document.getElementById('enemy-health');
-        
-        playerHealthBar.style.width = `${playerHealthPercent}%`;
-        playerHealthBar.textContent = `${Math.floor(playerHealthPercent)}%`;
-        
-        enemyHealthBar.style.width = `${enemyHealthPercent}%`;
-        enemyHealthBar.textContent = `${Math.floor(enemyHealthPercent)}%`;
-    }
-    
-    function endBattle(playerWon, nextSceneId) {
-        const enemy = playerState.currentEnemyData;
-        
-        if (playerWon) {
-            addBattleLog(`¡Has derrotado a ${enemy.name}!`);
-            
-            // Recompensas por ganar
-            playerState.heroism += 10;
-            playerState.strength += 2;
-            playerState.quirkProgress += 15;
-            
-            // Verificar si el progreso del don aumenta el nivel
-            checkQuirkLevelUp();
-            
-            // Actualizar estadísticas
-            updateStatsDisplay();
-            
-            // Continuar a la siguiente escena después de un retraso
+
+            moleToPop.classList.add('visible');
             setTimeout(() => {
-                showScene(nextSceneId);
-            }, 2000);
-        } else {
-            addBattleLog(`¡Has sido derrotado por ${enemy.name}!`);
-            
-            // Consecuencias por perder
-            playerState.heroism -= 5;
-            
-            // Continuar a la siguiente escena después de un retraso
-            setTimeout(() => {
-                showScene(story[nextSceneId].onLose.nextSceneId);
-            }, 2000);
+                moleToPop.classList.remove('visible');
+            }, 1000 + Math.random() * 500); // Topo visible por 1-1.5 segundos
         }
-    }
-    
-    // --- Minijuego de Entrenamiento ---
-    function startTrainingMinigame(sceneId) {
-        playerState.trainingProgress = 0;
-        document.getElementById('training-progress').style.width = '0%';
-        
-        // Configurar instrucciones basadas en el tipo de entrenamiento
-        let instruction = "";
-        switch(sceneId) {
-            case "power_training":
-                instruction = "Haz clic repetidamente para aumentar la potencia de tu don!";
-                break;
-            case "control_training":
-                instruction = "Haz clic con precisión para mejorar el control de tu don!";
-                break;
-            case "endurance_training":
-                instruction = "Mantén un ritmo constante para aumentar tu resistencia!";
-                break;
-        }
-        
-        document.getElementById('training-instruction').textContent = instruction;
-        
-        // Mostrar minijuego
-        document.querySelector('.training-minigame').style.display = 'flex';
-        document.getElementById('choices-container').innerHTML = '';
-        
-        // Configurar botón de entrenamiento
-        document.getElementById('training-button').onclick = () => {
-            // Aumentar progreso basado en el tipo de entrenamiento
-            let increment = 0;
-            switch(sceneId) {
-                case "power_training":
-                    increment = 5 + Math.floor(playerState.strength / 5);
-                    break;
-                case "control_training":
-                    increment = 3 + Math.floor(playerState.intelligence / 3);
-                    break;
-                case "endurance_training":
-                    increment = 4 + Math.floor(playerState.speed / 4);
-                    break;
+
+        function whackMole(event) {
+            if (!whacAMoleGameStarted) return;
+            if (event.target.classList.contains('visible')) {
+                score++;
+                document.querySelector('#game7 .game-info p:nth-child(3)').textContent = `Puntuación: ${score}`;
+                event.target.classList.remove('visible');
             }
-            
-            playerState.trainingProgress += increment;
-            const progressPercent = Math.min(100, playerState.trainingProgress);
-            
-            document.getElementById('training-progress').style.width = `${progressPercent}%`;
-            
-            // Efectos visuales
-            const button = document.getElementById('training-button');
-            button.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                button.style.transform = '';
-            }, 100);
-            
-            // Completado
-            if (playerState.trainingProgress >= 100) {
-                finishTraining(sceneId);
+        }
+
+        function startWhacAMoleGame() {
+            if (!whacAMoleGameStarted) {
+                whacAMoleGameStarted = true;
+                allowNavigation = false;
+                gameActive = true;
+                initWhacAMole();
+                let timeLeft = GAME_DURATION;
+                document.querySelector('#game7 .game-info .controls-info').textContent = `Tiempo: ${timeLeft}s`;
+
+                gameTimer = setInterval(() => {
+                    timeLeft--;
+                    document.querySelector('#game7 .game-info .controls-info').textContent = `Tiempo: ${timeLeft}s`;
+                    if (timeLeft <= 0) {
+                        gameOverWhacAMole();
+                    }
+                }, 1000);
+
+                moleInterval = setInterval(popUpMole, 800); // Topos aparecen cada 0.8 segundos
+                document.querySelector('#game7 .play-btn').textContent = 'Jugando...';
             }
-        };
-        
-        // Configurar botón para terminar temprano
-        document.getElementById('finish-training').onclick = () => {
-            finishTraining(sceneId);
-        };
-    }
-    
-    function finishTraining(sceneId) {
-        // Recompensas basadas en el progreso
-        const progressPercent = Math.min(100, playerState.trainingProgress);
-        
-        // Recompensa base
-        let reward = Math.floor(progressPercent / 10);
-        
-        // Aplicar recompensas específicas
-        switch(sceneId) {
-            case "power_training":
-                playerState.strength += reward;
-                playerState.quirkProgress += progressPercent * 0.8;
-                break;
-            case "control_training":
-                playerState.intelligence += reward;
-                playerState.quirkProgress += progressPercent * 0.6;
-                break;
-            case "endurance_training":
-                playerState.speed += reward;
-                playerState.quirkProgress += progressPercent * 0.5;
-                break;
         }
-        
-        // Verificar si el progreso del don aumenta el nivel
-        checkQuirkLevelUp();
-        
-        // Actualizar estadísticas
-        updateStatsDisplay();
-        
-        // Ocultar minijuego
-        document.querySelector('.training-minigame').style.display = 'none';
-        
-        // Continuar a la siguiente escena
-        showScene(sceneId);
-    }
-    
-    function checkQuirkLevelUp() {
-        const requiredProgress = playerState.quirkLevel * 100;
-        if (playerState.quirkProgress >= requiredProgress) {
-            playerState.quirkLevel++;
-            playerState.quirkProgress = 0;
-            
-            // Mostrar mensaje de nivel aumentado
-            const storyTextElement = document.getElementById('story-text');
-            storyTextElement.innerHTML = `¡Felicidades! Tu don ${getQuirkName(playerState.quirk)} ha alcanzado el nivel ${playerState.quirkLevel}!`;
-            
-            // Aumentar estadísticas relacionadas con el don
-            playerState.battleStats.quirkPower += 5;
-            
-            // Pequeña pausa antes de continuar
-            setTimeout(() => {
-                showScene(playerState.currentScene);
-            }, 1500);
+
+        function gameOverWhacAMole() {
+            clearInterval(gameTimer);
+            clearInterval(moleInterval);
+            alert(`¡Tiempo! Tu puntuación final es: ${score}`);
+            whacAMoleGameStarted = false;
+            allowNavigation = true;
+            gameActive = false;
+            moles.forEach(mole => mole.classList.remove('visible')); // Esconder cualquier topo visible
+            document.querySelector('#game7 .play-btn').textContent = 'Jugar';
         }
-    }
-    
-    // --- Sistema de Finales ---
-    function showEnding(sceneId) {
-        const ending = story[sceneId];
-        
-        // Ocultar juego y mostrar pantalla de final
-        document.getElementById('game-container').classList.add('hidden');
-        document.getElementById('endings-summary-container').classList.remove('hidden');
-        
-        // Mostrar final principal
-        document.getElementById('main-ending-text').innerHTML = ending.text;
-        
-        // Generar logros y relaciones
-        const endingsList = document.getElementById('secondary-endings-list');
-        endingsList.innerHTML = '';
-        
-        // Logros basados en estadísticas
-        addEndingListItem(`Tu don ${getQuirkName(playerState.quirk)} alcanzó el nivel ${playerState.quirkLevel}!`);
-        
-        if (playerState.heroism >= 70) {
-            addEndingListItem("Te convertiste en un héroe ejemplar, admirado por tu valentía y principios.");
-        } else if (playerState.heroism <= 30) {
-            addEndingListItem("Tu enfoque pragmático te ganó reputación como un héroe controvertido.");
+
+        function resetWhacAMoleGame() {
+            clearInterval(gameTimer);
+            clearInterval(moleInterval);
+            whacAMoleGameStarted = false;
+            allowNavigation = true;
+            gameActive = false;
+            initWhacAMole();
+            document.querySelector('#game7 .play-btn').textContent = 'Jugar';
+            document.querySelector('#game7 .game-info .controls-info').textContent = `Controles: Clic/Toque en los topos`; // Restablecer texto
         }
-        
-        if (playerState.strength >= 15) {
-            addEndingListItem("Desarrollaste una fuerza física impresionante, rivalizando con los mejores héroes.");
+
+
+        // =========================================================
+        // Juego 8: Simon Says (Nuevo)
+        // =========================================================
+        const simonButtons = document.querySelectorAll('#simonsays-game .simon-button');
+        let simonSequence = [];
+        let playerSequence = [];
+        let level = 1;
+        let simonSaysGameStarted = false;
+        let canClick = false;
+
+        function initSimonSays() {
+            simonSequence = [];
+            playerSequence = [];
+            level = 1;
+            canClick = false;
+            document.querySelector('#game8 .game-info p:nth-child(3)').textContent = `Nivel: ${level}`;
+            simonButtons.forEach(btn => btn.classList.remove('highlight'));
         }
-        
-        if (playerState.intelligence >= 15) {
-            addEndingListItem("Tu inteligencia y estrategia te distinguieron como un líder natural.");
+
+        function nextSimonLevel() {
+            playerSequence = [];
+            simonSequence.push(Math.floor(Math.random() * simonButtons.length));
+            document.querySelector('#game8 .game-info p:nth-child(3)').textContent = `Nivel: ${level}`;
+            playSimonSequence(0);
         }
-        
-        // Relaciones importantes
-        if (playerState.relationships.midoriya >= 50) {
-            addEndingListItem("Formaste una fuerte amistad con Izuku Midoriya, convirtiéndote en uno de sus aliados más confiables.");
-        } else if (playerState.relationships.midoriya <= -30) {
-            addEndingListItem("Tu relación con Midoriya fue tensa, con frecuentes desacuerdos en tus métodos.");
+
+        function playSimonSequence(index) {
+            if (index < simonSequence.length) {
+                canClick = false; // Deshabilitar clics durante la secuencia de Simon
+                const buttonIndex = simonSequence[index];
+                const button = simonButtons[buttonIndex];
+                button.classList.add('highlight');
+                setTimeout(() => {
+                    button.classList.remove('highlight');
+                    setTimeout(() => playSimonSequence(index + 1), 200); // Pequeña pausa entre flashes
+                }, 500);
+            } else {
+                canClick = true; // Habilitar clics después de que Simon termina
+            }
         }
-        
-        if (playerState.relationships.bakugo >= 30) {
-            addEndingListItem("A pesar de su personalidad, ganaste el respeto de Katsuki Bakugo, un logro raro.");
-        } else if (playerState.relationships.bakugo <= -50) {
-            addEndingListItem("Desarrollaste una intensa rivalidad con Bakugo, con enfrentamientos frecuentes.");
+
+        function handleSimonClick(event) {
+            if (!simonSaysGameStarted || !canClick) return;
+
+            const clickedButton = event.target;
+            const clickedIndex = Array.from(simonButtons).indexOf(clickedButton);
+
+            playerSequence.push(clickedIndex);
+            clickedButton.classList.add('highlight');
+            setTimeout(() => clickedButton.classList.remove('highlight'), 100);
+
+            if (playerSequence[playerSequence.length - 1] !== simonSequence[playerSequence.length - 1]) {
+                alert('¡Incorrecto! Juego terminado. Alcanzaste el Nivel ' + level);
+                resetSimonSaysGame();
+                return;
+            }
+
+            if (playerSequence.length === simonSequence.length) {
+                if (playerSequence.every((val, i) => val === simonSequence[i])) {
+                    alert('¡Correcto! Siguiente nivel.');
+                    level++;
+                    setTimeout(nextSimonLevel, 1000);
+                }
+            }
         }
-        
-        if (playerState.relationships.todoroki >= 40) {
-            addEndingListItem("Shoto Todoroki te consideraba un amigo cercano y un compañero confiable.");
+
+        simonButtons.forEach(button => {
+            button.addEventListener('click', handleSimonClick);
+        });
+
+        function startSimonSaysGame() {
+            if (!simonSaysGameStarted) {
+                simonSaysGameStarted = true;
+                allowNavigation = false;
+                gameActive = true;
+                initSimonSays();
+                document.querySelector('#game8 .play-btn').textContent = 'Jugando...';
+                setTimeout(nextSimonLevel, 1000);
+            }
         }
-        
-        if (playerState.relationships.uraraka >= 60) {
-            addEndingListItem("Ochaco Uraraka se convirtió en tu mejor amiga, apoyándote en cada paso.");
+
+        function resetSimonSaysGame() {
+            simonSaysGameStarted = false;
+            allowNavigation = true;
+            gameActive = false;
+            initSimonSays();
+            document.querySelector('#game8 .play-btn').textContent = 'Jugar';
         }
-    }
-    
-    function addEndingListItem(text) {
-        const li = document.createElement('li');
-        li.className = 'mb-2 text-gray-300';
-        li.innerHTML = `✓ ${text}`;
-        document.getElementById('secondary-endings-list').appendChild(li);
-    }
-    
-    function showStartScreen() {
-        // Reiniciar estado del juego
-        playerState = {
-            name: "",
-            gender: "neutral",
-            quirk: "fire",
-            quirkLevel: 1,
-            quirkProgress: 0,
-            heroism: 50,
-            strength: 5,
-            speed: 5,
-            intelligence: 5,
-            popularity: 5,
-            inventory: ["Uniforme de UA"],
-            relationships: {
-                midoriya: 0,
-                bakugo: 0,
-                todoroki: 0,
-                uraraka: 0,
-                allmight: 0,
-                aizawa: 0
-            },
-            storyFlags: [],
-            trainingProgress: 0,
-            battleStats: {
-                health: 100,
-                maxHealth: 100,
-                attack: 10,
-                defense: 5,
-                quirkPower: 15
-            },
-            currentEnemy: null,
-            currentScene: "start",
-            completedStorylines: []
-        };
-        
-        // Mostrar pantalla de inicio
-        document.getElementById('endings-summary-container').classList.add('hidden');
-        document.getElementById('start-screen').classList.remove('hidden');
-    }
-    
-    // --- Inicialización ---
-    document.getElementById('start-game-button').addEventListener('click', startGame);
-    document.getElementById('final-restart-button').addEventListener('click', showStartScreen);
-    
-    // Configurar botón de reinicio
-    document.getElementById('restart-button').addEventListener('click', () => {
-        if (confirm("¿Estás seguro de que quieres reiniciar la aventura? Perderás todo tu progreso.")) {
-            showStartScreen();
+
+
+        // =========================================================
+        // Juego 9: Clicks Counter (Nuevo)
+        // =========================================================
+        const clickButton = document.getElementById('click-button');
+        const clickCountDisplay = document.getElementById('click-count');
+        let clickCount = 0;
+        let clicksCounterTimer;
+        let clicksCounterGameStarted = false;
+
+        const CLICKS_GAME_DURATION = 10; // Segundos
+
+        function initClicksCounter() {
+            clickCount = 0;
+            clickCountDisplay.textContent = clickCount;
+            clickButton.disabled = false;
         }
-    });
-</script>
+
+        function handleButtonClick() {
+            if (!clicksCounterGameStarted) return;
+            clickCount++;
+            clickCountDisplay.textContent = clickCount;
+        }
+
+        clickButton.addEventListener('click', handleButtonClick);
+
+        function startClicksCounterGame() {
+            if (!clicksCounterGameStarted) {
+                clicksCounterGameStarted = true;
+                allowNavigation = false;
+                gameActive = true;
+                initClicksCounter();
+                document.querySelector('#game9 .play-btn').textContent = 'Jugando...';
+                let timeLeft = CLICKS_GAME_DURATION;
+                document.querySelector('#game9 .game-info .controls-info').textContent = `Tiempo restante: ${timeLeft}s`;
+
+                clicksCounterTimer = setInterval(() => {
+                    timeLeft--;
+                    document.querySelector('#game9 .game-info .controls-info').textContent = `Tiempo restante: ${timeLeft}s`;
+                    if (timeLeft <= 0) {
+                        clearInterval(clicksCounterTimer);
+                        alert(`¡Tiempo! Hiciste ${clickCount} clics en ${CLICKS_GAME_DURATION} segundos.`);
+                        clicksCounterGameStarted = false;
+                        allowNavigation = true;
+                        gameActive = false;
+                        document.querySelector('#game9 .play-btn').textContent = 'Jugar';
+                        clickButton.disabled = true; // Deshabilitar el botón después del juego
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetClicksCounterGame() {
+            clearInterval(clicksCounterTimer);
+            clicksCounterGameStarted = false;
+            allowNavigation = true;
+            gameActive = false;
+            initClicksCounter();
+            document.querySelector('#game9 .play-btn').textContent = 'Jugar';
+            document.querySelector('#game9 .game-info .controls-info').textContent = `Controles: Clic/Toque en el botón`; // Restablecer texto
+        }
+
+
+        // =========================================================
+        // Juego 10: Typing Game (Nuevo)
+        // =========================================================
+        const typingTextInput = document.getElementById('typing-text');
+        const typingInput = document.getElementById('typing-input');
+        const typingTimerDisplay = document.getElementById('typing-timer');
+        const typingScoreDisplay = document.getElementById('typing-score');
+        const typingPhrases = [
+            "La vida es como una caja de bombones nunca sabes lo que te va a tocar",
+            "Programar es el arte de crear mundos con palabras",
+            "El conocimiento es poder",
+            "El sol brilla para todos",
+            "La creatividad es la inteligencia divirtiéndose"
+        ];
+        let currentPhrase = '';
+        let typingTimer;
+        let typingGameStarted = false;
+        let typingScore = 0;
+
+        const TYPING_GAME_DURATION = 60; // Segundos
+
+        function initTypingGame() {
+            currentPhrase = typingPhrases[Math.floor(Math.random() * typingPhrases.length)];
+            typingTextInput.textContent = currentPhrase;
+            typingInput.value = '';
+            typingInput.disabled = false;
+            typingInput.focus();
+            typingTimerDisplay.textContent = TYPING_GAME_DURATION;
+            typingScore = 0;
+            typingScoreDisplay.textContent = typingScore;
+        }
+
+        typingInput.addEventListener('input', () => {
+            if (!typingGameStarted) return;
+
+            const typedText = typingInput.value;
+            const originalText = currentPhrase;
+
+            // Simple scoring: count correct characters
+            let score = 0;
+            for (let i = 0; i < typedText.length; i++) {
+                if (typedText[i] === originalText[i]) {
+                    score++;
+                } else {
+                    break; // Stop counting on first mistake
+                }
+            }
+            typingScore = score;
+            typingScoreDisplay.textContent = typingScore;
+
+            // Check if entire phrase is typed correctly
+            if (typedText === originalText) {
+                alert('¡Frase completada! Puntuación final: ' + typingScore);
+                resetTypingGame(); // Reiniciar o pasar a la siguiente frase
+            }
+        });
+
+        function startTypingGame() {
+            if (!typingGameStarted) {
+                typingGameStarted = true;
+                allowNavigation = false;
+                gameActive = true;
+                initTypingGame();
+                document.querySelector('#game10 .play-btn').textContent = 'Jugando...';
+
+                let timeLeft = TYPING_GAME_DURATION;
+                typingTimer = setInterval(() => {
+                    timeLeft--;
+                    typingTimerDisplay.textContent = timeLeft;
+                    if (timeLeft <= 0) {
+                        clearInterval(typingTimer);
+                        alert(`¡Tiempo! Tu puntuación final es: ${typingScore}`);
+                        resetTypingGame();
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetTypingGame() {
+            clearInterval(typingTimer);
+            typingGameStarted = false;
+            allowNavigation = true;
+            gameActive = false;
+            initTypingGame(); // Restablecer todo
+            document.querySelector('#game10 .play-btn').textContent = 'Jugar';
+        }
+
+    </script>
 </body>
 </html>
